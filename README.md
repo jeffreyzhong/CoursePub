@@ -1,10 +1,76 @@
 # cs0320 Term Project 2018
 
-**Team Members:** _Fill this in!_
+Team Members:
+Yujun Qin (yqin), Song Yang (sy69), Jeffery Zhong (jzhong3), Gary Zhou (xzhou3)
 
-**Team Strengths and Weaknesses:** _Fill this in!_
+Team Strengths and Weaknesses:
 
-**Project Idea(s):** _Fill this in!_
+I. Team Strength:
+
+	 1. Full Stack Development Experience
+	 Several team members have been involved in full stack (front end and back end) developments in past projects of similar scopes and complexities. 
+
+	 2. Algorithm Design and Implementations
+	 Two of the team members are CS16 TAs with rich experience in algorithm design and implementations.
+
+	 3. Database design and management
+	 More than one team members have experience designing and implementing databases
+
+II. Team Weaknesses:
+
+	 1. Front End Design Experience
+	 The team lacks extensive front-end design experience, while the project in design is quite front-end heavy.
+
+	 2. Group Project Experience
+	 Because of the nature of Brown CS courses, the team lacks extensive group project experience.
+
+
+Project Idea(s):
+
+I. The Problem
+
+	The massive open online courses that are catching up lately fail to effectively digitize the most time-consuming and essential part of teaching: lectures. The lectures of most online courses entail nothing more than playing back a recorded video. At this point, online lectures are missing the interactive components often found in a quintessential real-life lecture -- asking the professor a question or discussing a problem with someone sitting close. Without these interactive components, video lectures can hardly compete with real life lectures in terms of effectiveness. 
+
+	On the other hand, there is a tremendous amount of educational resources on Youtube and other video sharing sites. Among these videos, many are of very high quality, such as the MIT Linear Algebra series by Gilbert Strang, which is widely popular among students at Brown. However, there are currently no support systems for these lectures. Should viewers encounter any difficulty in understanding the materials presented in the video lectures, they are left on their own devices to search for answers. At their current state, the educational videos online are not presented in the most accessible and effective form.   
+
+
+II. Our Vision
+	We believe that lecturing process is worthy to be digitized. And we plan to bind the interactive components into the video watching experience by creating an online virtual classroom. Moreover, we hope to reduce the amount of repetitive work for instructors by embedding a video curation tool into the website, so that past videos can be updated to reflect the most recent changes and include a list of curated recorded Q&As. 
+
+	Listed below are a few key features and user groups:
+
+	Virtual Classroom Page will include:
+	 1. A window that plays recorded lecture videos, which can be paused by instructors during broadcast.
+
+	 2. A window above the video player that allows for pop up questions. Once clicked these question links will pause the video and display answers. 
+
+	 3. A list of curated questions. Once clicked, these question links will play a relevant portion of the video lecture and display answer/play a recorded Q&A.
+
+	 3. A message box that allows students to input questions.
+
+	Student User Group:
+	 1. Students can view lectures online and text their questions through a message box. 
+
+	 2. Students can upvote or answer questions other users submitted.
+
+
+	Instructor User Group:
+	 1. Instructors can broadcast pre-recorded lecture videos. While the lecture is playing, instructor will monitor the question list and answer questions live through the virtual classroom interface by pausing the video.
+
+	 2. Instructors can edit pre-recorded videos by a. deleting a part not well explained, b. inserting a new part into the video lecture, c. inserting question popups to the video and links of the corresponding Q&A to the video scroll bar.
+
+	 3. After broadcasts, Instructor can answer questions on the question list unaddressed during the broadcast. 
+
+
+III. Benefits
+
+	1. Make existing education resources more accessible to learners with different levels of familiarity with the material presented. 
+
+	2. Enable interactive lectures that current MOOCs lack. 
+
+	3. Reduce Instructor workload by through presenting recorded past lectures. 
+
+
 
 **Mentor TA:** _Put your mentor TA's name and email here once you're assigned one!_
 
