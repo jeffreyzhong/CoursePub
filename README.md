@@ -59,7 +59,7 @@
   - Enable interactive lectures that current MOOCs lack. 
   - Reduce Instructor workload by through presenting recorded past lectures. 
 
-**Mentor TA:** _Put your mentor TA's name and email here once you're assigned one!_
+**Mentor TA:** [Lucy Wei](mailto:heyang_wei@brown.edu) (hwei)
 
 ## Meetings
 _On your first meeting with your mentor TA, you should plan dates for at least the following meetings:_
