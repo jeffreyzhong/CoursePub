@@ -2,7 +2,7 @@
 
 **Team Members:**
 
-[Yujun Qin](https://github.com/yamstudio) (yqin), [Song Yang](https://github.com/Yangsong525) (sy69), [Jeffery Zhong](https://github.com/jeffreyzhong) (jzhong3), [Gary Zhou](https://github.com/GaryZhou98) (xzhou3)
+[Yujun Qin](https://github.com/yamstudio) (yqin), [Song Yang](https://github.com/Yangsong525) (sy69), [Jeffrey Zhong](https://github.com/jeffreyzhong) (jzhong3), [Gary Zhou](https://github.com/GaryZhou98) (xzhou3)
 
 **Team Strengths and Weaknesses:**
 
