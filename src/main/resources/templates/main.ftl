@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/css/main.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/js/test.js"></script>
   </head>
 
   <body>
