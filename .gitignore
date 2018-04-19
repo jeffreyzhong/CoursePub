@@ -71,4 +71,5 @@ local.properties
 ########
 
 .DS_Store
+data/projectDatabase/stub.db
 

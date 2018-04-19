@@ -1,9 +1,11 @@
 package edu.brown.cs.termproject.main;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import com.google.gson.Gson;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -24,10 +26,10 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 class SocketHandler extends TextWebSocketHandler {
 
   private static final int DEFAULT_SIZE = 20;
+  private static final Gson GSON = new Gson();
 
   private BlockingQueue<WebSocketSession> sessions;
 
-  @Lazy
   SocketHandler() {
     this.sessions = new ArrayBlockingQueue<>(DEFAULT_SIZE);
   }
@@ -40,6 +42,7 @@ class SocketHandler extends TextWebSocketHandler {
   @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message)
       throws IOException {
+    Map values = GSON.fromJson(message.getPayload(), Map.class);
 
     session.sendMessage(new TextMessage("ack"));
   }

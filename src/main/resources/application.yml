@@ -1,5 +1,17 @@
 spring:
   main:
     banner-mode: "off"
+  datasource:
+    driverClassName: org.sqlite.JDBC
+    url: jdbc:sqlite:data/projectDatabase/stub.db
+    username:
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLiteDialect
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 server:
   port: 4567

@@ -116,19 +116,39 @@
       <artifactId>spring-boot-starter-websocket</artifactId>
       <version>2.0.1.RELEASE</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.webjars.bower/stomp-websocket -->
-    <dependency>
-      <groupId>org.webjars.bower</groupId>
-      <artifactId>stomp-websocket</artifactId>
-      <version>2.3.4</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
+    <!--
+
+            Spring Boot Developer Tools
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools
+
+    -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
       <version>2.0.1.RELEASE</version>
     </dependency>
+    <!--
 
+            Starter for using Spring Data JPA with Hibernate
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
+
+    -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <version>2.0.1.RELEASE</version>
+    </dependency>
+    <!--
+
+            SQLite dialect for hibernate 5
+            https://github.com/ZsoltFabok/sqlite-dialect
+
+    -->
+    <dependency>
+      <groupId>com.zsoltfabok</groupId>
+      <artifactId>sqlite-dialect</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
   <!--  Build section  -->
   <build>

@@ -6,6 +6,10 @@ $(document).ready(function() {
   };
 
   socket.onopen = function() {
-    socket.send(JSON.stringify({'name': 'this'}));
+    socket.send(JSON.stringify({
+      'payload': {
+        'name': 'this'
+      },
+    }));
   }
 });
