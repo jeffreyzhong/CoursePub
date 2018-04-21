@@ -37,8 +37,8 @@ public class Application implements CommandLineRunner {
   public void run(String... args) throws Exception {
     UserService service = appContext.getBean("userServiceImpl", UserService.class);
 
-    for (User user : service.getAllUsers()) {
-      System.out.println(user);
+    for (User u : service.getAllUsers()) {
+      System.out.println(u);
     }
   }
 }

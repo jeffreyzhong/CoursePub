@@ -1,12 +1,11 @@
 package edu.brown.cs.termproject.model;
 
-import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -14,24 +13,30 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "course")
+public class Course {
 
   @Id
-  @GeneratedValue
   @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
-  @NaturalId
-  @Column(name = "email")
-  private String email;
+  @Column(name = "name")
+  private String name;
 
   @OneToMany(
       cascade = CascadeType.ALL,
-      mappedBy = "user",
+      mappedBy = "course",
       fetch = FetchType.LAZY
   )
   private List<Registration> registrations;
+
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      mappedBy = "course",
+      fetch = FetchType.LAZY
+  )
+  private List<Video> videos;
 
   public Integer getId() {
     return id;
@@ -41,32 +46,32 @@ public class User {
     this.id = id;
   }
 
-  public String getEmail() {
-    return email;
+  public String getName() {
+    return name;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Override
   public String toString() {
-    return String.format("{user: {id: %d, email: %s,},}", id, email);
+    return String.format("{course: {id: %d, name: %s,},}", id, name);
   }
 
   @Override
-  public boolean equals(Object obj) throws UnsupportedOperationException {
-    if (!(obj instanceof User)) {
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Course)) {
       throw new UnsupportedOperationException(
           "Comparison with object of a different class is undefined.");
     }
 
-    User other = (User) obj;
+    Course other = (Course) obj;
     return id.equals(other.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(User.class, id);
+    return Objects.hash(Course.class, id);
   }
 }

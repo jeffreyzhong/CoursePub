@@ -74,19 +74,8 @@
     </dependency>
     <!--
 
-            SQLite dependency for databases.
-            https://bitbucket.org/xerial/sqlite-jdbc.
-
-    -->
-    <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>sqlite-jdbc</artifactId>
-      <version>3.21.0.1</version>
-    </dependency>
-    <!--
-
             Spring boot starter for building web, including RESTful, applications using Spring MVC.
-            https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot-starters/spring-boot-starter-web.
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web.
 
     -->
     <dependency>
@@ -97,7 +86,7 @@
     <!--
 
             Dependency for freemarker templating language on Spring boot.
-            https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot-starters/spring-boot-starter-freemarker.
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-freemarker.
 
     -->
     <dependency>
@@ -108,7 +97,7 @@
     <!--
 
             Starter for building WebSocket applications using Spring Framework's WebSocket support.
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-websocket
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-websocket.
 
     -->
     <dependency>
@@ -119,7 +108,7 @@
     <!--
 
             Spring Boot Developer Tools
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools.
 
     -->
     <dependency>
@@ -130,7 +119,7 @@
     <!--
 
             Starter for using Spring Data JPA with Hibernate
-            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa.
 
     -->
     <dependency>
@@ -140,15 +129,16 @@
     </dependency>
     <!--
 
-            SQLite dialect for hibernate 5
-            https://github.com/ZsoltFabok/sqlite-dialect
+            JDBC Type 4 driver for MySQL
+            https://mvnrepository.com/artifact/mysql/mysql-connector-java.
 
     -->
     <dependency>
-      <groupId>com.zsoltfabok</groupId>
-      <artifactId>sqlite-dialect</artifactId>
-      <version>1.0</version>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.46</version>
     </dependency>
+
   </dependencies>
   <!--  Build section  -->
   <build>

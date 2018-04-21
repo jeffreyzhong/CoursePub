@@ -1,6 +1,6 @@
 package edu.brown.cs.termproject.dao;
 
-import edu.brown.cs.termproject.model.User;
+import edu.brown.cs.termproject.model.Course;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,25 +10,20 @@ import java.util.List;
 
 @Repository
 @Transactional(readOnly = true)
-public class UserDaoImpl implements UserDao {
+public class CourseDaoImpl implements CourseDao {
 
   @PersistenceContext
   private EntityManager entityManager;
 
-  public UserDaoImpl() {
-
-  }
-
   @Override
-  public List<User> getAllUsers() {
-    System.out.println(entityManager.find(User.class, 1));
-    String hql = "FROM User";
+  public List<Course> getAllCourses() {
+    String hql = "FROM course";
     return entityManager.createQuery(hql).getResultList();
   }
 
   @Override
   @Transactional(readOnly = false)
-  public void add(User user) {
-    entityManager.persist(user);
+  public void add(Course course) {
+    entityManager.persist(course);
   }
 }
