@@ -2,14 +2,12 @@ package edu.brown.cs.termproject.dao;
 
 import edu.brown.cs.termproject.model.User;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true)
 public class UserDaoImpl implements UserDao {
 
   @PersistenceContext
@@ -22,13 +20,26 @@ public class UserDaoImpl implements UserDao {
   @Override
   public List<User> getAllUsers() {
     System.out.println(entityManager.find(User.class, 1));
-    String hql = "FROM User";
-    return entityManager.createQuery(hql).getResultList();
+    String ql = "FROM User";
+    return entityManager.createQuery(ql).getResultList();
   }
 
   @Override
-  @Transactional(readOnly = false)
   public void add(User user) {
     entityManager.persist(user);
+  }
+
+  @Override
+  public boolean hasEmail(String email) {
+    String ql = "SELECT u FROM User u WHERE u.email = ?1";
+    List ret =
+        entityManager.createQuery(ql).setParameter(1, email).getResultList();
+
+    return ret.size() > 0;
+  }
+
+  @Override
+  public User ofId(Integer id) {
+    return entityManager.find(User.class, id);
   }
 }

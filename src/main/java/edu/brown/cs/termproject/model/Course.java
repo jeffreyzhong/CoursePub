@@ -9,8 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "course")
@@ -27,16 +30,16 @@ public class Course {
   @OneToMany(
       cascade = CascadeType.ALL,
       mappedBy = "course",
-      fetch = FetchType.LAZY
+      fetch = FetchType.EAGER
   )
-  private List<Registration> registrations;
+  private Set<Registration> registrations = new HashSet<>();
 
   @OneToMany(
       cascade = CascadeType.ALL,
       mappedBy = "course",
-      fetch = FetchType.LAZY
+      fetch = FetchType.EAGER
   )
-  private List<Video> videos;
+  private List<Video> videos = new ArrayList<>();
 
   public Integer getId() {
     return id;
@@ -54,6 +57,18 @@ public class Course {
     this.name = name;
   }
 
+  public void register(Registration registration) {
+    if (!registrations.contains(registration)) {
+      registrations.add(registration);
+    }
+  }
+
+  public void unregister(Registration registration) {
+    if (registrations.contains(registration)) {
+      registrations.remove(registration);
+    }
+  }
+
   @Override
   public String toString() {
     return String.format("{course: {id: %d, name: %s,},}", id, name);
@@ -61,6 +76,9 @@ public class Course {
 
   @Override
   public boolean equals(Object obj) {
+    if (obj == null || id == null) {
+      return false;
+    }
     if (!(obj instanceof Course)) {
       throw new UnsupportedOperationException(
           "Comparison with object of a different class is undefined.");

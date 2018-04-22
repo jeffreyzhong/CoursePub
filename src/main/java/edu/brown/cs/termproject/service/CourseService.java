@@ -8,5 +8,7 @@ public interface CourseService {
 
   List<Course> getAllCourses();
 
-  void add(Course course);
+  Course add(String name);
+
+  Course ofId(Integer id);
 }

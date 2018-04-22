@@ -1,13 +1,18 @@
 package edu.brown.cs.termproject.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
@@ -16,16 +21,19 @@ import java.util.Objects;
 @Table(name = "registration")
 public class Registration {
 
-  @EmbeddedId
-  private RegistrationId id;
+//  @EmbeddedId
+//  private RegistrationId id;
 
-  @MapsId("courseId")
-  @ManyToOne(fetch = FetchType.LAZY)
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "regId")
+  private Integer regId;
+
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "courseId", referencedColumnName = "id")
   private Course course;
 
-  @MapsId("userId")
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "userId", referencedColumnName = "id")
   private User user;
 
@@ -37,6 +45,7 @@ public class Registration {
   }
 
   public void setCourse(Course course) {
+    course.register(this);
     this.course = course;
   }
 
@@ -45,6 +54,7 @@ public class Registration {
   }
 
   public void setUser(User user) {
+    user.register(this);
     this.user = user;
   }
 
@@ -58,31 +68,59 @@ public class Registration {
 
   @Override
   public String toString() {
-    return String.format("{registration: {id: %s, type: %s}}", id, type);
+    return String.format("{registration: {id: %s, type: %s,},}", regId, type);
   }
 
   @Override
   public boolean equals(Object obj) throws UnsupportedOperationException {
+    if (obj == null || regId == null) {
+      return false;
+    }
     if (!(obj instanceof Registration)) {
       throw new UnsupportedOperationException(
           "Comparison with object of a different class is undefined.");
     }
 
     Registration other = (Registration) obj;
-    return id.equals(other.id);
+    return regId.equals(other.regId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(Registration.class, id);
+    return Objects.hash(Registration.class, regId);
   }
 
+  /*
   @Embeddable
   private static class RegistrationId implements Serializable {
 
     private Integer regId;
     private Integer userId;
     private Integer courseId;
+
+    public Integer getRegId() {
+      return regId;
+    }
+
+    public void setRegId(Integer regId) {
+      this.regId = regId;
+    }
+
+    public Integer getUserId() {
+      return userId;
+    }
+
+    public void setUserId(Integer userId) {
+      this.userId = userId;
+    }
+
+    public Integer getCourseId() {
+      return courseId;
+    }
+
+    public void setCourseId(Integer courseId) {
+      this.courseId = courseId;
+    }
 
     @Override
     public String toString() {
@@ -107,4 +145,5 @@ public class Registration {
           regId, userId, courseId);
     }
   }
+  */
 }

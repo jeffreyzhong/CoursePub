@@ -9,5 +9,7 @@ public interface UserService {
 
   List<User> getAllUsers();
 
-  void add(@NotNull User user);
+  User add(String email);
+
+  User ofId(Integer id);
 }

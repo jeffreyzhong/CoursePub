@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Repository
-@Transactional(readOnly = true)
 public class VideoDaoImpl implements VideoDao {
 
   @PersistenceContext

@@ -1,5 +1,6 @@
 package edu.brown.cs.termproject.model;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.CascadeType;
@@ -10,8 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -29,9 +32,9 @@ public class User {
   @OneToMany(
       cascade = CascadeType.ALL,
       mappedBy = "user",
-      fetch = FetchType.LAZY
+      fetch = FetchType.EAGER
   )
-  private List<Registration> registrations;
+  private Set<Registration> registrations = new HashSet<>();
 
   public Integer getId() {
     return id;
@@ -49,6 +52,34 @@ public class User {
     this.email = email;
   }
 
+  public Set<Registration> getRegistrations() {
+    return registrations;
+  }
+
+  public void setRegistrations(Set<Registration> registrations) {
+    this.registrations = registrations;
+  }
+
+  public void register(Registration registration) {
+    if (!Hibernate.isInitialized(registrations)) {
+      Hibernate.initialize(registrations);
+    }
+
+    if (!registrations.contains(registration)) {
+      registrations.add(registration);
+    }
+  }
+
+  public void unregister(Registration registration) {
+    if (!Hibernate.isInitialized(registrations)) {
+      Hibernate.initialize(registrations);
+    }
+
+    if (registrations.contains(registration)) {
+      registrations.remove(registration);
+    }
+  }
+
   @Override
   public String toString() {
     return String.format("{user: {id: %d, email: %s,},}", id, email);
@@ -56,6 +87,9 @@ public class User {
 
   @Override
   public boolean equals(Object obj) throws UnsupportedOperationException {
+    if (obj == null || id == null) {
+      return false;
+    }
     if (!(obj instanceof User)) {
       throw new UnsupportedOperationException(
           "Comparison with object of a different class is undefined.");

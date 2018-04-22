@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Repository
-@Transactional(readOnly = false)
 public class RegistrationDaoImpl implements RegistrationDao {
 
   @PersistenceContext

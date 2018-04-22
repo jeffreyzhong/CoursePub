@@ -9,4 +9,6 @@ public interface CourseDao {
   List<Course> getAllCourses();
 
   void add(Course course);
+
+  Course ofId(Integer id);
 }
