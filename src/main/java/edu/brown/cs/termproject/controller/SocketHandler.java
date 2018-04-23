@@ -1,4 +1,4 @@
-package edu.brown.cs.termproject.main;
+package edu.brown.cs.termproject.controller;
 
 import java.io.IOException;
 import java.util.Map;
@@ -7,7 +7,6 @@ import java.util.concurrent.BlockingQueue;
 
 import com.google.gson.Gson;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
