@@ -1,7 +1,7 @@
 package edu.brown.cs.termproject.model;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -9,8 +9,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
 
-@Entity
-public abstract class Post {
+@Embeddable
+public class Post {
 
   @Column(name = "time")
   @Temporal(value = TemporalType.TIME)
