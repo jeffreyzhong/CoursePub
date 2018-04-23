@@ -1,6 +1,5 @@
 package edu.brown.cs.termproject.model;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,7 +28,6 @@ public class ResponseUpvote {
   @PrimaryKeyJoinColumn(name = "userId", referencedColumnName = "id")
   private User user;
 
-
   public Integer getId() {
     return id;
   }
@@ -47,6 +45,7 @@ public class ResponseUpvote {
   }
 
   public void setResponse(Response response) {
+    response.addResponseUpvote(this);
     this.response = response;
   }
 
@@ -56,7 +55,7 @@ public class ResponseUpvote {
 
   @Override
   public String toString() {
-    return String.format("{course: {id: %d, responseId: %d, userId: %d,},}", id, response, user);
+    return String.format("{responseUpvote: {id: %d, responseId: %s, userId: %d,},}", id, response.getId(), user.getId());
   }
 
   @Override

@@ -9,10 +9,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "remark")
@@ -38,6 +41,13 @@ public class Remark {
       referencedColumnName = "id"
   )
   private Video video;
+
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      mappedBy = "remark",
+      fetch = FetchType.EAGER
+  )
+  private Set<RemarkUpvote> remarkUpvotes = new HashSet<>();
 
   public String getId() {
     return id;
@@ -94,6 +104,18 @@ public class Remark {
 
   public void setUser(User user) {
     post.setUser(user);
+  }
+
+  public void addRemarkUpvote(RemarkUpvote remarkUpvote) {
+    if (!remarkUpvotes.contains(remarkUpvote)) {
+      remarkUpvotes.add(remarkUpvote);
+    }
+  }
+
+  public void removeRemarkUpvote(RemarkUpvote remarkUpvote) {
+    if (!remarkUpvotes.contains(remarkUpvote)) {
+      remarkUpvotes.remove(remarkUpvote);
+    }
   }
 
   @Override

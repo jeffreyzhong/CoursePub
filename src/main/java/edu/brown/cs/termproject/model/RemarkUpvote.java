@@ -49,6 +49,7 @@ public class RemarkUpvote {
   }
 
   public void setRemark(Remark remark) {
+    remark.addRemarkUpvote(this);
     this.remark = remark;
   }
 
@@ -58,7 +59,7 @@ public class RemarkUpvote {
 
   @Override
   public String toString() {
-    return String.format("{course: {id: %d, questionId: %d, userId: %d,},}", id, remark, user);
+    return String.format("{remarkUpvote: {id: %d, remarkId: %s, userId: %d,},}", id, remark.getId(), user.getId());
   }
 
   @Override

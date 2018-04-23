@@ -4,16 +4,18 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "question")
@@ -39,6 +41,13 @@ public class Question {
       referencedColumnName = "id"
   )
   private Video video;
+
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      mappedBy = "question",
+      fetch = FetchType.EAGER
+  )
+  private Set<QuestionUpvote> questionUpvotes = new HashSet<>();
 
   public String getId() {
     return id;
@@ -95,6 +104,18 @@ public class Question {
 
   public void setUser(User user) {
     post.setUser(user);
+  }
+
+  public void addQuestionUpvote(QuestionUpvote questionUpvote) {
+    if (!questionUpvotes.contains(questionUpvote)) {
+      questionUpvotes.add(questionUpvote);
+    }
+  }
+
+  public void removeResponseUpvote(QuestionUpvote questionUpvote) {
+    if (!questionUpvotes.contains(questionUpvote)) {
+      questionUpvotes.remove(questionUpvote);
+    }
   }
 
   @Override

@@ -9,12 +9,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "response")
@@ -56,6 +59,13 @@ public class Response {
   )
   private Question question;
 
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      mappedBy = "response",
+      fetch = FetchType.EAGER
+  )
+  private Set<ResponseUpvote> responseUpvotes = new HashSet<>();
+
   public String getId() {
     return id;
   }
@@ -94,6 +104,18 @@ public class Response {
 
   public void setBody(String body) {
     this.body = body;
+  }
+
+  public void addResponseUpvote(ResponseUpvote responseUpvote) {
+    if (!responseUpvotes.contains(responseUpvote)) {
+      responseUpvotes.add(responseUpvote);
+    }
+  }
+
+  public void removeResponseUpvote(ResponseUpvote responseUpvote) {
+    if (!responseUpvotes.contains(responseUpvote)) {
+      responseUpvotes.remove(responseUpvote);
+    }
   }
 
   @Override
