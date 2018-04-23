@@ -18,7 +18,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "question")
-public class Question {
+public class Question extends Post {
 
   @Id
   @Column(name = "id")
@@ -28,23 +28,6 @@ public class Question {
       strategy = "uuid2"
   )
   private String id;
-
-  @Column(name = "time")
-  @Temporal(value = TemporalType.TIME)
-  private Date time;
-
-  @Column(name = "title")
-  private String title;
-
-  @Column(name = "body")
-  private String body;
-
-  @ManyToOne(fetch = FetchType.EAGER)
-  @PrimaryKeyJoinColumn(
-      name = "userId",
-      referencedColumnName = "id"
-  )
-  private User user;
 
   @ManyToOne(
       fetch = FetchType.EAGER,
@@ -64,22 +47,6 @@ public class Question {
     this.id = id;
   }
 
-  public Date getTime() {
-    return time;
-  }
-
-  public void setTime(Date time) {
-    this.time = time;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
-  }
-
   public Video getVideo() {
     return video;
   }
@@ -89,25 +56,9 @@ public class Question {
     this.video = video;
   }
 
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getBody() {
-    return body;
-  }
-
-  public void setBody(String body) {
-    this.body = body;
-  }
-
   @Override
   public String toString() {
-    return String.format("{question: {id: %s, title: %s,},}", id, title);
+    return String.format("{question: {id: %s, title: %s,},}", id, getTitle());
   }
 
   @Override
