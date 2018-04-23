@@ -31,7 +31,6 @@ class Controllers {
   @GetMapping(path = "/user")
   public ModelAndView user(@RequestParam(value = "id") String id) {
     Map<String, Object> variables = ImmutableMap.of("title", "User", "id", id);
-
     return new ModelAndView("user", variables);
   }
 
@@ -42,4 +41,13 @@ class Controllers {
 
     return new ModelAndView("lecture", variables);
   }
+
+
+  @GetMapping(path = "/video")
+  public ModelAndView video(@RequestParam(value = "") String id) {
+    Map<String, Object> variables = ImmutableMap.of("title", "User", "id", id);
+    return new ModelAndView("user", variables);
+  }
+
+
 }
