@@ -41,6 +41,13 @@ public class Video {
   )
   private Set<Question> questions = new HashSet<>();
 
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      mappedBy = "video",
+      fetch = FetchType.EAGER
+  )
+  private Set<Remark> remarks = new HashSet<>();
+
   public Integer getId() {
     return id;
   }
@@ -82,6 +89,18 @@ public class Video {
   public void removeQuestion(Question question) {
     if (questions.contains(question)) {
       questions.remove(question);
+    }
+  }
+
+  public void addRemark(Remark remark) {
+    if (!remarks.contains(remark)) {
+      remarks.add(remark);
+    }
+  }
+
+  public void removeRemark(Remark remark) {
+    if (remarks.contains(remark)) {
+      remarks.remove(remark);
     }
   }
 
