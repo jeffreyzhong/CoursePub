@@ -1,6 +1,7 @@
 package edu.brown.cs.termproject.service;
 
 import edu.brown.cs.termproject.dao.VideoDao;
+import edu.brown.cs.termproject.model.Course;
 import edu.brown.cs.termproject.model.Video;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,12 @@ public class VideoServiceImpl implements VideoService {
 
   @Override
   @Transactional(readOnly = false)
-  public void add(Video video) {
-    videoDao.add(video);
+  public Video add(String url, Course course) {
+    Video video = new Video();
+
+    video.setUrl(url);
+    video.setCourse(course);
+
+    return video;
   }
 }
