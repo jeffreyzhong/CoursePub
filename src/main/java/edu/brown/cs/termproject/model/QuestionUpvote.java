@@ -22,27 +22,27 @@ import java.util.Set;
 @Table(name = "questionUpvote")
 public class QuestionUpvote {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Integer id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @PrimaryKeyJoinColumn(name = "questionId", referencedColumnName = "id")
-    private Question question;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @PrimaryKeyJoinColumn(name = "questionId", referencedColumnName = "id")
+  private Question question;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @PrimaryKeyJoinColumn(name = "userId", referencedColumnName = "id")
-    private User user;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @PrimaryKeyJoinColumn(name = "userId", referencedColumnName = "id")
+  private User user;
 
 
-    public Integer getId() {
-      return id;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public void setId(Integer id) {
-      this.id = id;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
   public Question getQuestion() {
     return question;
@@ -60,30 +60,30 @@ public class QuestionUpvote {
     this.user = user;
   }
 
-    @Override
-    public String toString() {
-      return String.format("{course: {id: %d, questionId: %d, userId: %d,},}", id, question, user);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (obj == null || id == null) {
-        return false;
-      }
-      if (!(obj instanceof edu.brown.cs.termproject.model.QuestionUpvote)) {
-        throw new UnsupportedOperationException(
-            "Comparison with object of a different class is undefined.");
-      }
-
-      edu.brown.cs.termproject.model.QuestionUpvote other =
-          (edu.brown.cs.termproject.model.QuestionUpvote) obj;
-      return id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(edu.brown.cs.termproject.model.QuestionUpvote.class, id);
-    }
+  @Override
+  public String toString() {
+    return String.format("{course: {id: %d, questionId: %d, userId: %d,},}", id, question, user);
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null || id == null) {
+      return false;
+    }
+    if (!(obj instanceof QuestionUpvote)) {
+      throw new UnsupportedOperationException(
+          "Comparison with object of a different class is undefined.");
+    }
+
+    QuestionUpvote other =
+        (QuestionUpvote) obj;
+    return id.equals(other.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(QuestionUpvote.class, id);
+  }
 }
+
+

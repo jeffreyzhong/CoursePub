@@ -19,7 +19,7 @@ import java.util.Objects;
 public class RemarkUpvote {
 
   @Id
-  @Column(name = "remarkUpvoteId")
+  @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
@@ -66,19 +66,19 @@ public class RemarkUpvote {
     if (obj == null || id == null) {
       return false;
     }
-    if (!(obj instanceof edu.brown.cs.termproject.model.RemarkUpvote)) {
+    if (!(obj instanceof RemarkUpvote)) {
       throw new UnsupportedOperationException(
           "Comparison with object of a different class is undefined.");
     }
 
-    edu.brown.cs.termproject.model.RemarkUpvote other =
-        (edu.brown.cs.termproject.model.RemarkUpvote) obj;
+    RemarkUpvote other =
+        (RemarkUpvote) obj;
     return id.equals(other.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(edu.brown.cs.termproject.model.RemarkUpvote.class, id);
+    return Objects.hash(RemarkUpvote.class, id);
   }
 }
 
