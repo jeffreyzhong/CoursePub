@@ -11,11 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name = "remark")
-public class Remark extends Post {
+public class Remark {
 
   @Id
   @Column(name = "id")
@@ -25,6 +26,8 @@ public class Remark extends Post {
       strategy = "uuid2"
   )
   private String id;
+
+  private Post post;
 
   @ManyToOne(
       fetch = FetchType.EAGER,
@@ -51,6 +54,46 @@ public class Remark extends Post {
   public void setVideo(Video video) {
     video.addRemark(this);
     this.video = video;
+  }
+
+  public Date getTime() {
+    return post.getTime();
+  }
+
+  public void setTime(Date time) {
+    post.setTime(time);
+  }
+
+  public Date getPostTime() {
+    return post.getPostTime();
+  }
+
+  public void setPostTime(Date postTime) {
+    post.setPostTime(postTime);
+  }
+
+  public String getTitle() {
+    return post.getTitle();
+  }
+
+  public void setTitle(String title) {
+    post.setTitle(title);
+  }
+
+  public String getBody() {
+    return post.getBody();
+  }
+
+  public void setBody(String body) {
+    post.setBody(body);
+  }
+
+  public User getUser() {
+    return post.getUser();
+  }
+
+  public void setUser(User user) {
+    post.setUser(user);
   }
 
   @Override
