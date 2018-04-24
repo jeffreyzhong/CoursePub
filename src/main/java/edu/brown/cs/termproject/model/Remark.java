@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -112,6 +113,14 @@ public class Remark {
 
   public void removeRemarkUpvote(RemarkUpvote remarkUpvote) {
     remarkUpvotes.remove(remarkUpvote);
+  }
+
+  public Set<RemarkUpvote> getRemarkUpvotes() {
+    return Collections.unmodifiableSet(remarkUpvotes);
+  }
+
+  public void setRemarkUpvotes(Set<RemarkUpvote> remarkUpvotes) {
+    this.remarkUpvotes = remarkUpvotes;
   }
 
   @Override

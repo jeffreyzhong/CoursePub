@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -51,7 +52,7 @@ public class User {
   }
 
   public Set<Registration> getRegistrations() {
-    return registrations;
+    return Collections.unmodifiableSet(registrations);
   }
 
   public void setRegistrations(Set<Registration> registrations) {

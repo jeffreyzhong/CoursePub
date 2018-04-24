@@ -15,6 +15,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -112,6 +113,22 @@ public class Response {
 
   public void removeResponseUpvote(ResponseUpvote responseUpvote) {
     responseUpvotes.remove(responseUpvote);
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public Set<ResponseUpvote> getResponseUpvotes() {
+    return Collections.unmodifiableSet(responseUpvotes);
+  }
+
+  public void setResponseUpvotes(Set<ResponseUpvote> responseUpvotes) {
+    this.responseUpvotes = responseUpvotes;
   }
 
   @Override

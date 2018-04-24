@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -109,6 +110,14 @@ public class Question {
 
   public void removeResponseUpvote(QuestionUpvote questionUpvote) {
     questionUpvotes.remove(questionUpvote);
+  }
+
+  public Set<QuestionUpvote> getQuestionUpvotes() {
+    return Collections.unmodifiableSet(questionUpvotes);
+  }
+
+  public void setQuestionUpvotes(Set<QuestionUpvote> questionUpvotes) {
+    this.questionUpvotes = questionUpvotes;
   }
 
   @Override

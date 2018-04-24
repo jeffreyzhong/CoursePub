@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -70,6 +71,22 @@ public class Course {
 
   public void unregister(Registration registration) {
     registrations.remove(registration);
+  }
+
+  public Set<Registration> getRegistrations() {
+    return Collections.unmodifiableSet(registrations);
+  }
+
+  public void setRegistrations(Set<Registration> registrations) {
+    this.registrations = registrations;
+  }
+
+  public Set<Video> getVideos() {
+    return Collections.unmodifiableSet(videos);
+  }
+
+  public void setVideos(Set<Video> videos) {
+    this.videos = videos;
   }
 
   @Override
