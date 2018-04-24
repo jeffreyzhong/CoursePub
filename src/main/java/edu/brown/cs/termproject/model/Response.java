@@ -33,12 +33,9 @@ public class Response {
   )
   private String id;
 
-  @Column(name = "time")
+  @Column(name = "postTime")
   @Temporal(value = TemporalType.TIMESTAMP)
-  private Date time;
-
-  @Column(name = "title")
-  private String title;
+  private Date postTime;
 
   @Column(name = "body")
   private String body;
@@ -75,12 +72,12 @@ public class Response {
     this.id = id;
   }
 
-  public Date getTime() {
-    return time;
+  public Date getPostTime() {
+    return postTime;
   }
 
-  public void setTime(Date time) {
-    this.time = time;
+  public void setPostTime(Date postTime) {
+    this.postTime = postTime;
   }
 
   public User getUser() {
@@ -115,14 +112,6 @@ public class Response {
     responseUpvotes.remove(responseUpvote);
   }
 
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
   public Set<ResponseUpvote> getResponseUpvotes() {
     return Collections.unmodifiableSet(responseUpvotes);
   }
@@ -133,7 +122,7 @@ public class Response {
 
   @Override
   public String toString() {
-    return String.format("{response: {id: %s, title: %s,},}", id, title);
+    return String.format("{response: {id: %s, questionId: %s,},}", id, question.getId());
   }
 
   @Override

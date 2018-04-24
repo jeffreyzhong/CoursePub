@@ -14,7 +14,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "questionUpvote")
 public class QuestionUpvote {
-
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,8 +45,8 @@ public class QuestionUpvote {
   }
 
   public void setQuestion(Question question) {
-    question.addQuestionUpvote(this);
     this.question = question;
+    question.addQuestionUpvote(this);
   }
 
   public void setUser(User user) {
@@ -61,7 +60,7 @@ public class QuestionUpvote {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null || id == null) {
+    if (obj == null || question == null || user == null) {
       return false;
     }
     if (!(obj instanceof QuestionUpvote)) {
@@ -71,12 +70,12 @@ public class QuestionUpvote {
 
     QuestionUpvote other =
         (QuestionUpvote) obj;
-    return id.equals(other.id);
+    return question.equals(other.question) && user.equals(other.user);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(QuestionUpvote.class, id);
+    return Objects.hash(QuestionUpvote.class, question, user);
   }
 }
 

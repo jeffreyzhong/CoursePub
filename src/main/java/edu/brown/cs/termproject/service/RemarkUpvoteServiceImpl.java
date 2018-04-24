@@ -6,6 +6,7 @@ import edu.brown.cs.termproject.model.RemarkUpvote;
 import edu.brown.cs.termproject.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RemarkUpvoteServiceImpl implements RemarkUpvoteService {
@@ -18,6 +19,7 @@ public class RemarkUpvoteServiceImpl implements RemarkUpvoteService {
   }
 
   @Override
+  @Transactional(readOnly = false)
   public RemarkUpvote add(User user, Remark remark) {
     RemarkUpvote remarkUpvote = new RemarkUpvote();
 

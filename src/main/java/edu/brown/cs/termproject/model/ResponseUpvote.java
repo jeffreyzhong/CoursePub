@@ -45,8 +45,8 @@ public class ResponseUpvote {
   }
 
   public void setResponse(Response response) {
-    response.addResponseUpvote(this);
     this.response = response;
+    response.addResponseUpvote(this);
   }
 
   public void setUser(User user) {
@@ -60,7 +60,7 @@ public class ResponseUpvote {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null || id == null) {
+    if (obj == null || response == null || user == null) {
       return false;
     }
     if (!(obj instanceof edu.brown.cs.termproject.model.ResponseUpvote)) {
@@ -68,13 +68,12 @@ public class ResponseUpvote {
           "Comparison with object of a different class is undefined.");
     }
 
-    edu.brown.cs.termproject.model.ResponseUpvote other =
-        (edu.brown.cs.termproject.model.ResponseUpvote) obj;
-    return id.equals(other.id);
+    ResponseUpvote other = (ResponseUpvote) obj;
+    return response.equals(other.response) && user.equals(other.user);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(edu.brown.cs.termproject.model.ResponseUpvote.class, id);
+    return Objects.hash(ResponseUpvote.class, response, user);
   }
 }

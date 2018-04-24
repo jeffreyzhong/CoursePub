@@ -49,8 +49,8 @@ public class RemarkUpvote {
   }
 
   public void setRemark(Remark remark) {
-    remark.addRemarkUpvote(this);
     this.remark = remark;
+    remark.addRemarkUpvote(this);
   }
 
   public void setUser(User user) {
@@ -64,7 +64,7 @@ public class RemarkUpvote {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null || id == null) {
+    if (obj == null || remark == null || user == null) {
       return false;
     }
     if (!(obj instanceof RemarkUpvote)) {
@@ -74,12 +74,12 @@ public class RemarkUpvote {
 
     RemarkUpvote other =
         (RemarkUpvote) obj;
-    return id.equals(other.id);
+    return remark.equals(other.remark) && user.equals(other.user);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(RemarkUpvote.class, id);
+    return Objects.hash(RemarkUpvote.class, remark, user);
   }
 }
 

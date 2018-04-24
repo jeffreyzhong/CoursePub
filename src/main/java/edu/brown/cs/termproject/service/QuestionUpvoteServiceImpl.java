@@ -1,8 +1,6 @@
 package edu.brown.cs.termproject.service;
 
-import edu.brown.cs.termproject.dao.QuestionDao;
 import edu.brown.cs.termproject.dao.QuestionUpvoteDao;
-import edu.brown.cs.termproject.dao.UserDao;
 import edu.brown.cs.termproject.model.Question;
 import edu.brown.cs.termproject.model.QuestionUpvote;
 import edu.brown.cs.termproject.model.User;
