@@ -1,5 +1,7 @@
 package edu.brown.cs.termproject.model;
 
+import edu.brown.cs.termproject.collect.PickySet;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class Course {
       mappedBy = "course",
       fetch = FetchType.EAGER
   )
-  private Set<Registration> registrations = new HashSet<>();
+  private Set<Registration> registrations = new PickySet<>();
 
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -58,15 +59,11 @@ public class Course {
   }
 
   public void register(Registration registration) {
-    if (!registrations.contains(registration)) {
-      registrations.add(registration);
-    }
+    registrations.add(registration);
   }
 
   public void unregister(Registration registration) {
-    if (registrations.contains(registration)) {
-      registrations.remove(registration);
-    }
+    registrations.remove(registration);
   }
 
   @Override

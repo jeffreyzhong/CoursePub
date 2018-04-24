@@ -1,5 +1,7 @@
 package edu.brown.cs.termproject.model;
 
+import edu.brown.cs.termproject.collect.PickySet;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -39,14 +40,14 @@ public class Video {
       mappedBy = "video",
       fetch = FetchType.EAGER
   )
-  private Set<Question> questions = new HashSet<>();
+  private Set<Question> questions = new PickySet<>();
 
   @OneToMany(
       cascade = CascadeType.ALL,
       mappedBy = "video",
       fetch = FetchType.EAGER
   )
-  private Set<Remark> remarks = new HashSet<>();
+  private Set<Remark> remarks = new PickySet<>();
 
   public Integer getId() {
     return id;
@@ -81,27 +82,19 @@ public class Video {
   }
 
   public void addQuestion(Question question) {
-    if (!questions.contains(question)) {
-      questions.add(question);
-    }
+    questions.add(question);
   }
 
   public void removeQuestion(Question question) {
-    if (questions.contains(question)) {
-      questions.remove(question);
-    }
+    questions.remove(question);
   }
 
   public void addRemark(Remark remark) {
-    if (!remarks.contains(remark)) {
-      remarks.add(remark);
-    }
+    remarks.add(remark);
   }
 
   public void removeRemark(Remark remark) {
-    if (remarks.contains(remark)) {
-      remarks.remove(remark);
-    }
+    remarks.remove(remark);
   }
 
   @Override

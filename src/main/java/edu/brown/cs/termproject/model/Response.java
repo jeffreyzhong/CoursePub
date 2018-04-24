@@ -1,5 +1,6 @@
 package edu.brown.cs.termproject.model;
 
+import edu.brown.cs.termproject.collect.PickySet;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
@@ -15,7 +16,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -64,7 +64,7 @@ public class Response {
       mappedBy = "response",
       fetch = FetchType.EAGER
   )
-  private Set<ResponseUpvote> responseUpvotes = new HashSet<>();
+  private Set<ResponseUpvote> responseUpvotes = new PickySet<>();
 
   public String getId() {
     return id;
@@ -107,15 +107,11 @@ public class Response {
   }
 
   public void addResponseUpvote(ResponseUpvote responseUpvote) {
-    if (!responseUpvotes.contains(responseUpvote)) {
-      responseUpvotes.add(responseUpvote);
-    }
+    responseUpvotes.add(responseUpvote);
   }
 
   public void removeResponseUpvote(ResponseUpvote responseUpvote) {
-    if (!responseUpvotes.contains(responseUpvote)) {
-      responseUpvotes.remove(responseUpvote);
-    }
+    responseUpvotes.remove(responseUpvote);
   }
 
   @Override

@@ -1,5 +1,6 @@
 package edu.brown.cs.termproject.model;
 
+import edu.brown.cs.termproject.collect.PickySet;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
@@ -13,7 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -47,7 +47,7 @@ public class Remark {
       mappedBy = "remark",
       fetch = FetchType.EAGER
   )
-  private Set<RemarkUpvote> remarkUpvotes = new HashSet<>();
+  private Set<RemarkUpvote> remarkUpvotes = new PickySet<>();
 
   public String getId() {
     return id;
@@ -107,15 +107,11 @@ public class Remark {
   }
 
   public void addRemarkUpvote(RemarkUpvote remarkUpvote) {
-    if (!remarkUpvotes.contains(remarkUpvote)) {
-      remarkUpvotes.add(remarkUpvote);
-    }
+    remarkUpvotes.add(remarkUpvote);
   }
 
   public void removeRemarkUpvote(RemarkUpvote remarkUpvote) {
-    if (!remarkUpvotes.contains(remarkUpvote)) {
-      remarkUpvotes.remove(remarkUpvote);
-    }
+    remarkUpvotes.remove(remarkUpvote);
   }
 
   @Override

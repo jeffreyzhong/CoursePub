@@ -1,6 +1,6 @@
 package edu.brown.cs.termproject.model;
 
-import org.hibernate.Hibernate;
+import edu.brown.cs.termproject.collect.PickySet;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.CascadeType;
@@ -11,8 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,7 +32,7 @@ public class User {
       mappedBy = "user",
       fetch = FetchType.EAGER
   )
-  private Set<Registration> registrations = new HashSet<>();
+  private Set<Registration> registrations = new PickySet<>();
 
   public Integer getId() {
     return id;
@@ -61,23 +59,11 @@ public class User {
   }
 
   public void register(Registration registration) {
-    if (!Hibernate.isInitialized(registrations)) {
-      Hibernate.initialize(registrations);
-    }
-
-    if (!registrations.contains(registration)) {
-      registrations.add(registration);
-    }
+    registrations.add(registration);
   }
 
   public void unregister(Registration registration) {
-    if (!Hibernate.isInitialized(registrations)) {
-      Hibernate.initialize(registrations);
-    }
-
-    if (registrations.contains(registration)) {
-      registrations.remove(registration);
-    }
+    registrations.remove(registration);
   }
 
   @Override
