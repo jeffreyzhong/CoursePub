@@ -1,6 +1,8 @@
 <#assign content>
 
-  <p>Lecture ${id}</p>
+  <p>Video ${id}</p>
+
+  <p>${words}</p>
 
 </#assign>
 

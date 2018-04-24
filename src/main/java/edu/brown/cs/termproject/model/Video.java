@@ -9,10 +9,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,7 +27,7 @@ public class Video {
   private Integer id;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(
+  @PrimaryKeyJoinColumn(
       name = "courseId",
       referencedColumnName = "id"
   )
@@ -70,11 +71,20 @@ public class Video {
   }
 
   public void setCourse(Course course) {
+    course.addVideo(this);
     this.course = course;
   }
 
+  public Set<Remark> getRemarks() {
+    return Collections.unmodifiableSet(remarks);
+  }
+
+  public void setRemarkss(Set<Remark> remarks) {
+    this.remarks = remarks;
+  }
+
   public Set<Question> getQuestions() {
-    return questions;
+    return Collections.unmodifiableSet(questions);
   }
 
   public void setQuestions(Set<Question> questions) {

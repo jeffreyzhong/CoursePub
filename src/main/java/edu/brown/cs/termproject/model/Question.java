@@ -32,10 +32,7 @@ public class Question {
 
   private Post post = new Post();
 
-  @ManyToOne(
-      fetch = FetchType.EAGER,
-      cascade = CascadeType.ALL
-  )
+  @ManyToOne(fetch = FetchType.EAGER)
   @PrimaryKeyJoinColumn(
       name = "videoId",
       referencedColumnName = "id"

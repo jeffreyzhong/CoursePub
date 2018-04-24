@@ -11,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -40,7 +38,7 @@ public class Course {
       mappedBy = "course",
       fetch = FetchType.EAGER
   )
-  private List<Video> videos = new ArrayList<>();
+  private Set<Video> videos = new PickySet<>();
 
   public Integer getId() {
     return id;
@@ -56,6 +54,14 @@ public class Course {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void addVideo(Video video) {
+    videos.add(video);
+  }
+
+  public void removeVideo(Video video) {
+    videos.remove(video);
   }
 
   public void register(Registration registration) {

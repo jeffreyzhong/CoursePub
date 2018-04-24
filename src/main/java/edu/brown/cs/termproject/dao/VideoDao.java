@@ -5,4 +5,6 @@ import edu.brown.cs.termproject.model.Video;
 public interface VideoDao {
 
   void add(Video video);
+
+  Video ofId(Integer id);
 }
