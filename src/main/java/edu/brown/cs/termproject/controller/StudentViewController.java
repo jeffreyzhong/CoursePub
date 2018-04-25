@@ -31,11 +31,11 @@ public class StudentViewController {
 
     Map<String, Object> variables = ImmutableMap.of(
         "title", "Video",
-        "id", id,
+        "videoId", id,
         "words", String.format("this question has %d remarks and %d questions",
             video.getRemarks().size(), video.getQuestions().size())
     );
 
-    return new ModelAndView("video", variables);
+    return new ModelAndView("videoStub", variables);
   }
 }

@@ -7,7 +7,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.util.Date;
+import java.util.Calendar;
 
 @MappedSuperclass
 public abstract class AbstractMasterPost<T extends AbstractUpvote>
@@ -24,8 +24,8 @@ public abstract class AbstractMasterPost<T extends AbstractUpvote>
   private String title;
 
   @Column(name = "time")
-  @Temporal(value = TemporalType.TIME)
-  private Date time;
+  @Temporal(value = TemporalType.TIMESTAMP)
+  private Calendar time;
 
   public Video getVideo() {
     return video;
@@ -43,11 +43,11 @@ public abstract class AbstractMasterPost<T extends AbstractUpvote>
     this.title = title;
   }
 
-  public Date getTime() {
+  public Calendar getTime() {
     return time;
   }
 
-  public void setTime(Date time) {
+  public void setTime(Calendar time) {
     this.time = time;
   }
 
