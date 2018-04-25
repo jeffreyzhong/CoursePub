@@ -37,6 +37,6 @@ public class InstructorViewController {
     Map<String, Object> variables =
         ImmutableMap.of("title", "Instructor View", "id", id);
 
-    return new ModelAndView("instructor", variables);
+    return new ModelAndView("instructorView", variables);
   }
 }

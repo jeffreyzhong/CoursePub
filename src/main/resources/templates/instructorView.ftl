@@ -5,10 +5,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>coursepub</title>
-<link href="../static/css/homePage.css" rel="stylesheet" type="text/css">
+<link href="../css/instructorView.css" rel="stylesheet" type="text/css">
 <!--The following script tag downloads a font from the Adobe Edge Web Fonts server for use within the web page. We recommend that you do not modify it.-->
 <script>var __adobewebfontsappname__="dreamweaver"</script>
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
+<script src="../node_modules/vis/dist/vis.js"></script>
+<link href="../node_modules/vis/dist/vis.css" rel="stylesheet" type="text/css"/>
+
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -32,25 +35,37 @@
       </ul>
     </nav>
   </header>
-	<br><br><br>
-	<div class="search" style="list-style-type: none">
-		<li><a id="learningStartsHere">learning starts here.</a></li><br>
-		<li><textarea class="searchCourses" id="searchCourses"></textarea></li>
-		<ul id="searchSuggestions"></ul>
+	<br>
+	<div id="videoName">Essence of Linear Algebra</div>
+<!--
+	<section id="interactiveSection"> 
+	<canvas id="interactiveCanvas"></canvas>
+	</section>
+-->
+	<span id="videoId" style="display:none">${videoId}</span>
+	<div id="visualization">
 	</div>
-	<div class="submit" style="list-style-type: none">
-	<input type="submit" id="submitCourseButton">
+	<br>
+	<div id="clickedOnQuestion">
+		<div id="fullQuestion">
+			<text id="displayQuestion"></text><br>
+			<textarea id="instructorResponse"></textarea><br>
+			<input type="submit" id="submitResponseButton">
+		</div>
 	</div>
-<!-- Hero Section -->
-  <!-- About Section -->
-  <!-- Stats Gallery Section -->
-  <!-- Parallax Section -->
-<!-- More Info Section -->
-  <footer> </footer>
-  <!-- Footer Section -->
-  
-  <!-- Copyrights Section -->
+	<div id="videoSection">
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/kjBOesZCoqc?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+	</div>
 </div>
 <!-- Main Container Ends -->
+
+<script src="../static/node_modules/moment/moment.js"></script>
+<script>
+	moment().format();
+	moment().format("ss, mm, kk");
+</script>
+<script src="../static/js/jquery-3.1.1.js"></script>
+<script src="../static/js/instructorViewTimeline.js"></script>
+	
 </body>
 </html>
