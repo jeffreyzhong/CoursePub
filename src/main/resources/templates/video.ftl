@@ -1,6 +1,6 @@
 <#assign content>
 
-  <p>User ${id}</p>
+  <p>Video ${id}</p>
 
   <p>${words}</p>
 
