@@ -74,37 +74,71 @@
     </dependency>
     <!--
 
-            SQLite dependency for databases.
-            https://bitbucket.org/xerial/sqlite-jdbc.
-
-    -->
-    <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>sqlite-jdbc</artifactId>
-      <version>3.21.0.1</version>
-    </dependency>
-    <!--
-
             Spring boot starter for building web, including RESTful, applications using Spring MVC.
-            https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot-starters/spring-boot-starter-web.
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web.
 
     -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>2.0.0.RELEASE</version>
+      <version>2.0.1.RELEASE</version>
     </dependency>
     <!--
 
             Dependency for freemarker templating language on Spring boot.
-            https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot-starters/spring-boot-starter-freemarker.
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-freemarker.
 
     -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-freemarker</artifactId>
-      <version>2.0.0.RELEASE</version>
+      <version>2.0.1.RELEASE</version>
     </dependency>
+    <!--
+
+            Starter for building WebSocket applications using Spring Framework's WebSocket support.
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-websocket.
+
+    -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-websocket</artifactId>
+      <version>2.0.1.RELEASE</version>
+    </dependency>
+    <!--
+
+            Spring Boot Developer Tools
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools.
+
+    -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <version>2.0.1.RELEASE</version>
+    </dependency>
+    <!--
+
+            Starter for using Spring Data JPA with Hibernate
+            https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa.
+
+    -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <version>2.0.1.RELEASE</version>
+    </dependency>
+    <!--
+
+            JDBC Type 4 driver for MySQL
+            https://mvnrepository.com/artifact/mysql/mysql-connector-java.
+
+    -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.46</version>
+    </dependency>
+
   </dependencies>
   <!--  Build section  -->
   <build>
