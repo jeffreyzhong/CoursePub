@@ -1,11 +1,6 @@
 <!doctype html>
 <html>
 
-<script src="/static/js/userViewStub.js"></script>
-
-<p>Video ${id}</p>
-
-
 <head>
 <meta charset="utf-8">
 <script>var __adobewebfontsappname__="dreamweaver"</script>
