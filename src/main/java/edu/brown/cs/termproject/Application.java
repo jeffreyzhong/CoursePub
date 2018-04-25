@@ -3,13 +3,14 @@ package edu.brown.cs.termproject;
 import edu.brown.cs.termproject.model.Course;
 import edu.brown.cs.termproject.model.Question;
 import edu.brown.cs.termproject.model.QuestionUpvote;
-import edu.brown.cs.termproject.model.Registration;
+import edu.brown.cs.termproject.model.Response;
+import edu.brown.cs.termproject.model.ResponseUpvote;
 import edu.brown.cs.termproject.model.User;
 import edu.brown.cs.termproject.model.Video;
 import edu.brown.cs.termproject.service.CourseService;
 import edu.brown.cs.termproject.service.QuestionService;
-import edu.brown.cs.termproject.service.QuestionUpvoteService;
 import edu.brown.cs.termproject.service.RegistrationService;
+import edu.brown.cs.termproject.service.ResponseService;
 import edu.brown.cs.termproject.service.UserService;
 import edu.brown.cs.termproject.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +48,13 @@ public class Application implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
-    /*
+
     UserService uS = appContext.getBean("userServiceImpl", UserService.class);
     CourseService cS = appContext.getBean("courseServiceImpl", CourseService.class);
     RegistrationService rS = appContext.getBean("registrationServiceImpl", RegistrationService.class);
     VideoService vS = appContext.getBean("videoServiceImpl", VideoService.class);
     QuestionService qS = appContext.getBean("questionServiceImpl", QuestionService.class);
-    QuestionUpvoteService quS = appContext.getBean("questionUpvoteServiceImpl", QuestionUpvoteService.class);
+    ResponseService reS = appContext.getBean("responseServiceImpl", ResponseService.class);
 
     String[] emails = new String[] {
         "yujun_qin@brown.edu",
@@ -80,8 +81,13 @@ public class Application implements CommandLineRunner {
     Question question = qS.add(uS.ofId(1), new Date(), "jj", "hi jj", video);
     System.out.println(question);
 
-    QuestionUpvote questionUpvote = quS.add(uS.ofId(2), question);
+    QuestionUpvote questionUpvote = qS.upvote(uS.ofId(2), question);
     System.out.println(questionUpvote);
-    */
+
+    Response response = reS.add(uS.ofId(3), question, "this does not make sense.");
+    System.out.println(response);
+
+    ResponseUpvote responseUpvote = reS.upvote(uS.ofId(1), response);
+    System.out.println(responseUpvote);
   }
 }

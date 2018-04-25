@@ -31,11 +31,13 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   public boolean hasEmail(String email) {
-    String ql = "SELECT u FROM User u WHERE u.email = ?1";
-    List ret =
-        entityManager.createQuery(ql).setParameter(1, email).getResultList();
+    String ql = "SELECT COUNT(*) FROM User u WHERE u.email = ?1";
+    Long ret = (Long) entityManager.createQuery(ql)
+        .setParameter(1, email).getSingleResult();
 
-    return ret.size() > 0;
+    assert (ret <= 1);
+
+    return ret > 0;
   }
 
   @Override

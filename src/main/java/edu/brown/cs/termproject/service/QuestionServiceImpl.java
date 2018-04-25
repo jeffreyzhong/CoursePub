@@ -1,7 +1,9 @@
 package edu.brown.cs.termproject.service;
 
 import edu.brown.cs.termproject.dao.QuestionDao;
+import edu.brown.cs.termproject.dao.QuestionUpvoteDao;
 import edu.brown.cs.termproject.model.Question;
+import edu.brown.cs.termproject.model.QuestionUpvote;
 import edu.brown.cs.termproject.model.User;
 import edu.brown.cs.termproject.model.Video;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,13 @@ import java.util.Date;
 public class QuestionServiceImpl implements QuestionService {
 
   private QuestionDao questionDao;
+  private QuestionUpvoteDao questionUpvoteDao;
 
   @Autowired
-  public QuestionServiceImpl(QuestionDao questionDao) {
+  public QuestionServiceImpl(QuestionDao questionDao,
+                             QuestionUpvoteDao questionUpvoteDao) {
     this.questionDao = questionDao;
+    this.questionUpvoteDao = questionUpvoteDao;
   }
 
   @Override
@@ -32,6 +37,7 @@ public class QuestionServiceImpl implements QuestionService {
     question.setTitle(title);
     question.setBody(body);
     question.setVideo(video);
+    question.setPostTime(new Date());
 
     questionDao.add(question);
 
@@ -39,8 +45,26 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  @Transactional(readOnly = true)
+  @Transactional(readOnly = false)
   public Question ofId(String id) {
     return questionDao.ofId(id);
+  }
+
+  @Override
+  @Transactional(readOnly = false)
+  public QuestionUpvote upvote(User user, Question question)
+      throws IllegalArgumentException {
+    if (questionUpvoteDao.exists(user, question)) {
+      throw new IllegalArgumentException(
+          String.format("%s has already upvoted %s.", user, question));
+    }
+
+    QuestionUpvote questionUpvote = new QuestionUpvote();
+    questionUpvote.setUser(user);
+    questionUpvote.setPost(question);
+
+    questionUpvoteDao.add(questionUpvote);
+
+    return questionUpvote;
   }
 }
