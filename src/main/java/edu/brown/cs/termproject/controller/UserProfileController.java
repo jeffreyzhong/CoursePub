@@ -7,28 +7,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Map;
 
 @Controller
-@RequestMapping(path = "/user")
 public class UserProfileController {
 
-  private ApplicationContext applicationContext;
+  private UserService userService;
 
   @Autowired
-  public UserProfileController(ApplicationContext applicationContext) {
-    this.applicationContext = applicationContext;
+  public UserProfileController(UserService userService) {
+    this.userService = userService;
   }
 
-  @GetMapping
-  public ModelAndView user(@RequestParam(value = "id") Integer id) {
-    UserService userService =
-        applicationContext.getBean("userServiceImpl", UserService.class);
-
+  @GetMapping(path = "user/{id}")
+  public ModelAndView user(@PathVariable("id") Integer id) {
     User user = userService.ofId(id);
 
     if (user == null) {
