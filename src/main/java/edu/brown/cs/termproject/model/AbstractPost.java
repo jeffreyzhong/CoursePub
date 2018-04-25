@@ -14,8 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,7 +33,7 @@ public abstract class AbstractPost<T extends AbstractUpvote> {
 
   @Column(name = "postTime")
   @Temporal(value = TemporalType.TIMESTAMP)
-  private Date postTime;
+  private Calendar postTime;
 
   @Column(name = "body")
   private String body;
@@ -60,11 +60,11 @@ public abstract class AbstractPost<T extends AbstractUpvote> {
     this.id = id;
   }
 
-  public Date getPostTime() {
+  public Calendar getPostTime() {
     return postTime;
   }
 
-  public void setPostTime(Date postTime) {
+  public void setPostTime(Calendar postTime) {
     this.postTime = postTime;
   }
 

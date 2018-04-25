@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.util.Calendar;
 
 @Service
 public class RemarkServiceImpl implements RemarkService {
@@ -27,8 +27,8 @@ public class RemarkServiceImpl implements RemarkService {
 
   @Override
   @Transactional(readOnly = false)
-  public Remark add(User user, Date time, String title, String body,
-                      Video video) {
+  public Remark add(User user, Calendar time, String title, String body,
+                    Video video) {
     Remark remark = new Remark();
 
     remark.setUser(user);
@@ -36,7 +36,7 @@ public class RemarkServiceImpl implements RemarkService {
     remark.setTitle(title);
     remark.setBody(body);
     remark.setVideo(video);
-    remark.setPostTime(new Date());
+    remark.setPostTime(Calendar.getInstance());
 
     remarkDao.add(remark);
 

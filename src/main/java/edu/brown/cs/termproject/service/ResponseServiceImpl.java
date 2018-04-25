@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.util.Calendar;
 
 @Service
 public class ResponseServiceImpl implements ResponseService {
@@ -33,7 +33,7 @@ public class ResponseServiceImpl implements ResponseService {
     response.setUser(user);
     response.setQuestion(question);
     response.setBody(body);
-    response.setPostTime(new Date());
+    response.setPostTime(Calendar.getInstance());
 
     responseDao.add(response);
 

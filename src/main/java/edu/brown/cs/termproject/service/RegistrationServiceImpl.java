@@ -33,6 +33,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     registration.setUser(user);
     registration.setType(type);
 
-//    registrationDao.add(registration);
+    registrationDao.add(registration);
   }
 }

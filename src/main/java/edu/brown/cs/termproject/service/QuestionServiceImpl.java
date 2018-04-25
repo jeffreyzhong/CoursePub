@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
-import java.util.Date;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -28,7 +27,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   @Transactional(readOnly = false)
-  public Question add(User user, Date time, String title, String body,
+  public Question add(User user, Calendar time, String title, String body,
                       Video video) {
     Question question = new Question();
 
@@ -37,7 +36,7 @@ public class QuestionServiceImpl implements QuestionService {
     question.setTitle(title);
     question.setBody(body);
     question.setVideo(video);
-    question.setPostTime(new Date());
+    question.setPostTime(Calendar.getInstance());
 
     questionDao.add(question);
 
