@@ -47,7 +47,7 @@ public class Application implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
-
+    /*
     UserService uS = appContext.getBean("userServiceImpl", UserService.class);
     CourseService cS = appContext.getBean("courseServiceImpl", CourseService.class);
     RegistrationService rS = appContext.getBean("registrationServiceImpl", RegistrationService.class);
@@ -82,5 +82,6 @@ public class Application implements CommandLineRunner {
 
     QuestionUpvote questionUpvote = quS.add(uS.ofId(2), question);
     System.out.println(questionUpvote);
+    */
   }
 }
