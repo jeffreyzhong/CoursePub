@@ -17,10 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Main class of the project.
@@ -30,11 +30,23 @@ import java.util.Date;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
-  private ApplicationContext appContext;
+  private UserService uS;
+  private CourseService cS;
+  private RegistrationService rS;
+  private VideoService vS;
+  private QuestionService qS;
+  private ResponseService reS;
+
 
   @Autowired
-  public Application(ApplicationContext appContext) {
-    this.appContext = appContext;
+  public Application(UserService uS, CourseService cS, RegistrationService rS,
+                     VideoService vS, QuestionService qS, ResponseService reS) {
+    this.uS = uS;
+    this.cS = cS;
+    this.rS = rS;
+    this.vS = vS;
+    this.qS = qS;
+    this.reS = reS;
   }
 
   /**
@@ -47,9 +59,8 @@ public class Application implements CommandLineRunner {
     SpringApplication.run(Application.class, args);
   }
 
-  @Autowired
-  private void build(UserService uS, CourseService cS, RegistrationService rS,
-                VideoService vS, QuestionService qS, ResponseService reS) {
+  @Override
+  public void run(String... args) {
     /*
     String[] emails = new String[] {
         "yujun_qin@brown.edu",
@@ -86,9 +97,5 @@ public class Application implements CommandLineRunner {
     c.setTimeInMillis(62000);
     Question question3 = qS.add(uS.ofId(3), c, "yet another", "blahblah", video);
     */
-  }
-
-  @Override
-  public void run(String... args) {
   }
 }
