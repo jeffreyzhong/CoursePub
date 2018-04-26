@@ -27,6 +27,8 @@ public class VideoServiceImpl implements VideoService {
 
     videoDao.add(video);
 
+    course.addVideo(video);
+
     return video;
   }
 

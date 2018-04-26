@@ -25,18 +25,6 @@ fi
 # Now, we set $CP to the contents of the .classpath file.
 CP=$(cat .mvn-classpath)
 
-# We're trying to make the script more reusable by finding the package
-# name, instead of hard coding.  But this relies on some conventions
-# in naming.  You'll have to call your class "Main" and use our
-# recommended package structure.
-
-# Find Main.java. It should be in a package below your username package.
-MAIN=$(ls src/main/java/edu/brown/cs/termproject/main/Main.java)
-[ -z "$MAIN" ] && echo "You need a Main.java" && exit 1
-[ ! -e "$MAIN" ] && echo "You can only have one Main.java" && exit 1
-STUDENT=$(basename $(dirname $(dirname $MAIN)))
-MAINPKG=$(basename $(dirname $MAIN))
-
 # No guarantees yet, but we're trying to support Windows, which uses a
 # different Path Separator in classpaths.
 PATHSEP=":"
@@ -46,4 +34,4 @@ fi
 
 # The symbol "$@" passes the command-line arguments from
 # this script to your Java program.
-java -ea -cp "$TARGET$PATHSEP$CP" edu.brown.cs.$STUDENT.$MAINPKG.Main "$@"
+java -ea -cp "$TARGET$PATHSEP$CP" edu.brown.cs.termproject.Application "$@"

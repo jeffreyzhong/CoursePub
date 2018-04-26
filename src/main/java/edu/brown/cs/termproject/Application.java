@@ -50,6 +50,7 @@ public class Application implements CommandLineRunner {
   @Autowired
   private void build(UserService uS, CourseService cS, RegistrationService rS,
                 VideoService vS, QuestionService qS, ResponseService reS) {
+    /*
     String[] emails = new String[] {
         "yujun_qin@brown.edu",
         "xinyang_zhou@brown.edu",
@@ -84,6 +85,7 @@ public class Application implements CommandLineRunner {
     Question question2 = qS.add(uS.ofId(3), c, "another question", "blah", video);
     c.setTimeInMillis(62000);
     Question question3 = qS.add(uS.ofId(3), c, "yet another", "blahblah", video);
+    */
   }
 
   @Override

@@ -39,7 +39,6 @@ public abstract class AbstractUpvote<T extends AbstractPost> {
   }
 
   public void setPost(T post) {
-    post.addUpvote(this);
     this.post = post;
   }
 

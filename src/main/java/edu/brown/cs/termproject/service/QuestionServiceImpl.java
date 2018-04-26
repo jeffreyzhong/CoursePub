@@ -40,6 +40,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     questionDao.add(question);
 
+    video.addQuestion(question);
+
     return question;
   }
 
@@ -63,6 +65,8 @@ public class QuestionServiceImpl implements QuestionService {
     questionUpvote.setPost(question);
 
     questionUpvoteDao.add(questionUpvote);
+
+    question.addUpvote(questionUpvote);
 
     return questionUpvote;
   }

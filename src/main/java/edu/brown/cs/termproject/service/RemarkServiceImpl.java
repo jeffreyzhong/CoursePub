@@ -40,6 +40,8 @@ public class RemarkServiceImpl implements RemarkService {
 
     remarkDao.add(remark);
 
+    video.addRemark(remark);
+
     return remark;
   }
 
@@ -56,6 +58,8 @@ public class RemarkServiceImpl implements RemarkService {
     remarkUpvote.setPost(remark);
 
     remarkUpvoteDao.add(remarkUpvote);
+
+    remark.addUpvote(remarkUpvote);
 
     return remarkUpvote;
   }
