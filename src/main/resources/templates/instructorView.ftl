@@ -10,6 +10,8 @@
 <script>var __adobewebfontsappname__="dreamweaver"</script>
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
 <script src="../node_modules/vis/dist/vis.js"></script>
+<script src="../js/jquery-3.1.1.js"></script>
+<script src="../js/instructorViewTimeline.js"></script>
 <link href="../node_modules/vis/dist/vis.css" rel="stylesheet" type="text/css"/>
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -46,6 +48,7 @@
         <li><a href="#hero">home</a></li>
         <li><a href="#about">courses</a></li>
         <li> <a href="#contact">about</a></li>
+        <li> <a id="account" href="/account">sign in/sign up</a></li>
       </ul>
     </nav>
   </header>
@@ -73,13 +76,12 @@
 </div>
 <!-- Main Container Ends -->
 
-<script src="../static/node_modules/moment/moment.js"></script>
+<script src="../node_modules/moment/moment.js"></script>
 <script>
 	moment().format();
 	moment().format("ss, mm, kk");
 </script>
-<script src="../static/js/jquery-3.1.1.js"></script>
-<script src="../static/js/instructorViewTimeline.js"></script>
+
 	
 </body>
 </html>

@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	alert("hello");
 	var container = document.getElementById('visualization');
 	var instructorResponse = document.getElementById("instructorResponse");
 	var videoId = document.getElementById("videoId").html;
@@ -111,7 +112,6 @@ $(document).ready(function() {
 		console.log(items._data[7].content);
 	  //alert('selected items: ' + properties.items);
 	  var question = document.getElementById("displayQuestion");
-	  console.log("yo");
 	  question.innerHTML = items._data[questionId].fullQuestion;
 
 	});
