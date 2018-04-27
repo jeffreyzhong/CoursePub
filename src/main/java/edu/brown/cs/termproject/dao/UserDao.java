@@ -14,4 +14,6 @@ public interface UserDao {
   boolean hasEmail(String email);
 
   User ofId(Integer id);
+
+  User ofEmail(String email);
 }

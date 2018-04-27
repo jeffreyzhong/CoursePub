@@ -27,18 +27,20 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   @Transactional(readOnly = false)
-  public Question add(User user, Calendar time, String title, String body,
+  public Question add(User user, Calendar videoTime, String title, String body,
                       Video video) {
     Question question = new Question();
 
     question.setUser(user);
-    question.setTime(time);
+    question.setVideoTime(videoTime);
     question.setTitle(title);
     question.setBody(body);
     question.setVideo(video);
     question.setPostTime(Calendar.getInstance());
 
     questionDao.add(question);
+
+    video.addQuestion(question);
 
     return question;
   }
@@ -63,6 +65,8 @@ public class QuestionServiceImpl implements QuestionService {
     questionUpvote.setPost(question);
 
     questionUpvoteDao.add(questionUpvote);
+
+    question.addUpvote(questionUpvote);
 
     return questionUpvote;
   }

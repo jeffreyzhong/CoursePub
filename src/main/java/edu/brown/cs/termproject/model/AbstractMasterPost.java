@@ -23,9 +23,9 @@ public abstract class AbstractMasterPost<T extends AbstractUpvote>
   @Column(name = "title")
   private String title;
 
-  @Column(name = "time")
+  @Column(name = "videoTime")
   @Temporal(value = TemporalType.TIMESTAMP)
-  private Calendar time;
+  private Calendar videoTime;
 
   public Video getVideo() {
     return video;
@@ -43,17 +43,17 @@ public abstract class AbstractMasterPost<T extends AbstractUpvote>
     this.title = title;
   }
 
-  public Calendar getTime() {
-    return time;
+  public Calendar getVideoTime() {
+    return videoTime;
   }
 
-  public void setTime(Calendar time) {
-    this.time = time;
+  public void setVideoTime(Calendar videoTime) {
+    this.videoTime = videoTime;
   }
 
   @Override
   public String toString() {
-    return String.format("{%s: {id: %s, videoId: %d, time: %s, postTime: %s,},}",
-        getTableName(), getId(), video.getId(), time, getPostTime());
+    return String.format("{%s: {id: %s, videoId: %d, videoTime: %s, postTime: %s,},}",
+        getTableName(), getId(), video.getId(), videoTime, getPostTime());
   }
 }

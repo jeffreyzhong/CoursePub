@@ -13,8 +13,12 @@ $(document).ready(function() {
       let summary = question['summary'];
       let user = question['user'];
       let resolved = question['resolved'];
+      let upvotes = question['upvotes'];
+      let detail = question['detail'];
 
-      console.log("question (id " + id + "): user " + user + " asked " + summary + " at second " + time + ", resolve status is " + resolved);
+      console.log('question (id ' + id + '): user ' + user + ' asked ' + summary
+          + ': \"' + detail + '\" at second ' + time + ', resolve status is '
+          + resolved + '. ' + upvotes + ' people have upvoted.');
     }
   })
 });

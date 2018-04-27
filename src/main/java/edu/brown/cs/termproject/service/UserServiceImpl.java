@@ -44,4 +44,19 @@ public class UserServiceImpl implements UserService {
   public User ofId(Integer id) {
     return userDao.ofId(id);
   }
+
+  @Override
+  @Transactional(readOnly = false)
+  public User getOrAdd(String email) {
+    if (userDao.hasEmail(email)) {
+      return userDao.ofEmail(email);
+    }
+
+    User user = new User();
+    user.setEmail(email);
+
+    userDao.add(user);
+
+    return user;
+  }
 }

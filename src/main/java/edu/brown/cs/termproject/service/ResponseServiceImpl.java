@@ -37,6 +37,8 @@ public class ResponseServiceImpl implements ResponseService {
 
     responseDao.add(response);
 
+    question.addResponse(response);
+
     return response;
   }
 
@@ -54,6 +56,8 @@ public class ResponseServiceImpl implements ResponseService {
     responseUpvote.setPost(response);
 
     responseUpvoteDao.add(responseUpvote);
+
+    response.addUpvote(responseUpvote);
 
     return responseUpvote;
   }

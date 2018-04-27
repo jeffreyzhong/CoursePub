@@ -23,7 +23,6 @@ public class Response extends AbstractPost<ResponseUpvote> {
 
   public void setQuestion(Question question) {
     this.question = question;
-    question.addResponse(this);
   }
 
   @Override

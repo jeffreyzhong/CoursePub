@@ -1,8 +1,10 @@
 <#assign content>
 
+  <script src="/static/js/question.js"></script>
+
   <span style="display:none;" id="videoId">${videoId}</span>
 
-  <script src="/static/js/question.js"></script>
+  <p>This is video ${videoId}</p>
 
 </#assign>
 

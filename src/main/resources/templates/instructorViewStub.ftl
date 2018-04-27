@@ -1,6 +1,6 @@
 <#assign content>
 
-  <script src="/static/js/instructorViewStub.js"></script>
+  <script src="/static/js/question.js"></script>
 
   <p>Instructor view for video ${videoId}</p>
 

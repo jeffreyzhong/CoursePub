@@ -7,7 +7,7 @@
 
 
 <title>student_view</title>
-<link href="../static/css/student_view.css" rel="stylesheet" type="text/css">
+<link href="/static/css/student_view.css" rel="stylesheet" type="text/css">
 </head>
 <div id = "container">
 
@@ -83,5 +83,7 @@
 <script type="text/javascript" src="../static/js/jquery-3.1.1.js"></script>
 <script type="text/javascript" src="../static/js/student_view.js"></script>
 <script type="text/javascript" src="../static/node_modules/moment/moment.js"</script>
+
+<#include "requestHeader.ftl">
 
 </html>
