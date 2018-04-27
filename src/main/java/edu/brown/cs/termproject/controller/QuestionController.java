@@ -41,13 +41,17 @@ public class QuestionController {
 
     ImmutableList.Builder<Object> ret = ImmutableList.builder();
     for (Question question : video.getQuestions()) {
-      ret.add(ImmutableMap.of(
-          "id", question.getId(),
-          "time", question.getTime().getTimeInMillis() / 1000,
-          "summary", question.getTitle(),
-          "user", question.getUser().getId(),
-          "resolved", false
-      ));
+      ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
+
+      builder.put("id", question.getId());
+      builder.put("time", question.getTime().getTimeInMillis() / 1000);
+      builder.put("summary", question.getTitle());
+      builder.put("user", question.getUser().getId());
+      builder.put("resolved", false);
+      builder.put("detail", question.getBody());
+      builder.put("upvotes", question.getUpvotes().size());
+
+      ret.add(builder.build());
     }
 
     return GSON.toJson(ret.build());
