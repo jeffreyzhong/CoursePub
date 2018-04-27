@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-
 <head>
 <meta charset="utf-8">
 <script>var __adobewebfontsappname__="dreamweaver"</script>
@@ -35,6 +34,7 @@
 		<textarea class = "inputBox" id = "detailInput" placeholder="Input question here"></textarea>
 	</div>
 	<button type="submit" name = "submit" value = "Post!" id = "submitBtn">Post!</button><br><br>
+	<span id = "videoId" style = "display:none">${videoId}</span>
 </div>
 
 <div id = "right" class = "col">
@@ -48,29 +48,27 @@
 	<!-- Tab content -->
 	<div id="sideContentDiv" class="tabcontent" >
 		<div id="question0Div" class = "questionDiv">
-			<p id = "question0" class = "questions">asdfasdf</p>
+			<label class = "questionTimeLabel"></label>
+			<p id = "question0" class = "questions"></p>
 		</div>
 		<div id="question1Div" class = "questionDiv">
-			<p id = "question1" class = "questions">asdfasdf</p>
+			<label class = "questionTimeLabel"></label>
+			<p id = "question1" class = "questions"></p>
 		</div>
 		<div id="question2Div" class = "questionDiv">
-			<p id = "question2" class = "questions">asdfasdf</p>
+			<label class = "questionTimeLabel"></label>
+			<p id = "question2" class = "questions"></p>
 		</div>
 		<div id="question3Div" class = "questionDiv">
-			<p id = "question3" class = "questions">asdfasdf</p>
+			<label class = "questionTimeLabel"></label>
+			<p id = "question3" class = "questions"></p>
 		</div>
 		<div id="question4Div" class = "questionDiv">
-			<p id = "question4" class = "questions">asdfasdf</p>
+			<label class = "questionTimeLabel"></label>
+			<p id = "question4" class = "questions"></p>
 		</div>	
-
 	</div>
-	
-	
-      
-
 </div>
-      
-
 </body>
 
 </div>
