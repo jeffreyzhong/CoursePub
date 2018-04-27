@@ -6,7 +6,7 @@
 <script>var __adobewebfontsappname__="dreamweaver"</script>
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
 <title>student_view</title>
-<link href="../../static/css/student_view.css" rel="stylesheet" type="text/css">
+<link href="/static/css/student_view.css" rel="stylesheet" type="text/css">
 </head>
 <div id = "container">
 
@@ -74,6 +74,6 @@
 </body>
 
 </div>
-<script src="../../static/js/jquery-2.1.1.js"></script>
-<script src="../../static/js/student_view.js"></script>
+<script src="/static/js/jquery-2.1.1.js"></script>
+<script src="/static/js/student_view.js"></script>
 </html>

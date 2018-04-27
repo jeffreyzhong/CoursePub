@@ -15,17 +15,10 @@ import java.util.Map;
  * @author yqin
  */
 @Controller
-class HelloController {
+class LandingController {
 
-  @GetMapping(path = "/")
-  public RedirectView root() {
-    return new RedirectView("/hello");
-  }
-
-  @GetMapping(path = "/hello", produces = MediaType.TEXT_HTML_VALUE)
-  public ModelAndView hello() {
-    Map<String, Object> variables = ImmutableMap.of("title", "Hello World");
-
-    return new ModelAndView("homePage", variables);
+  @GetMapping(path = "/", produces = MediaType.TEXT_HTML_VALUE)
+  public ModelAndView landing() {
+    return new ModelAndView("homePage");
   }
 }

@@ -141,18 +141,6 @@
     </dependency>
     <!--
 
-            WebJar for js-cookie
-            https://mvnrepository.com/artifact/org.webjars.npm/js-cookie.
-
-    -->
-    <dependency>
-      <groupId>org.webjars.npm</groupId>
-      <artifactId>js-cookie</artifactId>
-      <version>2.2.0</version>
-    </dependency>
-
-    <!--
-
             JDBC Type 4 driver for MySQL
             https://mvnrepository.com/artifact/mysql/mysql-connector-java.
 
