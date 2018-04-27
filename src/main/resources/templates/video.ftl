@@ -72,6 +72,6 @@
 </body>
 
 </div>
-<script src="/static/js/jquery-2.1.1.js"></script>
+<#include "requestHeader.ftl">
 <script src="/static/js/student_view.js"></script>
 </html>

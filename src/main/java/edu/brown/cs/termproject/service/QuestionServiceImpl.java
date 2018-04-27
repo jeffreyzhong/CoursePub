@@ -27,12 +27,12 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   @Transactional(readOnly = false)
-  public Question add(User user, Calendar time, String title, String body,
+  public Question add(User user, Calendar videoTime, String title, String body,
                       Video video) {
     Question question = new Question();
 
     question.setUser(user);
-    question.setTime(time);
+    question.setVideoTime(videoTime);
     question.setTitle(title);
     question.setBody(body);
     question.setVideo(video);

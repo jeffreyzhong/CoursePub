@@ -15,7 +15,7 @@ public abstract class AbstractUpvote<T extends AbstractPost> {
 
   @Id
   @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
   @ManyToOne(fetch = FetchType.EAGER)

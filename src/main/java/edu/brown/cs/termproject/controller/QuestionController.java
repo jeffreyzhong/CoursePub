@@ -41,10 +41,11 @@ public class QuestionController {
 
     ImmutableList.Builder<Object> ret = ImmutableList.builder();
     for (Question question : video.getQuestions()) {
+      System.out.println(question.getVideoTime());
       ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
 
       builder.put("id", question.getId());
-      builder.put("time", question.getTime().getTimeInMillis() / 1000);
+      builder.put("time", question.getVideoTime().getTimeInMillis() / 1000);
       builder.put("summary", question.getTitle());
       builder.put("user", question.getUser().getId());
       builder.put("resolved", false);

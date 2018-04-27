@@ -27,12 +27,12 @@ public class RemarkServiceImpl implements RemarkService {
 
   @Override
   @Transactional(readOnly = false)
-  public Remark add(User user, Calendar time, String title, String body,
+  public Remark add(User user, Calendar videoTime, String title, String body,
                     Video video) {
     Remark remark = new Remark();
 
     remark.setUser(user);
-    remark.setTime(time);
+    remark.setVideoTime(videoTime);
     remark.setTitle(title);
     remark.setBody(body);
     remark.setVideo(video);

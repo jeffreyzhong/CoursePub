@@ -47,7 +47,7 @@ public class QuestionServiceTest {
     assertEquals(question.getVideo(), video);
     assertEquals(question.getTitle(), title);
     assertEquals(question.getBody(), body);
-    assertEquals(question.getTime(), calendar);
+    assertEquals(question.getVideoTime(), calendar);
     assertNotNull(question.getId());
     assertTrue(video.getQuestions().contains(question));
     assertTrue(question.getResponses().isEmpty());
