@@ -71,7 +71,6 @@ public class Video {
   }
 
   public void setCourse(Course course) {
-    course.addVideo(this);
     this.course = course;
   }
 

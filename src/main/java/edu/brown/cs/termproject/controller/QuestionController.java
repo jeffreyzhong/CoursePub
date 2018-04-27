@@ -9,7 +9,12 @@ import edu.brown.cs.termproject.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -25,10 +30,7 @@ public class QuestionController {
     this.videoService = videoService;
   }
 
-  @PostMapping(
-      path = "/question",
-      consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
-  )
+  @PostMapping(path = "/question")
   @ResponseBody
   public String question(InstructorQuestionRequest request) {
     Video video = videoService.ofId(request.getId());
@@ -39,13 +41,17 @@ public class QuestionController {
 
     ImmutableList.Builder<Object> ret = ImmutableList.builder();
     for (Question question : video.getQuestions()) {
-      ret.add(ImmutableMap.of(
-          "id", question.getId(),
-          "time", question.getTime().getTimeInMillis() / 1000,
-          "summary", question.getTitle(),
-          "user", question.getUser().getId(),
-          "resolved", false
-      ));
+      ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
+
+      builder.put("id", question.getId());
+      builder.put("time", question.getTime().getTimeInMillis() / 1000);
+      builder.put("summary", question.getTitle());
+      builder.put("user", question.getUser().getId());
+      builder.put("resolved", false);
+      builder.put("detail", question.getBody());
+      builder.put("upvotes", question.getUpvotes().size());
+
+      ret.add(builder.build());
     }
 
     return GSON.toJson(ret.build());

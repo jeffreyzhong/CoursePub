@@ -31,7 +31,7 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   public boolean hasEmail(String email) {
-    String ql = "SELECT COUNT(*) FROM User u WHERE u.email = ?1";
+    String ql = "SELECT COUNT(u) FROM User u WHERE u.email = ?1";
     Long ret = (Long) entityManager.createQuery(ql)
         .setParameter(1, email).getSingleResult();
 
@@ -43,5 +43,14 @@ public class UserDaoImpl implements UserDao {
   @Override
   public User ofId(Integer id) {
     return entityManager.find(User.class, id);
+  }
+
+  @Override
+  public User ofEmail(String email) {
+    String ql = "SELECT u FROM User u WHERE u.email = ?1";
+    return (User) entityManager
+        .createQuery(ql)
+        .setParameter(1, email)
+        .getSingleResult();
   }
 }

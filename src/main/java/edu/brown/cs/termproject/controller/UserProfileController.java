@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import edu.brown.cs.termproject.model.User;
 import edu.brown.cs.termproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +21,7 @@ public class UserProfileController {
     this.userService = userService;
   }
 
-  @GetMapping(path = "user/{id}")
+  @GetMapping(path = "/user/{id}")
   public ModelAndView user(@PathVariable("id") Integer id) {
     User user = userService.ofId(id);
 
@@ -35,6 +34,6 @@ public class UserProfileController {
         "id", id,
         "words", String.format("My email is %s", user.getEmail())
     );
-    return new ModelAndView("user", variables);
+    return new ModelAndView("userProfileStub", variables);
   }
 }

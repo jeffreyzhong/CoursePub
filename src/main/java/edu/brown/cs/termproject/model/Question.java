@@ -20,6 +20,14 @@ public class Question extends AbstractMasterPost<QuestionUpvote> {
   )
   private Set<Response> responses = new PickySet<>();
 
+  public Set<Response> getResponses() {
+    return responses;
+  }
+
+  public void setResponses(Set<Response> responses) {
+    this.responses = responses;
+  }
+
   @Override
   protected String getTableName() {
     return "question";
