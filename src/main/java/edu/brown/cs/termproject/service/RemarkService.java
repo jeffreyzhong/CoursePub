@@ -10,5 +10,5 @@ import java.util.Calendar;
 public interface RemarkService
     extends AbstractUpvoteService<Remark, RemarkUpvote> {
 
-  Remark add(User user, Calendar time, String title, String body, Video video);
+  Remark add(User user, Calendar videoTime, String title, String body, Video video);
 }

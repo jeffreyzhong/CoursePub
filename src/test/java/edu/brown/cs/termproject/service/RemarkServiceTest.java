@@ -47,7 +47,7 @@ public class RemarkServiceTest {
     assertEquals(remark.getVideo(), video);
     assertEquals(remark.getTitle(), title);
     assertEquals(remark.getBody(), body);
-    assertEquals(remark.getTime(), calendar);
+    assertEquals(remark.getVideoTime(), calendar);
     assertNotNull(remark.getId());
     assertTrue(video.getRemarks().contains(remark));
   }
