@@ -60,8 +60,6 @@ class Question{
 }
 
 
-const $sideContent = $("#sideContent");
-
 //let conn = new WebSocket("ws://localhost:4567/student_view")
 
 let questions = new Map();
@@ -105,10 +103,6 @@ $(document).ready(() => {
 	document.getElementById('noteBtn').onclick = noteClick;
 	document.getElementById('questionBtn').onclick = questionClick;
 	document.getElementById('relBtn').onclick = relClick;
-	
-//	document
-	
-	
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -132,7 +126,6 @@ function loadQuestions(event){
 	event.target.pauseVideo();
 	
 	const postParameters = {id: videoId};
-	
 	$.post("/question", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
 		
@@ -217,12 +210,7 @@ function questionDisplay(index){
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "block";
 	}
-	let questionsEle = document.getElementsByClassName("questions");
-	for(let i = 0; i < questionsEle.length; ++i){
-		let id = "#question" + i;
-		$(id).html("");
-	}
-
+	
 	let min = Math.max(0, index-1);
 	if(min - 1 >= 0){
 		min -= 1;
@@ -236,11 +224,22 @@ function questionDisplay(index){
 
 	for(let i = 0; i <= range; i++){
 		console.log("questionsOrd index is: " + min);
-		let id = "#question" + i;
-		$(id).html(questionsOrd[min].summary);
-		console.log(questionsOrd[min].summary);
+		let questionId = "#question" + i;
+		let timeId = "#time" + i;
+		let userId = "#user" + i;
+		$(questionId).html(questionsOrd[min].summary);
+		// let time = 0;
+		// if(player.getDuration() > 3600){
+		// 	time = moment(questionsOrd[min].time).format('H:mm:ss');
+		// }else{
+		// 	time = moment(questionsOrd[min].time).format('mm:ss');
+		// }
+		$(timeId).html(questionsOrd[min].time);
+		$(userId).html(questionsOrd[min].user);
 		min+=1;
 	}
+
+
 }
 
 // Example: function stopCycle, bound to onStateChange
@@ -248,7 +247,7 @@ function stateChangeFunc(event) {
 	if(event.data === 0 || event.data === 2){
 		clearInterval(refQuestionInt);
 	}else if(event.data === 1){
-		refQuestionInt = setInterval(refQuestion, 1000);
+		refQuestionInt = setInterval(refQuestion, 250);
 		if(duration === null){
 			duration = player.getDuration();
 		}
