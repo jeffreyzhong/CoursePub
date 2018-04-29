@@ -1,120 +1,256 @@
 $(document).ready(function() {
-	alert("hello");
-	var container = document.getElementById('visualization');
-	var instructorResponse = document.getElementById("instructorResponse");
-	var videoId = document.getElementById("videoId").html;
-	var postParameters = {videoId:videoId};
-	$.post("/instructor/question", postParameters, responseJSON => {
-		var responseObject = JSON.parse(responseJSON);
+	let container = document.getElementById('visualization');
+	let instructorResponse = document.getElementById("instructorResponse");
+	let videoId = parseInt($('#videoId').html());
+	let conn = new WebSocket("ws://localhost:4567/websocket/"+videoId);
+	let addData = [];
+	let instructorSubmit = document.getElementById("submitResponseButton");
+	let videoThumbnail = document.getElementById("videoThumbnail");
+	let videoName = document.getElementById("videoName");
+	let timeline;
+	let link = document.getElementById("videoFrame").src;
+	let linkId = extractVideoIdFromYouTubeUrl(link);
+	let url = 'https://img.youtube.com/vi/'+linkId+'/0.jpg';
+	videoThumbnail.src = url;
+	videoThumbnail.style.width = "50px";
+	videoThumbnail.style.height = "50px";
+	$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linkId + "&key=" + "AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
+		videoName.innerHTML = data.items[0].snippet.title;
+		//alert(data.items[0].snippet.title);
+	});
+	
+	const MESSAGE_TYPE = {
+	  	CONNECT: 0,
+		NEW_QUESTION: 1,
+		NEW_ANSWER: 2,
+		UPVOTE: 3
+	};
+	conn.addEventListener('message', function (event) {
+		let data = JSON.parse(event.data);
+		console.log('Message from server: ', data);
+		
+		switch (data.type) {
+			default: 
+				console.log("Unknown data type");
+				break;
+			case MESSAGE_TYPE.NEW_QUESTION:
+				let newQuestion = data.payload.new_question;
+				let formattedTime = moment().startOf('day').seconds(newQuestion.time).format('H,mm,ss');
+				let colonTime = moment().startOf('day').seconds(newQuestion.time).format('H:mm:ss');
+				//console.log("formattedTime: " + formattedTime);
+				let timeArray = formattedTime.split(",");
+				let currQuestion = {id: newQuestion.id,
+					content : setContent(newQuestion.resolved,newQuestion.upvotes,newQuestion.user,colonTime),
+					summary : newQuestion.summary,
+					colonTime : "0:03:26",
+					start : new Date(0,0,0,parseInt(colonTime[0]),parseInt(colonTime[1]),parseInt(colonTime[2]),0),
+					fullQuestion : newQuestion.detail,
+					user : newQuestion.user};
+				addData.push(currQuestion);
+				timeline.setItems(addData);	
+				items = new vis.DataSet(addData);
+				
+				break;
+			case MESSAGE_TYPE.NEW_ANSWER:
+				
+				break;
+			case MESSAGE_TYPE.UPVOTE: 
+				
+				break;
+		}
+	});	
+	
+	
+	
+	
+	let postParameters = {id:videoId};
+	$.post("/question", postParameters, responseJSON => {
+		console.log("here");
+		let responseObject = JSON.parse(responseJSON);
 		allData = [];
+		for (i = 0; i < responseObject.length; i++) {
+			let question = responseObject[i];
+			let id = question['id'];
+			let time = question['time'];
+			let summary = question['summary'];
+			let user = question['user'];
+			let resolved = question['resolved'];
+			let detail = question['detail'];			
+			let formattedTime = moment().startOf('day').seconds(time).format('H,mm,ss');
+			let colonTime = moment().startOf('day').seconds(time).format('H:mm:ss');
+			console.log("formattedTime: " + formattedTime);
+			let timeArray = formattedTime.split(",");
+			console.log("user id: " + user);
+			let currQuestion = {id: id,
+			content : setContent(resolved,30,user,colonTime),
+			summary : summary,
+			colonTime : colonTime,
+			start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
+			fullQuestion : detail,
+			user : user};
+			addData.push(currQuestion);
+			console.log(addData);
+		}
+		console.log("creating");
+		createDataSet();
+		createTimeline();
 		
-		
-	})
+	});
 	instructorResponse.addEventListener('keydown', autosize);
 
 	function autosize(){
-	  var el = this;
+	  let el = this;
 	  setTimeout(function(){
 		el.style.cssText = 'height:auto; padding:0';
-		// for box-sizing other than "content-box" use:
-		// el.style.cssText = '-moz-box-sizing:content-box';
 		el.style.cssText = 'height:' + el.scrollHeight + 'px';
 	  },0);
 	}
-
-	  // Create a DataSet (allows two way data-binding)
-	  var items = new vis.DataSet([
-		{id: 1, content: setContent(true,30,"I don't understand this part"), start: new Date(0,0,0,0,1,2,0)},
-		{id: 2, content: 'Question 2', start: new Date(0,0,0,0,2,3,0)},
-		{id: 3, content: 'Question 3', start: new Date(0,0,0,0,3,4,0)},
-		{id: 4, content: 'Question 4', start: new Date(0,0,0,0,5,2,0)},
-		{id: 5, content: 'Question 5', start: new Date(0,0,0,0,5,10,0)},
-		{id: 6, content: 'Question 6', start: new Date(0,0,0,0,5,2,0)},
-		{id: 7, content: setContent(false, 50, "I don't understand linear transformations"), 
-		 start: new Date(0,0,0,0,4,40,0), 
-		 fullQuestion:"I don't really understand how linear transformations work. How do you multiply two matrices?"},
-		{id: 8, content: 'Question 8', start: new Date(0,0,0,0,5,40,0)},
-		{id: 9, content: 'Question 9', start: new Date(0,0,0,0,9,15,0)},
-		{id: 10, content: 'Question 10', start: new Date(0,0,0,0,8,30,0)},
-		{id: 11, content: 'Question 11', start: new Date(0,0,0,0,7,50,0)},
-		{id: 12, content: setContent(true, 100, "What are matrices?"), start: new Date(0,0,0,0,7,40,0)},
-		{id: 13, content: 'Question 13', start: new Date(0,0,0,0,2,30,0)},
-		{id: 14, content: 'Question 14', start: new Date(0,0,0,0,4,5,0)},
-		{id: 15, content: 'Question 15', start: new Date(0,0,0,0,6,20,0)},
-		{id: 16, content: 'Question 16', start: new Date(0,0,0,0,6,35,0)},
-		{id: 17, content: 'Question 17', start: new Date(0,0,0,0,3,20,0)},
-		{id: 18, content: 'Question 18', start: new Date(0,0,0,0,9,50,0)},
-		{id: 19, content: 'Question 19', start: new Date(0,0,0,0,9,10,0)},
-		{id: 20, content: 'Question 20', start: new Date(0,0,0,0,8,10,0)}]);
-
-
-	  // Configuration for the Timeline
-	var options = {
-		width: '100%',
-		height: '320px',
-		timeAxis: {scale: 'second', step: 30}
-	};
 	
-	function setContent(answered, numUpVotes, summary) {
-		var color = "";
+	instructorSubmit.addEventListener('click', sendInstructorResponse);
+	
+	function sendInstructorResponse() {
+		let answer = instructorResponse.value;
+		if (answer !== "") {
+			//let postParameters = {instructorResponse:answer};
+			//console.log(answer);
+//			$.post("/instructorResponse", postParameters, responseJSON => {
+//				let responseObject = JSON.parse(responseJSON);
+//			});
+
+
+		}
+
+	}
+	
+	let items;
+	function createDataSet() {
+	  	items = new vis.DataSet(addData);
+	}
+	
+	function parseDuration(duration) {
+		let matches = duration.match(/[0-9]+[HMS]/g);
+
+		let seconds = 0;
+
+		matches.forEach(function (part) {
+			let unit = part.charAt(part.length-1);
+			let amount = parseInt(part.slice(0,-1));
+
+			switch (unit) {
+				case 'H':
+					seconds += amount*60*60;
+					break;
+				case 'M':
+					seconds += amount*60;
+					break;
+				case 'S':
+					seconds += amount;
+					break;
+				default:
+			}
+		});
+		console.log(seconds);
+		let formattedTime = moment().startOf('day').seconds(seconds).format('H,mm,ss');
+		return formattedTime;
+	}
+	
+	function extractVideoIdFromYouTubeUrl (url) {
+
+    	let stepOne = url.split('?')[0];
+    	let stepTwo = stepOne.split('/');
+    	let videoId = stepTwo[stepTwo.length-1];
+
+    return videoId;
+
+	}
+	
+	function createTimeline() {
+		let request = new XMLHttpRequest();
+		let link = document.getElementById("videoFrame").src;
+		let linkId = extractVideoIdFromYouTubeUrl(link);
+		console.log(linkId);
+    	let url = 'https://www.googleapis.com/youtube/v3/videos?id='+linkId+'&part=contentDetails&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0';
+    	request.onreadystatechange = function() {
+      		if (this.readyState === 4 && this.status === 200) {
+        		let response = JSON.parse(this.responseText);
+				console.log(response);
+        		getElements(response);
+			}
+    	};
+
+		request.open("GET", url, true);
+		request.send();
+		getElements = function(response) {
+			let duration = response['items']['0']['contentDetails']['duration'];
+			let videoEndTime = parseDuration(duration).split(",");
+			console.log(videoEndTime);
+			let options = {
+				width: '100%',
+				height: '320px',
+				timeAxis: {scale: 'second', step: 60}
+			};
+			options.zoomMax = 420000;
+			options.zoomMin = 1000;
+			options.min = new Date(0,0,0,0,0,0,0);
+			console.log(videoEndTime[0] + " " + videoEndTime[1] + " " + videoEndTime[2]);
+			console.log(new Date(0,0,0,parseInt(videoEndTime[0]),parseInt(videoEndTime[1]),parseInt(videoEndTime[2]),0));
+			options.max = new Date(0,0,0,parseInt(videoEndTime[0]),parseInt(videoEndTime[1]),parseInt(videoEndTime[2]),0);
+
+			options.format = {
+				minorLabels: {
+					millisecond:'',
+					second:     'mm:ss',
+					minute:     'mm:ss',
+					hour:       'HH:mm:ss',
+					weekday:    '',
+					day:        '',
+					week:       '',
+					month:      '',
+					year:       ''
+				},
+				majorLabels: {
+					millisecond:'',
+					second:     'mm:ss',
+					minute:     'mm:ss',
+					hour:       'HH:mm:ss',
+					weekday:    '',
+					day:        '',
+					week:       '',
+					month:      '',
+					year:       ''
+				}};
+			console.log(items);
+			timeline = new vis.Timeline(container, items, options);
+			timeline.fit(options);
+			console.log("before select");
+			timeline.on('select', function (properties) {
+				console.log(properties);
+				let questionId = properties.items[0];
+				let summary = document.getElementById("displaySummary");
+				let question = document.getElementById("displayQuestion");
+				let info = items._data[questionId];
+				summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
+				question.innerHTML = info.fullQuestion;
+			});
+		};	
+	}
+	
+	function setContent(answered, numUpVotes,user,colonTime) {
+		let color = "";
 		if (answered) {
 			color = "green";
 		} else {
 			color="red";
 		}
-		var padding = 7 + numUpVotes/5;
+		let padding = 7 + numUpVotes/5;
 		return '<div style="background-color:'+color+'; color:white; ' + 
 		'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +
-		'padding-bottom:'+padding+'px; border-radius: 20px;" >'+summary+'</div>';
+		'padding-bottom:'+padding+'px; border-radius: 20px;">'+user + ' @ ' + colonTime +'</div>';
 	}
-
-	options.zoomMax = '420000';
-	options.zoomMin = '1000';
-	options.min = new Date(0,0,0,0,0,0,0);
-	options.max = new Date(0,0,0,0,10,0,0);
-
-	options.format = 
-		{
-	  minorLabels: {
-		millisecond:'',
-		second:     'mm:ss',
-		minute:     'mm:ss',
-		hour:       'HH:mm:ss',
-		weekday:    '',
-		day:        '',
-		week:       '',
-		month:      '',
-		year:       ''
-	  },
-	  majorLabels: {
-		millisecond:'',
-		second:     'mm:ss',
-		minute:     'mm:ss',
-		hour:       'HH:mm:ss',
-		weekday:    '',
-		day:        '',
-		week:       '',
-		month:      '',
-		year:       ''
-	  }
-	};
-
-	  // Create a Timeline
-	var timeline = new vis.Timeline(container, items, options);
-	timeline.fit(options);
-
-	timeline.on('select', function (properties) {
-		var questionId = properties.items[0];
-		//console.log(properties);
-		var id = "7";
-		console.log(questionId);
-		console.log(items);
-		console.log(items._data[7].content);
-	  //alert('selected items: ' + properties.items);
-	  var question = document.getElementById("displayQuestion");
-	  question.innerHTML = items._data[questionId].fullQuestion;
-
-	});
+	
+	
+	
+	
 	
 	
 });

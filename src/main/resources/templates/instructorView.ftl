@@ -5,14 +5,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>coursepub</title>
-<link href="../css/instructorView.css" rel="stylesheet" type="text/css">
+<link href="/static/css/instructorView.css" rel="stylesheet" type="text/css">
 <!--The following script tag downloads a font from the Adobe Edge Web Fonts server for use within the web page. We recommend that you do not modify it.-->
 <script>var __adobewebfontsappname__="dreamweaver"</script>
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
-<script src="../node_modules/vis/dist/vis.js"></script>
-<script src="../js/jquery-3.1.1.js"></script>
-<script src="../js/instructorViewTimeline.js"></script>
-<link href="../node_modules/vis/dist/vis.css" rel="stylesheet" type="text/css"/>
+
+<script src="/static/node_modules/vis/dist/vis.js"></script>
+<script src="/static/js/jquery-3.1.1.js"></script>
+<script src="https://apis.google.com/js/client.js?onload=onClientLoad" type="text/javascript"></script>
+<script src="/static/js/instructorViewTimeline.js"></script>
+<link href="/static/node_modules/vis/dist/vis.css" rel="stylesheet" type="text/css"/>
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -33,11 +35,20 @@
     3px -3px 30px #1beabd, 
     -3px 3px 30px #10abff;
 		}
+        .vis-even {
+            background-color: #247b92;
+        }
 	</style>
+
+  <script src="/static/node_modules/moment/moment.js"></script>
+  <script>
+    moment().format();
+    moment().format("ss, mm, kk");
+  </script>
 </head>
 <body>
 <!-- Main Container -->
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <div class="container"> 
   <!-- Navigation -->
   <header> <a href="">
@@ -45,7 +56,7 @@
   </a>
     <nav>
       <ul>
-        <li><a href="#hero">home</a></li>
+        <li><a href="/hello">home</a></li>
         <li><a href="#about">courses</a></li>
         <li> <a href="#contact">about</a></li>
         <li> <a id="account" href="/account">sign in/sign up</a></li>
@@ -53,7 +64,10 @@
     </nav>
   </header>
 	<br>
-	<div id="videoName">Essence of Linear Algebra</div>
+    <div id="thumbnailDiv">
+        <img id="videoThumbnail">
+    </div>
+	<div id="videoName"></div>
 <!--
 	<section id="interactiveSection"> 
 	<canvas id="interactiveCanvas"></canvas>
@@ -65,23 +79,17 @@
 	<br>
 	<div id="clickedOnQuestion">
 		<div id="fullQuestion">
-			<text id="displayQuestion"></text><br>
-			<textarea id="instructorResponse"></textarea><br>
+            <div class="instructorResponse" id="displaySummary"></div>
+			<div class="instructorResponse" id="displayQuestion"></div><br>
+			<textarea class="instructorResponse" id="instructorResponse"></textarea><br>
 			<input type="submit" id="submitResponseButton">
 		</div>
 	</div>
 	<div id="videoSection">
-		<iframe width="560" height="315" src="https://www.youtube.com/embed/kjBOesZCoqc?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+		<iframe id="videoFrame" width="560" height="315" src="https://www.youtube.com/embed/kjBOesZCoqc?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 	</div>
 </div>
 <!-- Main Container Ends -->
-
-<script src="../node_modules/moment/moment.js"></script>
-<script>
-	moment().format();
-	moment().format("ss, mm, kk");
-</script>
-
 	
 </body>
 </html>

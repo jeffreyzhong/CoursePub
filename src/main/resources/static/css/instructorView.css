@@ -93,20 +93,22 @@ header {
 #fullQuestion {
 	color: white;
 	font-size: 20px;
+/*    width: 200px;*/
+    word-wrap: break-word;
 }
 
 #videoName {
-	padding-left: 0;
-    padding-right: 0;
     margin-left: auto;
     margin-right: auto;
     display: block;
 	color: white;
 	letter-spacing: 2px;
-	font-size: 25px;
+	font-size: 30px;
+    float: left;
+    padding-left: 25px;
 }
 
-#instructorResponse {
+.instructorResponse {
 /*	 border: 2px solid pink; */
 /*    s-webkit-border-radius: 0px; */
 /*    -moz-border-radius: 10px; */
@@ -115,11 +117,11 @@ header {
     border-radius: 30px; 
     outline: 0px; 
     height:auto; 
-    width: 500px; 
+    width: 50vw; 
     padding-left:10px; 
     padding-right:10px;
     background-color: transparent;
-    color: pink;
+    color: white;
     text-shadow: 1.5px 1.5px 1.5px black;
     resize: none;
     font-size: 25px;
@@ -128,6 +130,19 @@ header {
 	font-variant: normal;
 	font-weight: 100;
 }
+
+#displayQuestion {
+    font-size: 15px;
+    width: 50vw;
+    word-wrap: break-word;
+}
+
+#thumbnailDiv {
+    float: left;
+    padding-left: 20px;
+}
+
+
 
 #clickedOnQuestion {
 	float: left;
@@ -146,7 +161,7 @@ header {
     padding-left:10px; 
     padding-right:10px;
     background-color: transparent;
-    color: pink;
+    color: white;
     text-shadow: 1.5px 1.5px 1.5px black;
     resize: none;
     font-size: 25px;
@@ -159,6 +174,10 @@ header {
 #submitResponseButton:hover {
 	background-color: white;
 	color: #2D9AB7;
+}
+
+#displaySummary {
+    font-size: 20px;
 }
 
 #videoSection {

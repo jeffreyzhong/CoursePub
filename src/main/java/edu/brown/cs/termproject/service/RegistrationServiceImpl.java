@@ -20,7 +20,13 @@ public class RegistrationServiceImpl implements RegistrationService {
 
   @Override
   @Transactional(readOnly = false)
-  public void add(User user, Course course, Integer type) {
+  public void add(User user, Course course, Integer type)
+      throws IllegalArgumentException {
+    if (registrationDao.exists(user, course)) {
+      throw new IllegalArgumentException(
+          String.format("%s has already registered in %s.", user, course));
+    }
+
     Registration registration = new Registration();
 
     registration.setCourse(course);
