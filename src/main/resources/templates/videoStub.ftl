@@ -1,6 +1,6 @@
 <#assign content>
 
-  <script src="/static/js/question.js"></script>
+  <script src="/static/js/websocket.js"></script>
 
   <span style="display:none;" id="videoId">${videoId}</span>
 

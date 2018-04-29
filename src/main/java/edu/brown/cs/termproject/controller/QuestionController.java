@@ -4,35 +4,37 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import edu.brown.cs.termproject.model.Question;
+import edu.brown.cs.termproject.model.User;
 import edu.brown.cs.termproject.model.Video;
+import edu.brown.cs.termproject.service.QuestionService;
+import edu.brown.cs.termproject.service.ResponseService;
 import edu.brown.cs.termproject.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class QuestionController {
 
-
   private static final Gson GSON = new Gson();
 
   private VideoService videoService;
+  private QuestionService questionService;
+  private ResponseService responseService;
 
   @Autowired
-  public QuestionController(VideoService videoService) {
+  public QuestionController(VideoService videoService,
+                            QuestionService questionService,
+                            ResponseService responseService) {
     this.videoService = videoService;
+    this.questionService = questionService;
+    this.responseService = responseService;
   }
 
   @PostMapping(path = "/question")
   @ResponseBody
-  public String question(InstructorQuestionRequest request) {
+  public String question(QuestionRequest request) {
     Video video = videoService.ofId(request.getId());
 
     if (video == null) {
@@ -41,7 +43,6 @@ public class QuestionController {
 
     ImmutableList.Builder<Object> ret = ImmutableList.builder();
     for (Question question : video.getQuestions()) {
-      System.out.println(question.getVideoTime());
       ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
 
       builder.put("id", question.getId());
@@ -58,7 +59,24 @@ public class QuestionController {
     return GSON.toJson(ret.build());
   }
 
-  private static class InstructorQuestionRequest {
+  @PostMapping(path = "/reply")
+  @ResponseBody
+  public String reply(ReplyRequest request, User user) {
+    String questionId = request.getQuestionId();
+    String detail = request.getDetail();
+
+    Question question = questionService.ofId(questionId);
+    if (question == null) {
+      throw new ResourceNotFoundException();
+    }
+
+    responseService.add(user, question, detail);
+
+    return "";
+  }
+
+  private static class QuestionRequest {
+
     private Integer id;
 
     public Integer getId() {
@@ -67,6 +85,28 @@ public class QuestionController {
 
     public void setId(Integer id) {
       this.id = id;
+    }
+  }
+
+  private static class ReplyRequest {
+
+    private String questionId;
+    private String detail;
+
+    public String getQuestionId() {
+      return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+      this.questionId = questionId;
+    }
+
+    public String getDetail() {
+      return detail;
+    }
+
+    public void setDetail(String detail) {
+      this.detail = detail;
     }
   }
 }
