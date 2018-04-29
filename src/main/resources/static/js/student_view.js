@@ -116,9 +116,10 @@ $(document).ready(() => {
 					"onStateChange": stateChangeFunc
 				}
 			});	
+			console.log(player.videoId);
 		}	
 	});
-	console.log(player.videoId);
+
 	$("#noteBtn").click();
 	
 });
@@ -144,9 +145,6 @@ function loadQuestions(event){
 		}   
 		
 		questionsOrd = questionsOrd.sort(compare);
-		for(let i = 0; i < questionsOrd.length; ++i){
-			alert("question (id " + questionsOrd[i].id + " with summary " + questionsOrd[i].summary + " at second " + questionsOrd[i].time);
-		}
 		event.target.playVideo();
 	});
 	
@@ -167,70 +165,17 @@ function compare(a,b) {
 //Below are code for controls sideContentDiv (e.x. click on different tabs)
 
 function noteClick(){
-	questionSel = false;
-	if(document.getElementById('questionsList') !== null){
-		document.getElementById('questionsList').style.display = "none";
-	}
-	let divs = document.getElementsByClassName("questionDiv");
-	for(let i = 1; i < divs.length; i++){
-		divs[i].style.display = "none";
-	}
-	divs[0].style.border = "none";
+	hideContent();
 	$("#question0").html("Hi Class, welcome to MATH 520 Linear Algebra. In this class, I will give a brief introduction to what linear algebra is and the basic concepts that would be taught in this course. Please take a second to watch this short video and get excited for a semester long journey exploring the power of linear algebra!");
 }
 
 function relClick(){
-	questionSel = false;
-	let qList = document.getElementById("questionList");
-	if(qList !== null){
-		qList.style.display = "none";
-	}
-	let divs = document.getElementsByClassName("questionDiv");
-	for(let i = 1; i < divs.length; i++){
-		divs[i].style.display = "none";
-	}
-	divs[0].style.border = "none";
+	hideContent();
 	$("#question0").html("No related video available at the moment");	
 }
 
-// <<<<<<< HEAD
-// function viewSwitchClick(){
-// 	questionSel = false;
-// 	if(document.getElementById("questionsList") !== null){
-// 		document.getElementById("questionsList").style.display = "block";
-// 	}else{
-// 		let divs = document.getElementsByClassName("questionDiv");
-// 		for(let i = 0; i < divs.length; i++){
-// 			divs[i].style.display = "none";
-// 		}
-
-// 		let ul = document.createElement('ul');
-// 		ul.setAttribute('id','questionsList');
-// 		ul.style.listStyleType = "none";
-// 		ul.style.lineHeight = "20px";
-// 		ul.style.textAlign = "center";
-// 		ul.style.fontSize = "18px";
-// 		document.getElementById('sideContentDiv').appendChild(ul);
-
-// 		for(let i = 0; i < questionsOrd.length-1; i++){
-// 			let curr = questionsOrd[i];
-// 			let question = "<li><style = \"color: white\";>" + curr.time + "  " + curr.summary + "user:" + curr.user "</li>";
-// 			ul.append(question);
-// 		}	
-// 	}
-// }
-
-
-
-//============================================================================
-//Below are code for automatic question display (e.x. click on different tabs)
-
 function allClick(){
 	questionSel = false;
-	if(document.getElementById('questionsList') !== null){
-		document.getElementById('questionsList').style.display = "none";
-	}
-	
 	let divs = document.getElementsByClassName("questionDiv");
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "none";
@@ -239,29 +184,44 @@ function allClick(){
 		let ul = document.createElement('ul');
 		ul.setAttribute('id','questionsList');
 		ul.style.listStyleType = "none";
+		ul.style.lineHeight = "22px";
 		document.getElementById("sideContentDiv").appendChild(ul);
 		for(let i = 0; i < questionsOrd.length; i++){
 			let curr = questionsOrd[i];
-			let text = "<li><\" style = \"color: white\";>" + curr.time + " " + curr.summary + " user: " + curr.user+ "</li>";
-			ul.append(text);	
+			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
+			renderQuestionList(text,ul);
 		}
 	}else{
 		document.getElementById('questionsList').style.display = "block";
 	}
-
 }
+
+function renderQuestionList(text, ul){
+	let li = document.createElement('li');
+	li.setAttribute('class', 'item');
+	li.style.color = 'white';
+	ul.appendChild(li);
+	li.innerHTML = li.innerHTML + text;
+}
+
+
+
+//============================================================================
+//Below are code for automatic question display (e.x. click on different tabs)
+
 
 function questionClick(){
 	questionSel = true;
 	if(document.getElementById('questionsList') !== null){
 		document.getElementById('questionsList').style.display = "none";
 	}
-	questionDisplay();
+	let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
+	index = questionsOrd.binarySearch(questionStub, compare);
+	questionDisplay(index);
 }
 
 
 function refQuestion(){
-//	console.log("execute");
 	let index = 0;
 	if(player.getPlayerState() === 1){
 		let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
@@ -279,7 +239,14 @@ function questionDisplay(index){
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "block";
 	}
-	
+	divs = document.getElementsByClassName("questionTimeLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "block";
+	}
+	divs = document.getElementsByClassName("userLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "block";
+	}
 	let min = Math.max(0, index-1);
 	if(min - 1 >= 0){
 		min -= 1;
@@ -292,41 +259,25 @@ function questionDisplay(index){
 	let range = max - min;
 
 	for(let i = 0; i <= range; i++){
-		console.log("questionsOrd index is: " + min);
 		let questionId = "#question" + i;
 		let timeId = "#time" + i;
 		let userId = "#user" + i;
 		$(questionId).html(questionsOrd[min].summary);
-		let time = convertTime(parseInt(questionsOrd[min].time));
+		let time = convertSeconds(parseInt(questionsOrd[min].time));
 		$(timeId).html(time);
-		$(userId).html(questionsOrd[min].user);
+		$(userId).html("User: " + questionsOrd[min].user);
 		min+=1;
 	}
 
 }
 
-function convertTime(time){
-	let ret = 0;
-	if(player.getDuration() >= 3600){
-		let H = time % 3600;
-		time -= H * 3600;
-		let M = time % 60;
-		time -= M*60;
-		ret = H + ":" + M + ":" + time;
-	}else{
-		let M = time % 60;
-		time -= M*60;
-		ret = M + ":" + time;
-	}
-	return ret;
-}
 
 // Example: function stopCycle, bound to onStateChange
 function stateChangeFunc(event) {
 	if(event.data === 0 || event.data === 2){
 		clearInterval(refQuestionInt);
 	}else if(event.data === 1){
-		refQuestionInt = setInterval(refQuestion, 500);
+		refQuestionInt = setInterval(refQuestion, 100);
 		if(duration === null){
 			duration = player.getDuration();
 		}
@@ -472,5 +423,20 @@ function convertSeconds(seconds){
 		time = M + ":" + seconds;
 	}
 	return time;
+}
+
+function hideContent(){
+	questionSel = false;
+	document.getElementById("time0").style.display = "none";
+	document.getElementById("user0").style.display = "none";
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
+	}
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 1; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	divs[0].style.border = "none";
+	divs[0].style.display = "block";
 }
 

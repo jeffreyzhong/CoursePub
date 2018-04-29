@@ -199,7 +199,10 @@ body{
 	border-top: 2px solid #FFFFFF;
 	margin-left:-1px;
 	padding: 6px;
-	
+}
+
+.questions{
+	color:#ddd;
 }
 
 .questionTimeLabel{
@@ -208,9 +211,13 @@ body{
 	font-size: 14px;
 }
 
+.userLabel{
+	color: #ddd;
+	text-align: right;
+}
+
 #question0Div{
 	margin-top: -8px;
-
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

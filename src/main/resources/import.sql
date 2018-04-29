@@ -22,6 +22,12 @@ INSERT INTO video (id, url, course_id) VALUES (1, 'https://google.com', 1);
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES ('q1', 'Who is JJ', 'Heard people talking about him all the time', '1969-12-31 19:00:12', 1, 1, '2018-02-15 11:11:11');
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES ('q2', 'What is GitHub', '', '1969-12-31 19:00:18', 1, 1, '2018-02-15 11:13:28');
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES ('q3', 'Is there homework this week', 'help!!!', '1969-12-31 19:01:34', 2, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES ('q4', 'We will miss JJ', 'not', '1969-12-31 19:00:34', 2, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES ('q5', 'No Homework This Week!', 'Have fun!', '1969-12-31 19:01:00', 3, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES ('q6', 'Gary[heart eye emoji]', '', '1969-12-31 19:00:42', 1, 1, '2018-02-15 11:13:28');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES ('q7', 'Jeff is bae', 'help!!!', '1969-12-31 19:02:09', 2, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES ('q8', 'Jerry is God', 'not', '1969-12-31 19:00:57', 2, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES ('q9', 'Song[fire emoji]', 'Have fun!', '1969-12-31 19:02:00', 3, 1, '2018-02-15 12:00:00');
 
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (1, 'q3', 2);
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (2, 'q3', 3);
