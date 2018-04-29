@@ -1,12 +1,13 @@
 <!doctype html>
 <html>
-
 <head>
 <meta charset="utf-8">
 <script>var __adobewebfontsappname__="dreamweaver"</script>
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
+
+
 <title>student_view</title>
-<link href="../../static/css/student_view.css" rel="stylesheet" type="text/css">
+<link href="/static/css/student_view.css" rel="stylesheet" type="text/css">
 </head>
 <div id = "container">
 
@@ -35,6 +36,7 @@
 		<textarea class = "inputBox" id = "detailInput" placeholder="Input question here"></textarea>
 	</div>
 	<button type="submit" name = "submit" value = "Post!" id = "submitBtn">Post!</button><br><br>
+	<span id = "videoId" style = "display:none">${videoId}</span>
 </div>
 
 <div id = "right" class = "col">
@@ -43,37 +45,45 @@
 	  <button class="tablinks" id = "noteBtn">Notes</button>
 	  <button class="tablinks" id = "questionBtn">Questions</button>
 	  <button class="tablinks" id = "relBtn">Related</button>
+	  <button class="tablinks" id = "allQuestionsBtn">All Questions</button>
 	</div>
 
 	<!-- Tab content -->
 	<div id="sideContentDiv" class="tabcontent" >
 		<div id="question0Div" class = "questionDiv">
-			<p id = "question0" class = "questions">asdfasdf</p>
+			<label id = "time0" class = "questionTimeLabel"></label>
+			<p id = "question0" class = "questions"></p>
+			<label id = "user0" class = "userLabel"></label>
 		</div>
 		<div id="question1Div" class = "questionDiv">
-			<p id = "question1" class = "questions">asdfasdf</p>
+			<label id = "time1" class = "questionTimeLabel"></label>
+			<p id = "question1" class = "questions"></p>
+			<label id = "user1" class = "userLabel"></label>
 		</div>
 		<div id="question2Div" class = "questionDiv">
-			<p id = "question2" class = "questions">asdfasdf</p>
+			<label id = "time2" class = "questionTimeLabel"></label>
+			<p id = "question2" class = "questions"></p>
+			<label id = "user2" class = "userLabel"></label>
 		</div>
 		<div id="question3Div" class = "questionDiv">
-			<p id = "question3" class = "questions">asdfasdf</p>
+			<label id = "time3" class = "questionTimeLabel"></label>
+			<p id = "question3" class = "questions"></p>
+			<label id = "user3" class = "userLabel"></label>
 		</div>
 		<div id="question4Div" class = "questionDiv">
-			<p id = "question4" class = "questions">asdfasdf</p>
+			<label id = "time4" class = "questionTimeLabel"></label>
+			<p id = "question4" class = "questions"></p>
+			<label id = "user4" class = "userLabel"></label>
 		</div>	
-
 	</div>
-	
-	
-      
-
 </div>
-      
-
 </body>
 
 </div>
-<script src="../../static/js/jquery-2.1.1.js"></script>
-<script src="../../static/js/student_view.js"></script>
+
+<script type="text/javascript" src="../static/js/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="../static/js/student_view.js"></script>
+
+<#include "requestHeader.ftl">
+
 </html>

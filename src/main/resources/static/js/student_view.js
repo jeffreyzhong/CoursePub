@@ -1,48 +1,77 @@
 /*jshint esversion: 6 */
 // Waits for DOM to load before running
 class Question{
-	constructor(id, summary, time, detail, user){
-		this.id = id;
-		this.summar = summary;
-		this.time = time;
-		this.detail = detail;
-		this.user = user;
+	constructor(id, summary, time, detail, user, isResolved){
+		this._id = id;
+		this._summary = summary;
+		this._time = time;
+		this._detail = detail;
+		this._user = user;
+		this._resolved = isResolved;
 	}
 	
 	get id(){
 		return this._id;
 	}
 	
+	set id(id){
+		this._id = id;
+	}
+	
 	get summary(){
 		return this._summary;
+	}
+	
+	set summary(summary){
+		this._summar = summary;
 	}
 	
 	get time(){
 		return this._time;
 	}
 	
+	set time(time){
+		this._time = time;
+	}
+	
 	get detail(){
 		return this._detail;
+	}
+	
+	set detail(detail){
+		this._detail = detail;
 	}
 	
 	get user(){
 		return this._user;
 	}
+	
+	set user(user){
+		this._user = user;
+	}
+	
+	get resolved(){
+		return this._resolved;
+	}
+	
+	set resolved(resolved){
+		this._resolved = resolved;
+	}
 }
 
 
-const $sideContent = $("#sideContent");
-
 //let conn = new WebSocket("ws://localhost:4567/student_view")
 
-let questions = new map();
+let questions = new Map();
+let questionsOrd = [];
+let videoId = parseInt($('#videoId').html());
 
 let questionSel = false;
+let viewState = 0;
 let refQuestionInt;
 
 let player; //Define a player object, to enable later function calls, without having to create a new class instance again.
 
-let displayQuestions = [];
 let duration = null;
 
 // Define YT_ready function.
@@ -72,14 +101,10 @@ let YT_ready = (function() {
 
 
 $(document).ready(() => {
-
 	document.getElementById('noteBtn').onclick = noteClick;
 	document.getElementById('questionBtn').onclick = questionClick;
 	document.getElementById('relBtn').onclick = relClick;
-	
-//	document
-	
-	
+	document.getElementById('allQuestionsBtn').onclick = allClick;
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -87,83 +112,174 @@ $(document).ready(() => {
 		if (frameID) { //If the frame exists
 			player = new YT.Player(frameID, {
 				events: {
+					"onReady": loadQuestions,
 					"onStateChange": stateChangeFunc
 				}
-			});
-			console.log(frameID);		
+			});	
+			console.log(player.videoId);
 		}	
 	});
+
+	$("#noteBtn").click();
 	
 });
+
+
+function loadQuestions(event){
+	event.target.pauseVideo();
+	
+	const postParameters = {id: videoId};
+	$.post("/question", postParameters, responseJSON => {
+		const responseObject = JSON.parse(responseJSON);
+		
+		for (let i = 0; i < responseObject.length; ++i) {
+			let question = responseObject[i];
+			let id = question.id;
+			let time = question.time;
+			let summary = question.summary;
+			let user = question.user;
+			let resolved = question.isResolved;
+			let obj = new Question(id, summary, time, "", user, resolved);
+			questions.set(obj.id, obj);
+		  	questionsOrd.push(obj);
+		}   
+		
+		questionsOrd = questionsOrd.sort(compare);
+		event.target.playVideo();
+	});
+	
+}
+
+function compare(a,b) {
+  if (a.time < b.time){
+    return -1;
+  }
+  if (a.time > b.time){
+    return 1;
+  }
+  return 0;
+}
 
 
 //============================================================================
 //Below are code for controls sideContentDiv (e.x. click on different tabs)
 
 function noteClick(){
-	questionSel = false;
-	let divs = document.getElementsByClassName("questionDiv");
-	for(let i = 1; i < divs.length; i++){
-		divs[i].style.display = "none";
-	}
-	divs[0].style.border = "none";
+	hideContent();
 	$("#question0").html("Hi Class, welcome to MATH 520 Linear Algebra. In this class, I will give a brief introduction to what linear algebra is and the basic concepts that would be taught in this course. Please take a second to watch this short video and get excited for a semester long journey exploring the power of linear algebra!");
 }
 
 function relClick(){
-	questionSel = false;
-	let divs = document.getElementsByClassName("questionDiv");
-	for(let i = 1; i < divs.length; i++){
-		divs[i].style.display = "none";
-	}
-	divs[0].style.border = "none";
+	hideContent();
 	$("#question0").html("No related video available at the moment");	
 }
 
+function allClick(){
+	questionSel = false;
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	if(document.getElementById('questionsList') === null){
+		let ul = document.createElement('ul');
+		ul.setAttribute('id','questionsList');
+		ul.style.listStyleType = "none";
+		ul.style.lineHeight = "22px";
+		document.getElementById("sideContentDiv").appendChild(ul);
+		for(let i = 0; i < questionsOrd.length; i++){
+			let curr = questionsOrd[i];
+			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
+			renderQuestionList(text,ul);
+		}
+	}else{
+		document.getElementById('questionsList').style.display = "block";
+	}
+}
+
+function renderQuestionList(text, ul){
+	let li = document.createElement('li');
+	li.setAttribute('class', 'item');
+	li.style.color = 'white';
+	ul.appendChild(li);
+	li.innerHTML = li.innerHTML + text;
+}
+
+
+
+//============================================================================
+//Below are code for automatic question display (e.x. click on different tabs)
+
+
 function questionClick(){
 	questionSel = true;
-	questionDisplay();
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
+	}
+	let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
+	index = questionsOrd.binarySearch(questionStub, compare);
+	questionDisplay(index);
 }
 
 
 function refQuestion(){
-//	console.log("execute");
+	let index = 0;
 	if(player.getPlayerState() === 1){
-		let currTime = Math.floor(player.getCurrentTime());
-		displayQuestions = [];
-		for(let i = 0; i < 5; i++){
-			let listItem = "The current time of the video is: " + currTime ;
-			displayQuestions.push(listItem);
+		let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
+		index = questionsOrd.binarySearch(questionStub, compare);
+		if(questionSel && index !== null){
+			questionDisplay(index);
 		}
-	}
-	if(questionSel){
-		questionDisplay();
 	}
 }
 
 
 //display questions in each div
-function questionDisplay(){
+function questionDisplay(index){
 	let divs = document.getElementsByClassName("questionDiv");
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "block";
 	}
-	let questions = document.getElementsByClassName("questions");
-	for(let i = 0; i < questions.length; i++){
-		let id = "#question" + i;
-		$(id).html(displayQuestions[i]);
+	divs = document.getElementsByClassName("questionTimeLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "block";
 	}
+	divs = document.getElementsByClassName("userLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "block";
+	}
+	let min = Math.max(0, index-1);
+	if(min - 1 >= 0){
+		min -= 1;
+	}
+	let max = Math.min(questionsOrd.length-1, index+1);
+	if(max + 1 < questionsOrd.length){
+		max += 1;
+	}
+	
+	let range = max - min;
+
+	for(let i = 0; i <= range; i++){
+		let questionId = "#question" + i;
+		let timeId = "#time" + i;
+		let userId = "#user" + i;
+		$(questionId).html(questionsOrd[min].summary);
+		let time = convertSeconds(parseInt(questionsOrd[min].time));
+		$(timeId).html(time);
+		$(userId).html("User: " + questionsOrd[min].user);
+		min+=1;
+	}
+
 }
+
 
 // Example: function stopCycle, bound to onStateChange
 function stateChangeFunc(event) {
 	if(event.data === 0 || event.data === 2){
 		clearInterval(refQuestionInt);
 	}else if(event.data === 1){
-		refQuestionInt = setInterval(refQuestion, 1000);
+		refQuestionInt = setInterval(refQuestion, 100);
 		if(duration === null){
 			duration = player.getDuration();
-			alert(duration);
 		}
 	}
 }
@@ -240,4 +356,87 @@ function onYouTubePlayerAPIReady() {YT_ready(true)}
   let before = document.getElementsByTagName("script")[0];
   before.parentNode.insertBefore(s, before);
 })();
+
+
+//============================================================================
+//Below are miscellaneous helper functions
+
+//Binary search for the index of the closest question in the list
+Array.prototype.binarySearch = function(find, comparator) {
+	var low = 0, high = this.length - 1, i, comparison, prev_comparison;  
+	while (low <= high) {
+	i = Math.floor((low + high) / 2);
+	comparison = comparator(this[i], find);
+	prev_comparison = comparison;
+	if (comparison < 0) { low = i + 1; continue; }
+	if (comparison > 0) { high = i - 1; continue; }
+	return i;
+	}
+	var option_low;
+	var option_high;
+	if (prev_comparison < 0) {
+	  option_low = i;
+	  option_high = i+1;
+	} else {
+	  option_low = i-1;
+	  option_high = i;
+	}
+	var dist_a = find - this[option_low];
+	var dist_b = this[option_high] - find;
+	if (dist_a < dist_b) {
+	  return option_low;
+	} else {
+	  return option_high;
+	}
+	return null;
+};
+
+//Convert seconds to "HH:MM:SS" format
+function convertSeconds(seconds){
+	let time = 0;
+	if(player.getDuration() >= 3600){
+		let H = Math.floor(seconds / 3600);
+		seconds = seconds % 3600;
+		let M = Math.floor(seconds / 60);
+		seconds = seconds % 60;
+		
+		if(H < 10){
+			H = "0" + H;
+		}
+		if(M < 10){
+			M = "0" + M;
+		}
+		if(seconds < 10){
+			seconds = "0" + seconds;
+		}
+		time = H + ":" + M + ":" + seconds;
+	}else{
+		let M = Math.floor(seconds / 60);
+		seconds = seconds % 60;
+		
+		if(M < 10){
+			M = "0" + M;
+		}
+		if(seconds < 10){
+			seconds = "0" + seconds;
+		}
+		time = M + ":" + seconds;
+	}
+	return time;
+}
+
+function hideContent(){
+	questionSel = false;
+	document.getElementById("time0").style.display = "none";
+	document.getElementById("user0").style.display = "none";
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
+	}
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 1; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	divs[0].style.border = "none";
+	divs[0].style.display = "block";
+}
 

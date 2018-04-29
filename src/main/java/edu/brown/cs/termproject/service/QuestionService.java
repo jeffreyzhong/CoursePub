@@ -10,7 +10,7 @@ import java.util.Calendar;
 public interface QuestionService
     extends AbstractUpvoteService<Question, QuestionUpvote> {
 
-  Question add(User user, Calendar time, String title, String body, Video video);
+  Question add(User user, Calendar videoTime, String title, String body, Video video);
 
   Question ofId(String id);
 }

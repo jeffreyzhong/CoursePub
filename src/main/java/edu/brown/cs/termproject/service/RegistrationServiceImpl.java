@@ -20,7 +20,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
   @Override
   @Transactional(readOnly = false)
-  public void add(User user, Course course, Integer type)
+  public Registration add(User user, Course course, Integer type)
       throws IllegalArgumentException {
     if (registrationDao.exists(user, course)) {
       throw new IllegalArgumentException(
@@ -34,5 +34,10 @@ public class RegistrationServiceImpl implements RegistrationService {
     registration.setType(type);
 
     registrationDao.add(registration);
+
+    user.register(registration);
+    course.register(registration);
+
+    return registration;
   }
 }

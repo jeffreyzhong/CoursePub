@@ -1,8 +1,9 @@
 $(document).ready(function() {
-  let socket = new WebSocket('ws://localhost:4567/posts');
+  let videoId = $('#videoId').html();
+  let socket = new WebSocket('ws://localhost:4567/websocket/' + videoId);
 
   socket.onmessage = function(message) {
-    console.log(message);
+    console.log(message['data']);
   };
 
   socket.onopen = function() {
@@ -11,5 +12,5 @@ $(document).ready(function() {
         'name': 'this'
       },
     }));
-  }
+  };
 });
