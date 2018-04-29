@@ -104,7 +104,7 @@ $(document).ready(() => {
 	document.getElementById('noteBtn').onclick = noteClick;
 	document.getElementById('questionBtn').onclick = questionClick;
 	document.getElementById('relBtn').onclick = relClick;
-	document.getElementById('viewSwitchBtn').onclick = viewSwitchClick;
+	document.getElementById('allQuestionsBtn').onclick = allClick;
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -168,9 +168,8 @@ function compare(a,b) {
 
 function noteClick(){
 	questionSel = false;
-	let qList = document.getElementById("questionList");
-	if(qList !== null){
-		qList.style.display = "none";
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
 	}
 	let divs = document.getElementsByClassName("questionDiv");
 	for(let i = 1; i < divs.length; i++){
@@ -194,42 +193,68 @@ function relClick(){
 	$("#question0").html("No related video available at the moment");	
 }
 
-function viewSwitchClick(){
-	questionSel = false;
-	if(document.getElementById("questionsList") !== null){
-		document.getElementById("questionsList").style.display = "block";
-	}else{
-		let divs = document.getElementsByClassName("questionDiv");
-		for(let i = 0; i < divs.length; i++){
-			divs[i].style.display = "none";
-		}
+// <<<<<<< HEAD
+// function viewSwitchClick(){
+// 	questionSel = false;
+// 	if(document.getElementById("questionsList") !== null){
+// 		document.getElementById("questionsList").style.display = "block";
+// 	}else{
+// 		let divs = document.getElementsByClassName("questionDiv");
+// 		for(let i = 0; i < divs.length; i++){
+// 			divs[i].style.display = "none";
+// 		}
 
-		let ul = document.createElement('ul');
-		ul.setAttribute('id','questionsList');
-		ul.style.listStyleType = "none";
-		ul.style.lineHeight = "20px";
-		ul.style.textAlign = "center";
-		ul.style.fontSize = "18px";
-		document.getElementById('sideContentDiv').appendChild(ul);
+// 		let ul = document.createElement('ul');
+// 		ul.setAttribute('id','questionsList');
+// 		ul.style.listStyleType = "none";
+// 		ul.style.lineHeight = "20px";
+// 		ul.style.textAlign = "center";
+// 		ul.style.fontSize = "18px";
+// 		document.getElementById('sideContentDiv').appendChild(ul);
 
-		for(let i = 0; i < questionsOrd.length-1; i++){
-			let curr = questionsOrd[i];
-			let question = "<li><style = \"color: white\";>" + curr.time + "  " + curr.summary + "user:" + curr.user "</li>";
-			ul.append(question);
-		}	
-	}
-}
+// 		for(let i = 0; i < questionsOrd.length-1; i++){
+// 			let curr = questionsOrd[i];
+// 			let question = "<li><style = \"color: white\";>" + curr.time + "  " + curr.summary + "user:" + curr.user "</li>";
+// 			ul.append(question);
+// 		}	
+// 	}
+// }
 
 
 
 //============================================================================
 //Below are code for automatic question display (e.x. click on different tabs)
 
+function allClick(){
+	questionSel = false;
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
+	}
+	
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	if(document.getElementById('questionsList') === null){
+		let ul = document.createElement('ul');
+		ul.setAttribute('id','questionsList');
+		ul.style.listStyleType = "none";
+		document.getElementById("sideContentDiv").appendChild(ul);
+		for(let i = 0; i < questionsOrd.length; i++){
+			let curr = questionsOrd[i];
+			let text = "<li><\" style = \"color: white\";>" + curr.time + " " + curr.summary + " user: " + curr.user+ "</li>";
+			ul.append(text);	
+		}
+	}else{
+		document.getElementById('questionsList').style.display = "block";
+	}
+
+}
+
 function questionClick(){
 	questionSel = true;
-	let qList = document.getElementById("questionList");
-	if(qList !== null){
-		qList.style.display = "none";
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
 	}
 	questionDisplay();
 }
@@ -237,7 +262,6 @@ function questionClick(){
 
 function refQuestion(){
 //	console.log("execute");
-
 	let index = 0;
 	if(player.getPlayerState() === 1){
 		let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
@@ -302,7 +326,7 @@ function stateChangeFunc(event) {
 	if(event.data === 0 || event.data === 2){
 		clearInterval(refQuestionInt);
 	}else if(event.data === 1){
-		refQuestionInt = setInterval(refQuestion, 250);
+		refQuestionInt = setInterval(refQuestion, 500);
 		if(duration === null){
 			duration = player.getDuration();
 		}
@@ -384,31 +408,69 @@ function onYouTubePlayerAPIReady() {YT_ready(true)}
 
 
 //============================================================================
+//Below are miscellaneous helper functions
+
 //Binary search for the index of the closest question in the list
 Array.prototype.binarySearch = function(find, comparator) {
-  var low = 0, high = this.length - 1, i, comparison, prev_comparison;  
-  while (low <= high) {
-    i = Math.floor((low + high) / 2);
-    comparison = comparator(this[i], find);
-    prev_comparison = comparison
-    if (comparison < 0) { low = i + 1; continue; };
-    if (comparison > 0) { high = i - 1; continue; };
-    return i;
-  }
-  if (prev_comparison < 0) {
-      var option_low = i;
-      var option_high = i+1;
-  } else {
-      var option_low = i-1;
-      var option_high = i;
-  }
-  var dist_a = find - this[option_low];
-  var dist_b = this[option_high] - find;
-  if (dist_a < dist_b) {
-      return option_low;
-  } else {
-      return option_high;
-  }
-  return null;
+	var low = 0, high = this.length - 1, i, comparison, prev_comparison;  
+	while (low <= high) {
+	i = Math.floor((low + high) / 2);
+	comparison = comparator(this[i], find);
+	prev_comparison = comparison;
+	if (comparison < 0) { low = i + 1; continue; }
+	if (comparison > 0) { high = i - 1; continue; }
+	return i;
+	}
+	var option_low;
+	var option_high;
+	if (prev_comparison < 0) {
+	  option_low = i;
+	  option_high = i+1;
+	} else {
+	  option_low = i-1;
+	  option_high = i;
+	}
+	var dist_a = find - this[option_low];
+	var dist_b = this[option_high] - find;
+	if (dist_a < dist_b) {
+	  return option_low;
+	} else {
+	  return option_high;
+	}
+	return null;
 };
+
+//Convert seconds to "HH:MM:SS" format
+function convertSeconds(seconds){
+	let time = 0;
+	if(player.getDuration() >= 3600){
+		let H = Math.floor(seconds / 3600);
+		seconds = seconds % 3600;
+		let M = Math.floor(seconds / 60);
+		seconds = seconds % 60;
+		
+		if(H < 10){
+			H = "0" + H;
+		}
+		if(M < 10){
+			M = "0" + M;
+		}
+		if(seconds < 10){
+			seconds = "0" + seconds;
+		}
+		time = H + ":" + M + ":" + seconds;
+	}else{
+		let M = Math.floor(seconds / 60);
+		seconds = seconds % 60;
+		
+		if(M < 10){
+			M = "0" + M;
+		}
+		if(seconds < 10){
+			seconds = "0" + seconds;
+		}
+		time = M + ":" + seconds;
+	}
+	return time;
+}
 

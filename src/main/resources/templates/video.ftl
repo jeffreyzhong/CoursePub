@@ -45,6 +45,7 @@
 	  <button class="tablinks" id = "noteBtn">Notes</button>
 	  <button class="tablinks" id = "questionBtn">Questions</button>
 	  <button class="tablinks" id = "relBtn">Related</button>
+	  <button class="tablinks" id = "allQuestionsBtn">All Questions</button>
 	</div>
 
 	<!-- Tab content -->
@@ -82,7 +83,6 @@
 
 <script type="text/javascript" src="../static/js/jquery-3.1.1.js"></script>
 <script type="text/javascript" src="../static/js/student_view.js"></script>
-<script type="text/javascript" src="../static/node_modules/moment/moment.js"</script>
 
 <#include "requestHeader.ftl">
 
