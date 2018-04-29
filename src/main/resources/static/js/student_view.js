@@ -67,6 +67,7 @@ let questionsOrd = [];
 let videoId = parseInt($('#videoId').html());
 
 let questionSel = false;
+let viewState = 0;
 let refQuestionInt;
 
 let player; //Define a player object, to enable later function calls, without having to create a new class instance again.
@@ -103,6 +104,7 @@ $(document).ready(() => {
 	document.getElementById('noteBtn').onclick = noteClick;
 	document.getElementById('questionBtn').onclick = questionClick;
 	document.getElementById('relBtn').onclick = relClick;
+	document.getElementById('viewSwitchBtn').onclick = viewSwitchClick;
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -116,7 +118,7 @@ $(document).ready(() => {
 			});	
 		}	
 	});
-
+	console.log(player.videoId);
 	$("#noteBtn").click();
 	
 });
@@ -166,6 +168,10 @@ function compare(a,b) {
 
 function noteClick(){
 	questionSel = false;
+	let qList = document.getElementById("questionList");
+	if(qList !== null){
+		qList.style.display = "none";
+	}
 	let divs = document.getElementsByClassName("questionDiv");
 	for(let i = 1; i < divs.length; i++){
 		divs[i].style.display = "none";
@@ -176,6 +182,10 @@ function noteClick(){
 
 function relClick(){
 	questionSel = false;
+	let qList = document.getElementById("questionList");
+	if(qList !== null){
+		qList.style.display = "none";
+	}
 	let divs = document.getElementsByClassName("questionDiv");
 	for(let i = 1; i < divs.length; i++){
 		divs[i].style.display = "none";
@@ -184,8 +194,43 @@ function relClick(){
 	$("#question0").html("No related video available at the moment");	
 }
 
+function viewSwitchClick(){
+	questionSel = false;
+	if(document.getElementById("questionsList") !== null){
+		document.getElementById("questionsList").style.display = "block";
+	}else{
+		let divs = document.getElementsByClassName("questionDiv");
+		for(let i = 0; i < divs.length; i++){
+			divs[i].style.display = "none";
+		}
+
+		let ul = document.createElement('ul');
+		ul.setAttribute('id','questionsList');
+		ul.style.listStyleType = "none";
+		ul.style.lineHeight = "20px";
+		ul.style.textAlign = "center";
+		ul.style.fontSize = "18px";
+		document.getElementById('sideContentDiv').appendChild(ul);
+
+		for(let i = 0; i < questionsOrd.length-1; i++){
+			let curr = questionsOrd[i];
+			let question = "<li><style = \"color: white\";>" + curr.time + "  " + curr.summary + "user:" + curr.user "</li>";
+			ul.append(question);
+		}	
+	}
+}
+
+
+
+//============================================================================
+//Below are code for automatic question display (e.x. click on different tabs)
+
 function questionClick(){
 	questionSel = true;
+	let qList = document.getElementById("questionList");
+	if(qList !== null){
+		qList.style.display = "none";
+	}
 	questionDisplay();
 }
 
@@ -228,18 +273,28 @@ function questionDisplay(index){
 		let timeId = "#time" + i;
 		let userId = "#user" + i;
 		$(questionId).html(questionsOrd[min].summary);
-		// let time = 0;
-		// if(player.getDuration() > 3600){
-		// 	time = moment(questionsOrd[min].time).format('H:mm:ss');
-		// }else{
-		// 	time = moment(questionsOrd[min].time).format('mm:ss');
-		// }
-		$(timeId).html(questionsOrd[min].time);
+		let time = convertTime(parseInt(questionsOrd[min].time));
+		$(timeId).html(time);
 		$(userId).html(questionsOrd[min].user);
 		min+=1;
 	}
 
+}
 
+function convertTime(time){
+	let ret = 0;
+	if(player.getDuration() >= 3600){
+		let H = time % 3600;
+		time -= H * 3600;
+		let M = time % 60;
+		time -= M*60;
+		ret = H + ":" + M + ":" + time;
+	}else{
+		let M = time % 60;
+		time -= M*60;
+		ret = M + ":" + time;
+	}
+	return ret;
 }
 
 // Example: function stopCycle, bound to onStateChange
