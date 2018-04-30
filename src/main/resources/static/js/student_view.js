@@ -132,6 +132,7 @@ $(document).ready(() => {
 			questions.set(obj.id, obj);
 		  	questionsOrd = questionsOrd.splice(locationOf(obj,questionsOrd) + 1, 0, obj);
 		  	questionDisplay();	
+			
 	        break;
 	    }
 	});
@@ -216,34 +217,31 @@ function allClick(){
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "none";
 	}
+	let ul = null;
 	if(document.getElementById('questionsList') === null){
-		let ul = document.createElement('ul');
+		ul = document.createElement('ul');
 		ul.setAttribute('id','questionsList');
 		ul.style.listStyleType = "none";
 		ul.style.lineHeight = "30px";
 		ul.style.marginTop = "-5px";
 		ul.style.paddingRight = "20px";
 		document.getElementById("sideContentDiv").appendChild(ul);
-		for(let i = 0; i < questionsOrd.length; i++){
-			let curr = questionsOrd[i];
-			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
-			renderQuestionList(text,ul);
-		}
+		
 	}else{
-		let ul = document.getElementById('questionsList');
+		ul = document.getElementById('questionsList');
 		while (ul.firstChild) {
 			ul.removeChild(ul.firstChild);
 		}
 		ul.style.display = "block";
-		for(let i = 0; i < questionsOrd.length; i++){
+	}
+	for(let i = 0; i < questionsOrd.length; i++){
 			let curr = questionsOrd[i];
 			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
-			renderQuestionList(text,ul);
-		}
+			renderList(text,ul);
 	}
 }
 
-function renderQuestionList(text, ul){
+function renderList(text, ul){
 	let li = document.createElement('li');
 	li.setAttribute('class', 'item');
 	li.style.color = 'white';
@@ -261,6 +259,10 @@ function questionClick(){
 	questionSel = true;
 	if(document.getElementById('questionsList') !== null){
 		document.getElementById('questionsList').style.display = "none";
+	}
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].onclick = openQuestion;
 	}
 	let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
 	let index = questionsOrd.binarySearch(questionStub, compare);
@@ -309,27 +311,86 @@ function questionDisplay(index){
 		let questionId = "#question" + i;
 		let timeId = "#time" + i;
 		let userId = "#user" + i;
+		let idLabel = "#questionId" + i;
 		$(questionId).html(questionsOrd[min].summary);
 		let time = convertSeconds(parseInt(questionsOrd[min].time));
 		$(timeId).html(time);
 		$(userId).html("User: " + questionsOrd[min].user);
+		$(idLabel).html(questionsOrd[min].id);
 		min+=1;
 	}
 	for(let j = 4; j >= i; j--){
 		let questionId = "#question" + j;
 		let timeId = "#time" + j;
 		let userId = "#user" + j;
+		let idLabel = "#questionId" + j;
 		$(questionId).html("");
 		$(timeId).html("");
 		$(userId).html("");
+		$(idLabel).html("");
 	}
 
 }
 
 //============================================================================
-//Below are code for display a particular 
-
-
+//Below are code for display a particular question
+function openQuestion(){
+	hideContent();
+	document.getElementById("time0").style.display = "block";
+	document.getElementById("user0").style.display = "block";
+	document.getElementById("questionDiv0").style.borderBottom = "2px solid #FFFFFF";
+	let id = this.id.substring(this.id.length-1);
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].onclick = null;
+	}
+	
+	let questionId = "#question" + id;
+	let timeId = "#time" + id;
+	let userId = "#user" + id;
+	let idLabel = "#questionId" + id;
+	$("#question0").html($(questionId).html());
+	$("#time0").html($(timeId).html());
+	$("#user0").html($(userId).html());
+	$("#questionId0").html($(idLabel).html());
+	console.log("id label: " + idLabel + " has id: " + $(idLabel).html());
+	
+	let div = document.createElement('div');
+	div.setAttribute('id','remarks');
+	div.style.height = document.getElementById('questionDiv0').style.height*4;
+	document.getElementById('questionDiv0').after(div);
+	div.style.overflow = 'hidden';
+	div.style.overflowY = 'scroll';
+	
+	let p = document.createElement('p');
+	p.setAttribute('id', 'detail');
+	p.style.textAlign = "left";
+	let qId = $("#questionId0").html();
+	console.log("qId: " + qId);
+	let detail = questions.get(qId).detail;
+	p.html("Question detail: " + detail);
+	div.appendChild(p);
+//	 const postParameters = {id: qId};
+//	 $.post("/response", postParameters, responseJSON => {
+//	 	const responseObject = JSON.parse(responseJSON);
+//		
+//	 	let ul = document.createElement('ul');
+//	 	ul.setAttribute('id','remarksList');
+//	 	ul.style.listStyleType = "none";
+//	 	ul.style.lineHeight = "30px";
+//	 	ul.style.marginTop = "-5px";
+//	 	ul.style.paddingRight = "40px";
+//	 	ul.style.textAlign = "right";
+//	 	div.appendChild(ul);
+//
+//	 	for(let i = 0; i < responseObject.length; i+=3){
+//	 		let text = convertSeconds(responseObject[i]) + " " + responseObject[i+1] + " user: " + responseObject[i+2];
+//	 		renderList(text,ul);
+//	 	} 
+//	 });	
+	
+	
+}
 
 //============================================================================
 //Below are code for action when post button is clicked
