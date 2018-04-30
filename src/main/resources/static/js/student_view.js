@@ -107,42 +107,40 @@ let YT_ready = (function() {
 
 
 $(document).ready(() => {
-	let url = window.location.href;
-	let string = url.split("/");
-	let connection = "ws://localhost:4567/websocket/" + string[string.length-1];
+	let connection = "ws://localhost:4567/websocket/" + videoId;
 
 	conn = new WebSocket(connection);
 	conn.addEventListener('message', function (event) {
-		const data = JSON(event.data);
+		const data = JSON.parse(event.data);
+//		let info = JSON.parse(data.payload);
+		console.log("from server: " + data.message);
 	    switch (data.type) {
 	      default:
 	        console.log('Unknown message type!', data.type);
 	        break;
 	      case MESSAGE_TYPE.CONNECT:
-	        let payload = JSON.parse(data.payload);
-	        console.log(payload.msg);
+	        console.log(data.payload.msg);
 	        break;
 	      case MESSAGE_TYPE.NEW_QUESTION:
-	        let payload = JSON.parse(msg.payload);
-			let id = payload.id;
-			let time = payload.time;
-			let summary = payload.summary;
-			let detail = payload.detail;
-			let user = payload.user;
-			let resolved = payload.resolved;
+			let id = data.payload.id;
+			let time = data.payload.time;
+			let summary = data.payload.summary;
+			let detail = data.payload.detail;
+			let user = data.payload.user;
+			let resolved = data.payload.resolved;
 			let obj = new Question(id, summary, time, detail, user, resolved);
 			questions.set(obj.id, obj);
-		  	questionsOrd = questionsOrd.splice(locationOf(obj,questionsOrd,compare) + 1, 0, obj);
-			console.log("id: " + id + " summary: " + summary + " time: " + time);
-		  	questionDisplay();
+		  	questionsOrd = questionsOrd.splice(locationOf(obj,questionsOrd) + 1, 0, obj);
+		  	questionDisplay();	
 	        break;
 	    }
 	});
 
 	document.getElementById('noteBtn').onclick = noteClick;
-	document.getElementById('questionBtn').onclick = questionClick	;
+	document.getElementById('questionBtn').onclick = questionClick;
 	document.getElementById('relBtn').onclick = relClick;
 	document.getElementById('allQuestionsBtn').onclick = allClick;
+	document.getElementById('submitBtn').onclick = postClick;
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -154,7 +152,6 @@ $(document).ready(() => {
 					"onStateChange": stateChangeFunc
 				}
 			});	
-			console.log(player.videoId);
 		}	
 	});
 
@@ -188,7 +185,17 @@ function loadQuestions(event){
 	
 }
 
-
+// Example: function stopCycle, bound to onStateChange
+function stateChangeFunc(event) {
+	if(event.data === 0 || event.data === 2){
+		clearInterval(refQuestionInt);
+	}else if(event.data === 1){
+		refQuestionInt = setInterval(refQuestion, 100);
+		if(duration === null){
+			duration = player.getDuration();
+		}
+	}
+}
 
 //============================================================================
 //Below are code for controls sideContentDiv (e.x. click on different tabs)
@@ -213,7 +220,9 @@ function allClick(){
 		let ul = document.createElement('ul');
 		ul.setAttribute('id','questionsList');
 		ul.style.listStyleType = "none";
-		ul.style.lineHeight = "22px";
+		ul.style.lineHeight = "30px";
+		ul.style.marginTop = "-5px";
+		ul.style.paddingRight = "20px";
 		document.getElementById("sideContentDiv").appendChild(ul);
 		for(let i = 0; i < questionsOrd.length; i++){
 			let curr = questionsOrd[i];
@@ -221,10 +230,11 @@ function allClick(){
 			renderQuestionList(text,ul);
 		}
 	}else{
-		let ul = document.getElementById('questionsList').style.display = "block";
+		let ul = document.getElementById('questionsList');
 		while (ul.firstChild) {
 			ul.removeChild(ul.firstChild);
 		}
+		ul.style.display = "block";
 		for(let i = 0; i < questionsOrd.length; i++){
 			let curr = questionsOrd[i];
 			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
@@ -253,7 +263,7 @@ function questionClick(){
 		document.getElementById('questionsList').style.display = "none";
 	}
 	let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
-	index = questionsOrd.binarySearch(questionStub, compare);
+	let index = questionsOrd.binarySearch(questionStub, compare);
 	questionDisplay(index);
 }
 
@@ -294,8 +304,8 @@ function questionDisplay(index){
 	}
 	
 	let range = max - min;
-
-	for(let i = 0; i <= range; i++){
+	let i;
+	for(i = 0; i <= range; i++){
 		let questionId = "#question" + i;
 		let timeId = "#time" + i;
 		let userId = "#user" + i;
@@ -305,21 +315,19 @@ function questionDisplay(index){
 		$(userId).html("User: " + questionsOrd[min].user);
 		min+=1;
 	}
-
-}
-
-
-// Example: function stopCycle, bound to onStateChange
-function stateChangeFunc(event) {
-	if(event.data === 0 || event.data === 2){
-		clearInterval(refQuestionInt);
-	}else if(event.data === 1){
-		refQuestionInt = setInterval(refQuestion, 100);
-		if(duration === null){
-			duration = player.getDuration();
-		}
+	for(let j = 4; j >= i; j--){
+		let questionId = "#question" + j;
+		let timeId = "#time" + j;
+		let userId = "#user" + j;
+		$(questionId).html("");
+		$(timeId).html("");
+		$(userId).html("");
 	}
+
 }
+
+//============================================================================
+//Below are code for display a particular 
 
 
 
@@ -327,18 +335,27 @@ function stateChangeFunc(event) {
 //Below are code for action when post button is clicked
 // Setup the WebSocket connection for live updating of scores.
 
-
-const new_question = () => {
-  let tmp = $("input[name='board']").val();
-  let jsonObject = {type:1, board:tmp, text:guesses.join(" ")};
-  // obj.setProperty("type", MESSAGE_TYPE.SCORE);
-  // obj.setProperty("board", $("board"));
-  // obj.setProperty("text", $("guesses"));
-  conn.send(JSON.stringify({type: 1, payload: jsonObject}));
-  //conn.send(jsonObject);
+function postClick(){
+	let summary = $("#summaryInput").val();
+	let time = $("#timeInput").val();
+	let detail = $("#detailInput").val();
+	if(summary === ""){
+		alert("Please input a summary!");
+		return;
+	}
+	if(!isValidTime(time)){
+		alert("Please input a correct time!");
+		return;
+	}
+	if(detail === ""){
+		alert("Please put in some explanation for your question!");
+		return;
+	}
+	let jsonObject = {video:videoId, summary:summary, time:time, detail:detail};
+	
+	conn.send(JSON.stringify({type: 1, payload: jsonObject}));
+	console.log("Question sent to server!");
 }
-
-function
 
 // check if the user input time is valid.
 function isValidTime(time){
@@ -355,8 +372,6 @@ function isValidTime(time){
 	}
 	return true;
 }
-
-
 
 
 //============================================================================
@@ -448,7 +463,7 @@ function locationOf(element, array, comparer, start, end) {
     end = end || array.length;
     var pivot = (start + end) >> 1;  // should be faster than dividing by 2
 
-    var c = comparer(element, array[pivot]);
+    var c = compare(element, array[pivot]);
     if (end - start <= 1) return c == -1 ? pivot - 1 : pivot;
 
     switch (c) {
@@ -471,7 +486,7 @@ function compare(a,b) {
 //Convert seconds to "HH:MM:SS" format
 function convertSeconds(seconds){
 	let time = 0;
-	if(player.getDuration() >= 3600){
+	if(duration >= 3600){
 		let H = Math.floor(seconds / 3600);
 		seconds = seconds % 3600;
 		let M = Math.floor(seconds / 60);
