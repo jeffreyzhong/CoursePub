@@ -37,7 +37,7 @@ public class PostController {
 
   @PostMapping(path = "/question")
   @ResponseBody
-  public String question(QuestionRequest request) {
+  public String question(IntegerIdRequest request) {
     Video video = videoService.ofId(request.getId());
 
     if (video == null) {
@@ -54,7 +54,7 @@ public class PostController {
 
   @PostMapping(path = "/response")
   @ResponseBody
-  public String response(ResponseRequest request) {
+  public String response(IntegerIdRequest request) {
     Question question = questionService.ofId(request.getId());
 
     if (question == null) {
@@ -69,7 +69,7 @@ public class PostController {
             .collect(Collectors.toList()));
   }
 
-  private static class QuestionRequest {
+  private static class IntegerIdRequest {
 
     private Integer id;
 
@@ -78,20 +78,6 @@ public class PostController {
     }
 
     public void setId(Integer id) {
-      this.id = id;
-    }
-  }
-
-
-  private static class ResponseRequest {
-
-    private String id;
-
-    public String getId() {
-      return id;
-    }
-
-    public void setId(String id) {
       this.id = id;
     }
   }

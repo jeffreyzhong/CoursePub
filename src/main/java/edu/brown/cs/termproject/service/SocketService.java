@@ -8,9 +8,9 @@ import edu.brown.cs.termproject.model.User;
 
 public interface SocketService {
 
-  QuestionDto newQuestion(User user, QuestionDto questionDto);
+  void newQuestion(User user, QuestionDto questionDto);
 
-  ResponseDto newAnswer(User user, ResponseDto responseDto);
+  void newAnswer(User user, ResponseDto responseDto);
 
-  UpvoteDto upvote(User user, UpvoteDto upvoteDto);
+  void upvote(User user, UpvoteDto upvoteDto);
 }

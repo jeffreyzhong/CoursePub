@@ -4,20 +4,22 @@ import edu.brown.cs.termproject.model.Question;
 
 import java.util.Map;
 
-public class QuestionDto {
+public class QuestionDto implements Dto<Question> {
 
-  private String id;
-  private Integer user;
+  /* request */
   private Long time;
   private String summary;
   private String detail;
+
+  /* fill */
+  private Integer id;
+  private Integer user;
   private Boolean resolved;
   private Integer upvotes;
 
   public QuestionDto(Map<String, ?> values)
       throws IllegalArgumentException {
     try {
-      this.user = Integer.valueOf((String) values.get("user"));
       this.time = Long.valueOf((String) values.get("time"));
       this.summary = (String) values.get("summary");
       this.detail = (String) values.get("detail");
@@ -27,13 +29,17 @@ public class QuestionDto {
   }
 
   public QuestionDto(Question question) {
-    this.id = question.getId();
-    this.user = question.getUser().getId();
     this.time = question.getVideoTime().getTimeInMillis() / 1000;
     this.summary = question.getTitle();
     this.detail = question.getBody();
+    fill(question);
+  }
+
+  @Override
+  public void fill(Question question) {
+    this.id = question.getId();
+    this.user = question.getUser().getId();
     this.resolved = false;
     this.upvotes = question.getUpvotes().size();
   }
-
 }

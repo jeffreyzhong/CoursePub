@@ -40,7 +40,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 class WebSocketConfig implements WebSocketConfigurer {
 
   private enum MESSAGE_TYPE {
-    CONNECT, NEW_QUESTION, NEW_ANSWER, UPVOTE
+    CONNECT, NEW_QUESTION, NEW_ANSWER, UPVOTE, ERROR
   }
 
   private static final Logger logger =
@@ -81,15 +81,20 @@ class WebSocketConfig implements WebSocketConfigurer {
       }
 
       @Override
-      public void handleTextMessage(WebSocketSession session, TextMessage message)
-          throws IOException {
+      public void handleTextMessage(WebSocketSession session,
+                                    TextMessage message)
+          throws IOException, BadRequestException, UserNotFoundException {
         Integer id = (Integer) session.getAttributes().get("id");
         Map values = GSON.fromJson(message.getPayload(), Map.class);
 
-        Map<String, Object> payload = (Map<String, Object>) values.get("payload");
+        /* gets payload */
+        Map<String, Object> payload =
+            (Map<String, Object>) values.get("payload");
+        /* gets type */
         MESSAGE_TYPE type =
             MESSAGE_TYPE.values()[((Double) values.get("type")).intValue()];
 
+        /* gets user from principal */
         User user;
         try {
           user = userService.get(session.getPrincipal());
@@ -100,46 +105,66 @@ class WebSocketConfig implements WebSocketConfigurer {
 
         MESSAGE_TYPE responseType = type;
         Object responsePayload;
-        switch (type) {
-          case CONNECT:
-            logger.info("Connect from {}", session.getId());
-            responsePayload = ImmutableMap.of(
-                "message", String.format(
-                    "hello session %s, you are watching video %d, ",
-                    session.getId(), id)
-            );
-            break;
+        try {
+          switch (type) {
+            case CONNECT:
+              logger.info("Connect from {}", session.getId());
+              responsePayload = ImmutableMap.of(
+                  "message", String.format(
+                      "hello session %s, you are watching video %d, ",
+                      session.getId(), id)
+              );
+              break;
 
-          case NEW_QUESTION:
-            logger.info("New question from {}", session.getId());
-            QuestionDto questionDto = new QuestionDto(payload);
-            responsePayload = socketService.newQuestion(user, questionDto);
-            break;
+            case NEW_QUESTION:
+              logger.info("New question from {}", session.getId());
+              QuestionDto questionDto = new QuestionDto(payload);
+              socketService.newQuestion(user, questionDto);
+              responsePayload = questionDto;
+              break;
 
-          case NEW_ANSWER:
-            logger.info("Student answer from {}", session.getId());
-            ResponseDto responseDto = new ResponseDto(payload);
-            responsePayload = socketService.newAnswer(user, responseDto);
-            break;
+            case NEW_ANSWER:
+              logger.info("Student answer from {}", session.getId());
+              ResponseDto responseDto = new ResponseDto(payload);
+              socketService.newAnswer(user, responseDto);
+              responsePayload = responseDto;
+              break;
 
-          case UPVOTE:
-            logger.info("Upvote from {}", session.getId());
-            UpvoteDto upvoteDto = new UpvoteDto(payload);
-            responsePayload = socketService.upvote(user, upvoteDto);
-            break;
+            case UPVOTE:
+              logger.info("Upvote from {}", session.getId());
+              UpvoteDto upvoteDto = new UpvoteDto(payload);
+              socketService.upvote(user, upvoteDto);
+              responsePayload = upvoteDto;
+              break;
 
-          default:
-            responsePayload = Collections.emptyMap();
+            default:
+              responsePayload = Collections.emptyMap();
+          }
+        } catch (IllegalArgumentException e) {
+          String errorMessage = e.getMessage();
+          if (errorMessage == null) {
+            errorMessage = "";
+          }
+          responseType = MESSAGE_TYPE.ERROR;
+          responsePayload = ImmutableMap.of("message", errorMessage);
         }
 
+        /* builds response object */
         TextMessage response = new TextMessage(GSON.toJson(
             ImmutableMap.of(
                 "type", responseType.ordinal(),
                 "payload", responsePayload
             )
         ));
-        for (WebSocketSession other : sessions.get(id)) {
-          other.sendMessage(response);
+
+        if (responseType == MESSAGE_TYPE.ERROR) {
+          /* notifies session if error */
+          session.sendMessage(response);
+        } else {
+          /* sends update to everyone watching this video */
+          for (WebSocketSession other : sessions.get(id)) {
+            other.sendMessage(response);
+          }
         }
       }
 
