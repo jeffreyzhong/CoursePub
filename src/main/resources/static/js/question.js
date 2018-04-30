@@ -20,5 +20,26 @@ $(document).ready(function() {
           + ': \"' + detail + '\" at second ' + time + ', resolve status is '
           + resolved + '. ' + upvotes + ' people have upvoted.');
     }
+  });
+
+  $.post('/response', {
+    'id': 'q2',
+  }, function(responseJSON) {
+    let responseObject = JSON.parse(responseJSON);
+    console.log(responseObject);
+    for (let i = 0; i < responseObject.length; ++i) {
+      let response = responseObject[i];
+      let id = response['id'];
+      let questionId = response['questionId'];
+      let detail = response['detail'];
+      let userId = response['userId'];
+      let postDate = response['postDate'];
+      let postTime = response['postTime'];
+      let upvotes = response['upvotes'];
+
+      console.log('response (id ' + id + '): user ' + userId + ' replied : \"'
+          + detail + '\" at ' + postTime + ' on ' + postDate + ' to question '
+          + questionId + '. ' + upvotes + ' people have upvoted.');
+    }
   })
 });
