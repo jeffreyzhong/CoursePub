@@ -1,14 +1,16 @@
 package edu.brown.cs.termproject.service;
 
+import edu.brown.cs.termproject.dto.QuestionDto;
+import edu.brown.cs.termproject.dto.ResponseDto;
+import edu.brown.cs.termproject.dto.UpvoteDto;
 import edu.brown.cs.termproject.model.User;
 
-import java.util.Map;
 
 public interface SocketService {
 
-  Map<String, Object> newQuestion(User user, Map<String, ?> payload);
+  QuestionDto newQuestion(User user, QuestionDto questionDto);
 
-  Map<String, Object> newAnswer(User user, Map<String, ?> payload);
+  ResponseDto newAnswer(User user, ResponseDto responseDto);
 
-  Map<String, Object> upvote(User user, Map<String, ?> payload);
+  UpvoteDto upvote(User user, UpvoteDto upvoteDto);
 }

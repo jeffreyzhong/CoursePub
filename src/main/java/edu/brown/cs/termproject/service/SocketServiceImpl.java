@@ -1,13 +1,18 @@
 package edu.brown.cs.termproject.service;
 
 import com.google.common.collect.ImmutableMap;
+import edu.brown.cs.termproject.dto.QuestionDto;
+import edu.brown.cs.termproject.dto.ResponseDto;
+import edu.brown.cs.termproject.dto.UpvoteDto;
 import edu.brown.cs.termproject.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
 @Service
+@Transactional(readOnly = false)
 public class SocketServiceImpl implements SocketService {
 
   private QuestionService questionService;
@@ -21,17 +26,17 @@ public class SocketServiceImpl implements SocketService {
   }
 
   @Override
-  public Map<String, Object> newQuestion(User user, Map<String, ?> payload) {
-    return ImmutableMap.of("message", "NYI");
+  public QuestionDto newQuestion(User user, QuestionDto questionDto) {
+    return null;
   }
 
   @Override
-  public Map<String, Object> newAnswer(User user, Map<String, ?> payload) {
-    return ImmutableMap.of("message", "NYI");
+  public ResponseDto newAnswer(User user, ResponseDto responseDto) {
+    return null;
   }
 
   @Override
-  public Map<String, Object> upvote(User user, Map<String, ?> payload) {
-    return ImmutableMap.of("message", "NYI");
+  public UpvoteDto upvote(User user, UpvoteDto upvoteDto) {
+    return null;
   }
 }
