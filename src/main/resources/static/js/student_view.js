@@ -59,8 +59,14 @@ class Question{
 	}
 }
 
+const MESSAGE_TYPE = {
+	CONNECT: 0,
+	NEW_QUESTION: 1,
+	NEW_ANSWER: 2,
+	UPVOTE: 3
+};
 
-//let conn = new WebSocket("ws://localhost:4567/student_view")
+let conn;
 
 let questions = new Map();
 let questionsOrd = [];
@@ -101,8 +107,40 @@ let YT_ready = (function() {
 
 
 $(document).ready(() => {
+	let url = window.location.href;
+	let string = url.split("/");
+	let connection = "ws://localhost:4567/websocket/" + string[string.length-1];
+
+	conn = new WebSocket(connection);
+	conn.addEventListener('message', function (event) {
+		const data = JSON(event.data);
+	    switch (data.type) {
+	      default:
+	        console.log('Unknown message type!', data.type);
+	        break;
+	      case MESSAGE_TYPE.CONNECT:
+	        let payload = JSON.parse(data.payload);
+	        console.log(payload.msg);
+	        break;
+	      case MESSAGE_TYPE.NEW_QUESTION:
+	        let payload = JSON.parse(msg.payload);
+			let id = payload.id;
+			let time = payload.time;
+			let summary = payload.summary;
+			let detail = payload.detail;
+			let user = payload.user;
+			let resolved = payload.resolved;
+			let obj = new Question(id, summary, time, detail, user, resolved);
+			questions.set(obj.id, obj);
+		  	questionsOrd = questionsOrd.splice(locationOf(obj,questionsOrd,compare) + 1, 0, obj);
+			console.log("id: " + id + " summary: " + summary + " time: " + time);
+		  	questionDisplay();
+	        break;
+	    }
+	});
+
 	document.getElementById('noteBtn').onclick = noteClick;
-	document.getElementById('questionBtn').onclick = questionClick;
+	document.getElementById('questionBtn').onclick = questionClick	;
 	document.getElementById('relBtn').onclick = relClick;
 	document.getElementById('allQuestionsBtn').onclick = allClick;
 
@@ -121,7 +159,6 @@ $(document).ready(() => {
 	});
 
 	$("#noteBtn").click();
-	
 });
 
 
@@ -138,27 +175,19 @@ function loadQuestions(event){
 			let time = question.time;
 			let summary = question.summary;
 			let user = question.user;
-			let resolved = question.isResolved;
-			let obj = new Question(id, summary, time, "", user, resolved);
+			let resolved = question.resolved;
+			let detail = question.detail
+			let obj = new Question(id, summary, time, detail, user, resolved);
 			questions.set(obj.id, obj);
 		  	questionsOrd.push(obj);
 		}   
 		
 		questionsOrd = questionsOrd.sort(compare);
 		event.target.playVideo();
-	});
+	});	
 	
 }
 
-function compare(a,b) {
-  if (a.time < b.time){
-    return -1;
-  }
-  if (a.time > b.time){
-    return 1;
-  }
-  return 0;
-}
 
 
 //============================================================================
@@ -192,7 +221,15 @@ function allClick(){
 			renderQuestionList(text,ul);
 		}
 	}else{
-		document.getElementById('questionsList').style.display = "block";
+		let ul = document.getElementById('questionsList').style.display = "block";
+		while (ul.firstChild) {
+			ul.removeChild(ul.firstChild);
+		}
+		for(let i = 0; i < questionsOrd.length; i++){
+			let curr = questionsOrd[i];
+			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
+			renderQuestionList(text,ul);
+		}
 	}
 }
 
@@ -288,8 +325,20 @@ function stateChangeFunc(event) {
 
 //============================================================================
 //Below are code for action when post button is clicked
+// Setup the WebSocket connection for live updating of scores.
 
 
+const new_question = () => {
+  let tmp = $("input[name='board']").val();
+  let jsonObject = {type:1, board:tmp, text:guesses.join(" ")};
+  // obj.setProperty("type", MESSAGE_TYPE.SCORE);
+  // obj.setProperty("board", $("board"));
+  // obj.setProperty("text", $("guesses"));
+  conn.send(JSON.stringify({type: 1, payload: jsonObject}));
+  //conn.send(jsonObject);
+}
+
+function
 
 // check if the user input time is valid.
 function isValidTime(time){
@@ -390,6 +439,34 @@ Array.prototype.binarySearch = function(find, comparator) {
 	}
 	return null;
 };
+
+function locationOf(element, array, comparer, start, end) {
+    if (array.length === 0)
+        return -1;
+
+    start = start || 0;
+    end = end || array.length;
+    var pivot = (start + end) >> 1;  // should be faster than dividing by 2
+
+    var c = comparer(element, array[pivot]);
+    if (end - start <= 1) return c == -1 ? pivot - 1 : pivot;
+
+    switch (c) {
+        case -1: return locationOf(element, array, comparer, start, pivot);
+        case 0: return pivot;
+        case 1: return locationOf(element, array, comparer, pivot, end);
+    };
+}
+
+function compare(a,b) {
+  if (a.time < b.time){
+    return -1;
+  }
+  if (a.time > b.time){
+    return 1;
+  }
+  return 0;
+}
 
 //Convert seconds to "HH:MM:SS" format
 function convertSeconds(seconds){
