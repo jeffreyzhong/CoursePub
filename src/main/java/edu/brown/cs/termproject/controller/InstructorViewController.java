@@ -31,8 +31,11 @@ public class InstructorViewController {
       throw new ResourceNotFoundException();
     }
 
-    Map<String, Object> variables =
-        ImmutableMap.of("title", "Instructor View", "videoId", id);
+    Map<String, Object> variables = ImmutableMap.of(
+        "title", "Instructor View",
+        "videoId", id,
+        "videoUrl", video.getUrl()
+    );
 
     return new ModelAndView("instructorView", variables);
   }

@@ -1,6 +1,8 @@
 package edu.brown.cs.termproject.model;
 
+import com.google.common.collect.ImmutableMap;
 import edu.brown.cs.termproject.collect.PickySet;
+import edu.brown.cs.termproject.pageRank.PageRankNode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,12 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "course")
-public class Course {
+public class Course implements PageRankNode<User> {
 
   @Id
   @Column(name = "id")
@@ -87,6 +90,22 @@ public class Course {
 
   public void setVideos(Set<Video> videos) {
     this.videos = videos;
+  }
+
+  @Override
+  public Map<User, Double> getDsts() {
+    if (registrations.isEmpty()) {
+      return Collections.emptyMap();
+    }
+
+    ImmutableMap.Builder<User, Double> builder = ImmutableMap.builder();
+
+    double weight = 1 / registrations.size();
+    for (Registration registration : registrations) {
+      builder.put(registration.getUser(), weight);
+    }
+
+    return builder.build();
   }
 
   @Override
