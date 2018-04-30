@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import edu.brown.cs.termproject.model.Question;
-import edu.brown.cs.termproject.model.User;
 import edu.brown.cs.termproject.model.Video;
 import edu.brown.cs.termproject.service.QuestionService;
 import edu.brown.cs.termproject.service.ResponseService;
@@ -59,22 +58,6 @@ public class QuestionController {
     return GSON.toJson(ret.build());
   }
 
-  @PostMapping(path = "/reply")
-  @ResponseBody
-  public String reply(ReplyRequest request, User user) {
-    String questionId = request.getQuestionId();
-    String detail = request.getDetail();
-
-    Question question = questionService.ofId(questionId);
-    if (question == null) {
-      throw new ResourceNotFoundException();
-    }
-
-    responseService.add(user, question, detail);
-
-    return "";
-  }
-
   private static class QuestionRequest {
 
     private Integer id;
@@ -85,28 +68,6 @@ public class QuestionController {
 
     public void setId(Integer id) {
       this.id = id;
-    }
-  }
-
-  private static class ReplyRequest {
-
-    private String questionId;
-    private String detail;
-
-    public String getQuestionId() {
-      return questionId;
-    }
-
-    public void setQuestionId(String questionId) {
-      this.questionId = questionId;
-    }
-
-    public String getDetail() {
-      return detail;
-    }
-
-    public void setDetail(String detail) {
-      this.detail = detail;
     }
   }
 }

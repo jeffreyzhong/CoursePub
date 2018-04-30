@@ -36,6 +36,6 @@ public class StudentViewController {
             video.getRemarks().size(), video.getQuestions().size())
     );
 
-    return new ModelAndView("video", variables);
+    return new ModelAndView("videoStub", variables);
   }
 }

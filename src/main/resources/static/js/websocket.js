@@ -8,9 +8,8 @@ $(document).ready(function() {
 
   socket.onopen = function() {
     socket.send(JSON.stringify({
-      'payload': {
-        'name': 'this'
-      },
+      'type': 0,
+      'payload': {},
     }));
   };
 });

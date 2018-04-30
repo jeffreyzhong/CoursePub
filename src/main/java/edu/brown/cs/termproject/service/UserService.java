@@ -2,6 +2,7 @@ package edu.brown.cs.termproject.service;
 
 import edu.brown.cs.termproject.model.User;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface UserService {
@@ -12,5 +13,7 @@ public interface UserService {
 
   User ofId(Integer id);
 
-  User getOrAdd(String email);
+  User getOrAdd(Principal principal);
+
+  User get(Principal principal);
 }
