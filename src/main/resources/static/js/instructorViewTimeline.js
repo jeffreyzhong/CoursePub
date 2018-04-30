@@ -11,6 +11,7 @@ $(document).ready(function() {
 	let link = document.getElementById("videoFrame").src;
 	let linkId = extractVideoIdFromYouTubeUrl(link);
 	let url = 'https://img.youtube.com/vi/'+linkId+'/0.jpg';
+	let questionId;
 	videoThumbnail.src = url;
 	videoThumbnail.style.width = "50px";
 	videoThumbnail.style.height = "50px";
@@ -42,8 +43,8 @@ $(document).ready(function() {
 				let currQuestion = {id: newQuestion.id,
 					content : setContent(newQuestion.resolved,newQuestion.upvotes,newQuestion.user,colonTime),
 					summary : newQuestion.summary,
-					colonTime : "0:03:26",
-					start : new Date(0,0,0,parseInt(colonTime[0]),parseInt(colonTime[1]),parseInt(colonTime[2]),0),
+					colonTime : colonTime,
+					start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
 					fullQuestion : newQuestion.detail,
 					user : newQuestion.user};
 				addData.push(currQuestion);
@@ -97,6 +98,16 @@ $(document).ready(function() {
 		
 	});
 	instructorResponse.addEventListener('keydown', autosize);
+	window.addEventListener('resize', resizeSummary);
+	
+	function resizeSummary() {
+		let el = this;
+		setTimeout(function() {
+			console.log("here");
+			document.getElementById("displaySummary").style.cssText = 'height:; padding:0';
+			document.getElementById("displaySummary").style.cssText = 'height:' + el.scrollHeight + 'px';
+		},0);
+	}
 
 	function autosize(){
 	  let el = this;
@@ -116,7 +127,11 @@ $(document).ready(function() {
 //			$.post("/instructorResponse", postParameters, responseJSON => {
 //				let responseObject = JSON.parse(responseJSON);
 //			});
-
+			console.log(questionId);
+			let payload = {id : questionId, response : answer};
+			let toSend = JSON.stringify({type : MESSAGE_TYPE.NEW_ANSWER, payload : payload});
+			console.log(toSend);
+			conn.send(toSend);
 
 		}
 
@@ -225,13 +240,30 @@ $(document).ready(function() {
 			console.log("before select");
 			timeline.on('select', function (properties) {
 				console.log(properties);
-				let questionId = properties.items[0];
+				questionId = properties.items[0];
 				let summary = document.getElementById("displaySummary");
 				let question = document.getElementById("displayQuestion");
 				let info = items._data[questionId];
 				summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 				question.innerHTML = info.fullQuestion;
 			});
+			
+			timeline.on('mouseOver', function (properties) {
+				questionId = properties.item;
+				console.log(properties);
+				if (questionId != null && timeline.getSelection().length === 0) {
+					console.log(timeline.getSelection());
+					let info = items._data[questionId];
+					let summary = document.getElementById("displaySummary");
+					let question = document.getElementById("displayQuestion");
+					let sum = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
+					if (sum !== summary.innerHTML) {
+						summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
+						question.innerHTML = info.fullQuestion;
+					}
+				}
+			});
+
 		};	
 	}
 	

@@ -108,13 +108,13 @@ header {
     padding-left: 25px;
 }
 
-.instructorResponse {
-/*	 border: 2px solid pink; */
+#instructorResponse {
+	 border: 1px solid white; 
 /*    s-webkit-border-radius: 0px; */
 /*    -moz-border-radius: 10px; */
 /*    -webkit-transition-duration: 0.4s;*/
     transition-duration: 0.4s;
-    border-radius: 30px; 
+    border-radius: 10px; 
     outline: 0px; 
     height:auto; 
     width: 50vw; 
@@ -129,12 +129,6 @@ header {
 	font-style: normal;
 	font-variant: normal;
 	font-weight: 100;
-}
-
-#displayQuestion {
-    font-size: 15px;
-    width: 50vw;
-    word-wrap: break-word;
 }
 
 #thumbnailDiv {
@@ -177,7 +171,25 @@ header {
 }
 
 #displaySummary {
+    font-size: 26px;
+    border-radius: 10px;
+    border-color: white;
+    background: rgba(255, 255, 255, 0.2); 
+    color: black;
+    height: 40px;
+    width: 50vw;
+    word-wrap: break-word;
+}
+
+#displayQuestion {
     font-size: 20px;
+    border-radius: 10px;
+    border-color: white;
+    background: rgba(255, 255, 255, 0.8);
+    color: black;
+    height: 80px;
+    width: 50vw;
+    word-wrap: break-word;
 }
 
 #videoSection {

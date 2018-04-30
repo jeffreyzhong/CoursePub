@@ -9,9 +9,8 @@
 <!--The following script tag downloads a font from the Adobe Edge Web Fonts server for use within the web page. We recommend that you do not modify it.-->
 <script>var __adobewebfontsappname__="dreamweaver"</script>
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
-
+<#include "requestHeader.ftl">
 <script src="/static/node_modules/vis/dist/vis.js"></script>
-<script src="/static/js/jquery-3.1.1.js"></script>
 <script src="https://apis.google.com/js/client.js?onload=onClientLoad" type="text/javascript"></script>
 <script src="/static/js/instructorViewTimeline.js"></script>
 <link href="/static/node_modules/vis/dist/vis.css" rel="stylesheet" type="text/css"/>
@@ -27,6 +26,7 @@
 			background-color: transparent;
 			border-color: transparent;
 		}
+
 		.vis-item.vis-selected {
 			border-radius: 20px;
 			background-color: transparent;
@@ -79,8 +79,8 @@
 	<br>
 	<div id="clickedOnQuestion">
 		<div id="fullQuestion">
-            <div class="instructorResponse" id="displaySummary"></div>
-			<div class="instructorResponse" id="displayQuestion"></div><br>
+            <div id="displaySummary"></div>
+			<div id="displayQuestion"></div><br>
 			<textarea class="instructorResponse" id="instructorResponse"></textarea><br>
 			<input type="submit" id="submitResponseButton">
 		</div>
