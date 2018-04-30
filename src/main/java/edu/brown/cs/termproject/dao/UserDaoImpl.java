@@ -19,7 +19,6 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   public List<User> getAllUsers() {
-    System.out.println(entityManager.find(User.class, 1));
     String ql = "FROM User";
     return entityManager.createQuery(ql).getResultList();
   }
@@ -31,15 +30,26 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   public boolean hasEmail(String email) {
-    String ql = "SELECT u FROM User u WHERE u.email = ?1";
-    List ret =
-        entityManager.createQuery(ql).setParameter(1, email).getResultList();
+    String ql = "SELECT COUNT(u) FROM User u WHERE u.email = ?1";
+    Long ret = (Long) entityManager.createQuery(ql)
+        .setParameter(1, email).getSingleResult();
 
-    return ret.size() > 0;
+    assert (ret <= 1);
+
+    return ret > 0;
   }
 
   @Override
   public User ofId(Integer id) {
     return entityManager.find(User.class, id);
+  }
+
+  @Override
+  public User ofEmail(String email) {
+    String ql = "SELECT u FROM User u WHERE u.email = ?1";
+    return (User) entityManager
+        .createQuery(ql)
+        .setParameter(1, email)
+        .getSingleResult();
   }
 }

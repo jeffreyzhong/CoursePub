@@ -6,4 +6,6 @@ import edu.brown.cs.termproject.model.Video;
 public interface VideoService {
 
   Video add(String utl, Course course);
+
+  Video ofId(Integer id);
 }

@@ -25,6 +25,16 @@ public class VideoServiceImpl implements VideoService {
     video.setUrl(url);
     video.setCourse(course);
 
+    videoDao.add(video);
+
+    course.addVideo(video);
+
     return video;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public Video ofId(Integer id) {
+    return videoDao.ofId(id);
   }
 }

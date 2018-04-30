@@ -17,4 +17,9 @@ public class VideoDaoImpl implements VideoDao {
   public void add(Video video) {
     entityManager.persist(video);
   }
+
+  @Override
+  public Video ofId(Integer id) {
+    return entityManager.find(Video.class, id);
+  }
 }

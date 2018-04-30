@@ -2,7 +2,7 @@ package edu.brown.cs.termproject.service;
 
 import edu.brown.cs.termproject.model.User;
 
-import javax.validation.constraints.NotNull;
+import java.security.Principal;
 import java.util.List;
 
 public interface UserService {
@@ -12,4 +12,8 @@ public interface UserService {
   User add(String email);
 
   User ofId(Integer id);
+
+  User getOrAdd(Principal principal);
+
+  User get(Principal principal);
 }

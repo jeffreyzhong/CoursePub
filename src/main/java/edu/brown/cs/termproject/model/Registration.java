@@ -22,7 +22,7 @@ import java.util.Objects;
 public class Registration {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Integer id;
 
@@ -43,12 +43,19 @@ public class Registration {
   @Column(name = "type")
   private Integer type;
 
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
   public Course getCourse() {
     return course;
   }
 
   public void setCourse(Course course) {
-    course.register(this);
     this.course = course;
   }
 
@@ -57,7 +64,6 @@ public class Registration {
   }
 
   public void setUser(User user) {
-    user.register(this);
     this.user = user;
   }
 
