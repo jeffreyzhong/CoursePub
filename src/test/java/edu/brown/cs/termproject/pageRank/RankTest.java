@@ -15,12 +15,12 @@ public class RankTest {
     t2.setNodes(t1,t3);
     t3.setNodes(t1,t2);
 
-    List<TestPageRankNode> list = new ArrayList<>();
+    List<PageRankNode> list = new ArrayList<>();
     list.add(t1);
     list.add(t2);
     list.add(t3);
 
-    PageRank<TestPageRankNode> pr = new PageRank<>(list,1);
+    PageRank pr = new PageRank(list,1);
 
     System.out.println(pr.calc());
 

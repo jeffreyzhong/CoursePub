@@ -4,44 +4,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PageRank<P extends PageRankNode> {
+public class PageRank {
 
-  List<P> list;
+  List<PageRankNode> list;
   int srcNode;
 
-  public PageRank(List<P> nodeList, int src){
+  public PageRank(List<PageRankNode> nodeList, int src){
     list = nodeList;
     srcNode = src;
   }
 
-  public Map<P, Double> calc() {
+  public Map<PageRankNode, Double> calc() {
 
 
-    double dampingFactor = 0.6;
+    double dampingFactor = 0.4;
     double initialPageRank = 1.0 / (double)list.size();
-    Map<P, Double> tempRank = new HashMap<>();
-    Map<P, Double> curRank = new HashMap<>();
+    Map<PageRankNode, Double> tempRank = new HashMap<>();
+    Map<PageRankNode, Double> curRank = new HashMap<>();
 
     //initial setup
-    for (P p : list) {
+    for (PageRankNode p : list) {
       curRank.put(p, initialPageRank);
     }
 
     while (isDifferent(tempRank, curRank)) {
       tempRank = curRank;
       curRank = new HashMap<>();
-      for (P p : list) {
+      for (PageRankNode p : list) {
         curRank.put(p, 0.0);
       }
-      P srcP = list.get(srcNode);
+      PageRankNode srcP = list.get(srcNode);
       curRank.put(srcP, (1 - dampingFactor) * 1);
 
 
-      for (P p : list) {
+      for (PageRankNode p : list) {
         Double curWeight = tempRank.get(p);
-        Map<P, Double> destinations = p.getDsts();
+        Map<PageRankNode, Double> destinations = p.getDsts();
 
-        for (P destP : destinations.keySet()) {
+        for (PageRankNode destP : destinations.keySet()) {
           Double valueAdded = dampingFactor
               * curWeight * destinations.get(destP);
           Double value = curRank.get(destP);
@@ -56,19 +56,19 @@ public class PageRank<P extends PageRankNode> {
 
   }
 
-  private boolean isDifferent(Map<P, Double> tempRank,
-                              Map<P, Double> curRank) {
+  private boolean isDifferent(Map<PageRankNode, Double> tempRank,
+                              Map<PageRankNode, Double> curRank) {
     if(tempRank.size()!=curRank.size()){
       return true;
     }
 
     double cumulator = 0;
 
-    for(P p:list) {
+    for(PageRankNode p:list) {
       cumulator += Math.pow(tempRank.get(p) - curRank.get(p), 2);
     }
 
-    return cumulator<=0.01;
+    return cumulator>=0.0001;
   }
 
 }
