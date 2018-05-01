@@ -8,10 +8,12 @@ $(document).ready(function() {
 
   socket.onopen = function() {
     socket.send(JSON.stringify({
-      'type': 2,
+      'type': 1,
       'payload': {
-        'questionId': 1,
-        'detail': 'blah blah',
+        'videoId': 1,
+        'summary': 'ask this',
+        'detail': 'hey hey hey',
+        'questionTimestamp': '00:03:19',
       },
     }));
   };

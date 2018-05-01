@@ -1,17 +1,12 @@
 package edu.brown.cs.termproject.dto;
 
 import edu.brown.cs.termproject.model.Response;
+import edu.brown.cs.termproject.time.CalendarSerializer;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.Map;
 
 public class ResponseDto implements Dto<Response> {
-
-  private static final SimpleDateFormat dateFormat =
-      new SimpleDateFormat("yyyy-MM-dd");
-  private static final SimpleDateFormat timeFormat =
-      new SimpleDateFormat("hh:mm:ss");
 
   /* request */
   private Integer questionId;
@@ -26,7 +21,6 @@ public class ResponseDto implements Dto<Response> {
 
   public ResponseDto(Map<String, ?> values) throws IllegalArgumentException {
     try {
-      System.out.println(values.get("questionId").getClass() + ", " + values.get("questionId"));
       this.questionId = ((Double) values.get("questionId")).intValue();
       this.detail = (String) values.get("detail");
     } catch (Throwable t) {
@@ -42,12 +36,12 @@ public class ResponseDto implements Dto<Response> {
 
   @Override
   public void fill(Response response) {
-    Date time = response.getPostTime().getTime();
+    Calendar cal = response.getPostTime();
 
     this.id = response.getId();
     this.userId = response.getUser().getId();
-    this.postDate = dateFormat.format(time);
-    this.postTime = timeFormat.format(time);
+    this.postDate = CalendarSerializer.toDate(cal);
+    this.postTime = CalendarSerializer.toTime(cal);
     this.upvotes = response.getUpvotes().size();
   }
 
