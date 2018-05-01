@@ -81,10 +81,15 @@
 			<label id = "user4" class = "userLabel"></label>
 			<label id = "questionId4" class = "questionIdLabel"></label>
 		</div>	
-</div>
-</body>
+	</div>
+	
+	<div id = "answerDiv">
+		<label id = "answerLabel">Answer:</label>
+		<textarea class = "inputBox" id = "answerInput" placeholder="Answer a question!"></textarea>
+	</div>
 
 </div>
+</body>
 
 <script type="text/javascript" src="../static/js/jquery-3.1.1.js"></script>
 <script type="text/javascript" src="../static/js/student_view.js"></script>

@@ -73,8 +73,7 @@ let questionsOrd = [];
 let videoId = parseInt($('#videoId').html());
 
 let questionSel = false;
-let expanded = false;
-let viewState = 0;
+let expanded = -1;
 let refQuestionInt;
 
 let player; //Define a player object, to enable later function calls, without having to create a new class instance again.
@@ -131,12 +130,11 @@ $(document).ready(() => {
 			console.log("id: " + id + " time is " + time + " with summary " + summary + " and detail " + detail);
 			let obj = new Question(id, summary, time, detail, user, resolved);
 			questions.set(obj.id, obj);
-//		  	questionsOrd = questionsOrd.splice(locationOf(obj,questionsOrd) + 1, 0, obj);
 			questionsOrd.push(obj);
 			questionsOrd.sort(compare);
 			let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
 			let index = questionsOrd.binarySearch(questionStub, compare);
-			console.log("index" + index);
+			// console.log("index" + index);
 			questionDisplay(index);
 	        break;
 	    }
@@ -162,28 +160,24 @@ $(document).ready(() => {
 	});
 	setupSearchBar();
 	$("#summaryInput").focus(function() {
-	    $("#timeInput").val(convertSeconds(Math.floor(player.getCurrentTime())));
+		$("#timeInput").val(convertSeconds(Math.floor(player.getCurrentTime())));
 	});
+	$("#answerInput").keyup(function(ev) {
+	    // 13 is ENTER
+	    if (ev.which === 13) {
+	     	answerSubmit();
+		}
+	});	
 	$("#noteBtn").click();
 });
 
 function setupSearchBar(){
-//	$("#searchBar").focus(function() {
-//	    $(this).data("hasfocus", true);
-//	});
-//
-//	$("#searchBar").blur(function() {
-//	    $(this).data("hasfocus", false);
-//	});
-
 	$("#searchBar").keyup(function(ev) {
 	    // 13 is ENTER
-	    if (ev.which === 13 && $("#post").data("hasfocus")) {
+	    if (ev.which === 13 && $("#searchBar").val() !== "") {
 	     	const postParameters = {content: $("#searchBar").val()};
 			$.post("/question", postParameters, responseJSON => {
 				const responseObject = JSON.parse(responseJSON);
-
-	
 	    	});
 		}
 	});		
@@ -233,19 +227,19 @@ function stateChangeFunc(event) {
 
 function noteClick(){
 	hideContent();
-	expanded = false;
+	expanded = -1;
 	$("#question0").html("Hi Class, welcome to MATH 520 Linear Algebra. In this class, I will give a brief introduction to what linear algebra is and the basic concepts that would be taught in this course. Please take a second to watch this short video and get excited for a semester long journey exploring the power of linear algebra!");
 }
 
 function relClick(){
 	hideContent();
-	expanded = false;
+	expanded = -1;
 	$("#question0").html("No related video available at the moment");	
 }
 
 function allClick(){
 	questionSel = false;
-	expanded = false;
+	expanded = -1;
 	document.getElementById('responseList').style.height = "0px";
 	document.getElementById('responseList').style.display = "none";
 	let divs = document.getElementsByClassName("questionDiv");
@@ -293,7 +287,7 @@ function renderList(text, ul){
 
 function questionClick(){
 	questionSel = true;
-	expanded = false;
+	expanded = -1;
 	document.getElementById('responseList').style.height = "0px";
 	document.getElementById('responseList').style.display = "none";
 	if(document.getElementById('questionsList') !== null){
@@ -314,7 +308,7 @@ function refQuestion(){
 	if(player.getPlayerState() === 1){
 		let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
 		index = questionsOrd.binarySearch(questionStub, compare);
-		if(questionSel && !expanded && index !== null){
+		if(questionSel && expanded === -1 && index !== null){
 			questionDisplay(index);
 		}
 	}
@@ -327,6 +321,7 @@ function questionDisplay(index){
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "block";
 	}
+	divs[0].style.borderBottom = "none";
 	divs = document.getElementsByClassName("questionTimeLabel");
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "block";
@@ -374,24 +369,23 @@ function questionDisplay(index){
 //============================================================================
 //Below are code for display a particular question
 function openQuestion(){
-//	hideContent();
-//	document.getElementById("time0").style.display = "block";
-//	document.getElementById("user0").style.display = "block";
-	expanded = true;
+	var id = this.id.substring(this.id.length-1);
+	let idLabel = "#questionId" + id;
+	expanded = parseInt($(idLabel).html());
 	document.getElementById("questionDiv0").style.borderBottom = "2px solid #FFFFFF";
-	let id = this.id.substring(this.id.length-1);
 	let divs = document.getElementsByClassName("questionDiv");
-	for(let i = 0; i < divs.length; i++){
-		divs[i].onclick = null;
-	}
+//	for(let i = 0; i < divs.length; i++){
+//		divs[i].onclick = null;
+//	}
+	divs[0].onclick = null;
 	let questionId = "#question" + id;
 	let timeId = "#time" + id;
 	let userId = "#user" + id;
-	let idLabel = "#questionId" + id;
+	
 	$("#question0").html($(questionId).html());
 	$("#time0").html($(timeId).html());
 	$("#user0").html($(userId).html());
-	$("#questionId0").html($(idLabel).html());
+	$("#questionId0").html(expanded);
 	
 	let div = document.getElementById("responseList");
 	
@@ -414,12 +408,12 @@ function openQuestion(){
 	p.style.paddingBottom = "10px";
 	p.style.color = "white";
 	p.style.borderBottom = "2px solid #FFFFFF";
-	let qId = $("#questionId0").html();
-	let detail = questions.get(parseInt(qId)).detail;
+	console.log("expanded: " + expanded);
+	let detail = questions.get(parseInt(expanded)).detail;
 	p.innerHTML = "Question detail: " + detail;
 	div.appendChild(p);
 	
-	const postParameters = {id: qId};
+	const postParameters = {id: expanded};
 	$.post("/response", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
 
@@ -444,7 +438,6 @@ function openQuestion(){
 			let text = 'response (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	user: ' + userId + "<br>" + upvotes + ' people have upvoted.';
 			renderList(text,ul);
 		}
-		console.log("Time to seek to: " + parseFloat(convertTime($("#time0").html())));
 		player.seekTo(parseFloat(convertTime($("#time0").html())));
 	});		
 }
@@ -496,6 +489,29 @@ function isValidTime(time){
 	}
 	return true;
 }
+
+//============================================================================
+//Below is method to submit answer to a question to backend
+function answerSubmit(){
+	let questionId = expanded;
+	let detail = $("#answerInput").val();
+	if(questionId === -1){
+		alert("Please select a question before submitting your answer");
+		return;
+	}
+	if(detail === ""){
+		alert("Please write something down for your answer");
+		return;
+	}
+	
+	
+	let jsonObject = {questionId: questionId, detail:detail};
+	
+	conn.send(JSON.stringify({type: 2, payload: jsonObject}));
+	
+	$("#answerInput").val("");
+}
+
 
 
 //============================================================================
@@ -578,25 +594,6 @@ Array.prototype.binarySearch = function(find, comparator) {
 	}
 	return null;
 };
-
-function locationOf(element, array, comparer, start, end) {
-    if (array.length === 0){
-        return -1;
-	}
-	
-    start = start || 0;
-    end = end || array.length;
-    var pivot = (start + end) >> 1;  // should be faster than dividing by 2
-
-    var c = compare(element, array[pivot]);
-    if (end - start <= 1) return c == -1 ? pivot - 1 : pivot;
-
-    switch (c) {
-        case -1: return locationOf(element, array, comparer, start, pivot);
-        case 0: return pivot;
-        case 1: return locationOf(element, array, comparer, pivot, end);
-    };
-}
 
 function compare(a,b) {
   if (a.time < b.time){
