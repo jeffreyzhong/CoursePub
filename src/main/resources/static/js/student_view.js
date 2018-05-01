@@ -59,16 +59,21 @@ class Question{
 	}
 }
 
+const MESSAGE_TYPE = {
+	CONNECT: 0,
+	NEW_QUESTION: 1,
+	NEW_ANSWER: 2,
+	UPVOTE: 3
+};
 
-const $sideContent = $("#sideContent");
-
-//let conn = new WebSocket("ws://localhost:4567/student_view")
+let conn;
 
 let questions = new Map();
 let questionsOrd = [];
 let videoId = parseInt($('#videoId').html());
 
 let questionSel = false;
+let viewState = 0;
 let refQuestionInt;
 
 let player; //Define a player object, to enable later function calls, without having to create a new class instance again.
@@ -102,13 +107,40 @@ let YT_ready = (function() {
 
 
 $(document).ready(() => {
+	let connection = "ws://localhost:4567/websocket/" + videoId;
+
+	conn = new WebSocket(connection);
+	conn.addEventListener('message', function (event) {
+		const data = JSON.parse(event.data);
+//		let info = JSON.parse(data.payload);
+		console.log("from server: " + data.message);
+	    switch (data.type) {
+	      default:
+	        console.log('Unknown message type!', data.type);
+	        break;
+	      case MESSAGE_TYPE.CONNECT:
+	        console.log(data.payload.msg);
+	        break;
+	      case MESSAGE_TYPE.NEW_QUESTION:
+			let id = data.payload.id;
+			let time = data.payload.time;
+			let summary = data.payload.summary;
+			let detail = data.payload.detail;
+			let user = data.payload.user;
+			let resolved = data.payload.resolved;
+			let obj = new Question(id, summary, time, detail, user, resolved);
+			questions.set(obj.id, obj);
+		  	questionsOrd = questionsOrd.splice(locationOf(obj,questionsOrd) + 1, 0, obj);
+		  	questionDisplay();	
+	        break;
+	    }
+	});
+
 	document.getElementById('noteBtn').onclick = noteClick;
 	document.getElementById('questionBtn').onclick = questionClick;
 	document.getElementById('relBtn').onclick = relClick;
-	
-//	document
-	
-	
+	document.getElementById('allQuestionsBtn').onclick = allClick;
+	document.getElementById('submitBtn').onclick = postClick;
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -124,7 +156,6 @@ $(document).ready(() => {
 	});
 
 	$("#noteBtn").click();
-	
 });
 
 
@@ -132,7 +163,6 @@ function loadQuestions(event){
 	event.target.pauseVideo();
 	
 	const postParameters = {id: videoId};
-	
 	$.post("/question", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
 		
@@ -142,64 +172,103 @@ function loadQuestions(event){
 			let time = question.time;
 			let summary = question.summary;
 			let user = question.user;
-			let resolved = question.isResolved;
-			let obj = new Question(id, summary, time, "", user, resolved);
+			let resolved = question.resolved;
+			let detail = question.detail
+			let obj = new Question(id, summary, time, detail, user, resolved);
 			questions.set(obj.id, obj);
 		  	questionsOrd.push(obj);
 		}   
 		
 		questionsOrd = questionsOrd.sort(compare);
-		for(let i = 0; i < questionsOrd.length; ++i){
-			alert("question (id " + questionsOrd[i].id + " with summary " + questionsOrd[i].summary + " at second " + questionsOrd[i].time);
-		}
 		event.target.playVideo();
-	});
+	});	
 	
 }
 
-function compare(a,b) {
-  if (a.time < b.time){
-    return -1;
-  }
-  if (a.time > b.time){
-    return 1;
-  }
-  return 0;
+// Example: function stopCycle, bound to onStateChange
+function stateChangeFunc(event) {
+	if(event.data === 0 || event.data === 2){
+		clearInterval(refQuestionInt);
+	}else if(event.data === 1){
+		refQuestionInt = setInterval(refQuestion, 100);
+		if(duration === null){
+			duration = player.getDuration();
+		}
+	}
 }
-
 
 //============================================================================
 //Below are code for controls sideContentDiv (e.x. click on different tabs)
 
 function noteClick(){
-	questionSel = false;
-	let divs = document.getElementsByClassName("questionDiv");
-	for(let i = 1; i < divs.length; i++){
-		divs[i].style.display = "none";
-	}
-	divs[0].style.border = "none";
+	hideContent();
 	$("#question0").html("Hi Class, welcome to MATH 520 Linear Algebra. In this class, I will give a brief introduction to what linear algebra is and the basic concepts that would be taught in this course. Please take a second to watch this short video and get excited for a semester long journey exploring the power of linear algebra!");
 }
 
 function relClick(){
-	questionSel = false;
-	let divs = document.getElementsByClassName("questionDiv");
-	for(let i = 1; i < divs.length; i++){
-		divs[i].style.display = "none";
-	}
-	divs[0].style.border = "none";
+	hideContent();
 	$("#question0").html("No related video available at the moment");	
 }
 
+function allClick(){
+	questionSel = false;
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	if(document.getElementById('questionsList') === null){
+		let ul = document.createElement('ul');
+		ul.setAttribute('id','questionsList');
+		ul.style.listStyleType = "none";
+		ul.style.lineHeight = "30px";
+		ul.style.marginTop = "-5px";
+		ul.style.paddingRight = "20px";
+		document.getElementById("sideContentDiv").appendChild(ul);
+		for(let i = 0; i < questionsOrd.length; i++){
+			let curr = questionsOrd[i];
+			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
+			renderQuestionList(text,ul);
+		}
+	}else{
+		let ul = document.getElementById('questionsList');
+		while (ul.firstChild) {
+			ul.removeChild(ul.firstChild);
+		}
+		ul.style.display = "block";
+		for(let i = 0; i < questionsOrd.length; i++){
+			let curr = questionsOrd[i];
+			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
+			renderQuestionList(text,ul);
+		}
+	}
+}
+
+function renderQuestionList(text, ul){
+	let li = document.createElement('li');
+	li.setAttribute('class', 'item');
+	li.style.color = 'white';
+	ul.appendChild(li);
+	li.innerHTML = li.innerHTML + text;
+}
+
+
+
+//============================================================================
+//Below are code for automatic question display (e.x. click on different tabs)
+
+
 function questionClick(){
 	questionSel = true;
-	questionDisplay();
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
+	}
+	let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
+	let index = questionsOrd.binarySearch(questionStub, compare);
+	questionDisplay(index);
 }
 
 
 function refQuestion(){
-//	console.log("execute");
-
 	let index = 0;
 	if(player.getPlayerState() === 1){
 		let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
@@ -217,12 +286,14 @@ function questionDisplay(index){
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "block";
 	}
-	let questionsEle = document.getElementsByClassName("questions");
-	for(let i = 0; i < questionsEle.length; ++i){
-		let id = "#question" + i;
-		$(id).html("");
+	divs = document.getElementsByClassName("questionTimeLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "block";
 	}
-
+	divs = document.getElementsByClassName("userLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "block";
+	}
 	let min = Math.max(0, index-1);
 	if(min - 1 >= 0){
 		min -= 1;
@@ -233,34 +304,58 @@ function questionDisplay(index){
 	}
 	
 	let range = max - min;
-
-	for(let i = 0; i <= range; i++){
-		console.log("questionsOrd index is: " + min);
-		let id = "#question" + i;
-		$(id).html(questionsOrd[min].summary);
-		console.log(questionsOrd[min].summary);
+	let i;
+	for(i = 0; i <= range; i++){
+		let questionId = "#question" + i;
+		let timeId = "#time" + i;
+		let userId = "#user" + i;
+		$(questionId).html(questionsOrd[min].summary);
+		let time = convertSeconds(parseInt(questionsOrd[min].time));
+		$(timeId).html(time);
+		$(userId).html("User: " + questionsOrd[min].user);
 		min+=1;
 	}
+	for(let j = 4; j >= i; j--){
+		let questionId = "#question" + j;
+		let timeId = "#time" + j;
+		let userId = "#user" + j;
+		$(questionId).html("");
+		$(timeId).html("");
+		$(userId).html("");
+	}
+
 }
 
-// Example: function stopCycle, bound to onStateChange
-function stateChangeFunc(event) {
-	if(event.data === 0 || event.data === 2){
-		clearInterval(refQuestionInt);
-	}else if(event.data === 1){
-		refQuestionInt = setInterval(refQuestion, 1000);
-		if(duration === null){
-			duration = player.getDuration();
-		}
-	}
-}
+//============================================================================
+//Below are code for display a particular 
 
 
 
 //============================================================================
 //Below are code for action when post button is clicked
+// Setup the WebSocket connection for live updating of scores.
 
-
+function postClick(){
+	let summary = $("#summaryInput").val();
+	let time = $("#timeInput").val();
+	let detail = $("#detailInput").val();
+	if(summary === ""){
+		alert("Please input a summary!");
+		return;
+	}
+	if(!isValidTime(time)){
+		alert("Please input a correct time!");
+		return;
+	}
+	if(detail === ""){
+		alert("Please put in some explanation for your question!");
+		return;
+	}
+	let jsonObject = {video:videoId, summary:summary, time:time, detail:detail};
+	
+	conn.send(JSON.stringify({type: 1, payload: jsonObject}));
+	console.log("Question sent to server!");
+}
 
 // check if the user input time is valid.
 function isValidTime(time){
@@ -277,8 +372,6 @@ function isValidTime(time){
 	}
 	return true;
 }
-
-
 
 
 //============================================================================
@@ -330,31 +423,112 @@ function onYouTubePlayerAPIReady() {YT_ready(true)}
 
 
 //============================================================================
+//Below are miscellaneous helper functions
+
 //Binary search for the index of the closest question in the list
 Array.prototype.binarySearch = function(find, comparator) {
-  var low = 0, high = this.length - 1, i, comparison, prev_comparison;  
-  while (low <= high) {
-    i = Math.floor((low + high) / 2);
-    comparison = comparator(this[i], find);
-    prev_comparison = comparison
-    if (comparison < 0) { low = i + 1; continue; };
-    if (comparison > 0) { high = i - 1; continue; };
-    return i;
-  }
-  if (prev_comparison < 0) {
-      var option_low = i;
-      var option_high = i+1;
-  } else {
-      var option_low = i-1;
-      var option_high = i;
-  }
-  var dist_a = find - this[option_low];
-  var dist_b = this[option_high] - find;
-  if (dist_a < dist_b) {
-      return option_low;
-  } else {
-      return option_high;
-  }
-  return null;
+	var low = 0, high = this.length - 1, i, comparison, prev_comparison;  
+	while (low <= high) {
+	i = Math.floor((low + high) / 2);
+	comparison = comparator(this[i], find);
+	prev_comparison = comparison;
+	if (comparison < 0) { low = i + 1; continue; }
+	if (comparison > 0) { high = i - 1; continue; }
+	return i;
+	}
+	var option_low;
+	var option_high;
+	if (prev_comparison < 0) {
+	  option_low = i;
+	  option_high = i+1;
+	} else {
+	  option_low = i-1;
+	  option_high = i;
+	}
+	var dist_a = find - this[option_low];
+	var dist_b = this[option_high] - find;
+	if (dist_a < dist_b) {
+	  return option_low;
+	} else {
+	  return option_high;
+	}
+	return null;
 };
+
+function locationOf(element, array, comparer, start, end) {
+    if (array.length === 0)
+        return -1;
+
+    start = start || 0;
+    end = end || array.length;
+    var pivot = (start + end) >> 1;  // should be faster than dividing by 2
+
+    var c = compare(element, array[pivot]);
+    if (end - start <= 1) return c == -1 ? pivot - 1 : pivot;
+
+    switch (c) {
+        case -1: return locationOf(element, array, comparer, start, pivot);
+        case 0: return pivot;
+        case 1: return locationOf(element, array, comparer, pivot, end);
+    };
+}
+
+function compare(a,b) {
+  if (a.time < b.time){
+    return -1;
+  }
+  if (a.time > b.time){
+    return 1;
+  }
+  return 0;
+}
+
+//Convert seconds to "HH:MM:SS" format
+function convertSeconds(seconds){
+	let time = 0;
+	if(duration >= 3600){
+		let H = Math.floor(seconds / 3600);
+		seconds = seconds % 3600;
+		let M = Math.floor(seconds / 60);
+		seconds = seconds % 60;
+		
+		if(H < 10){
+			H = "0" + H;
+		}
+		if(M < 10){
+			M = "0" + M;
+		}
+		if(seconds < 10){
+			seconds = "0" + seconds;
+		}
+		time = H + ":" + M + ":" + seconds;
+	}else{
+		let M = Math.floor(seconds / 60);
+		seconds = seconds % 60;
+		
+		if(M < 10){
+			M = "0" + M;
+		}
+		if(seconds < 10){
+			seconds = "0" + seconds;
+		}
+		time = M + ":" + seconds;
+	}
+	return time;
+}
+
+function hideContent(){
+	questionSel = false;
+	document.getElementById("time0").style.display = "none";
+	document.getElementById("user0").style.display = "none";
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
+	}
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 1; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	divs[0].style.border = "none";
+	divs[0].style.display = "block";
+}
 
