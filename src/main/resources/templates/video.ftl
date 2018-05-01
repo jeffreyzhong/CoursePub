@@ -56,6 +56,7 @@
 			<label id = "user0" class = "userLabel"></label>
 			<label id = "questionId0" class = "questionIdLabel"></label>
 		</div>
+		<div id = "responseList"></div>
 		<div id="questionDiv1" class = "questionDiv">
 			<label id = "time1" class = "questionTimeLabel"></label>
 			<p id = "question1" class = "questions"></p>
