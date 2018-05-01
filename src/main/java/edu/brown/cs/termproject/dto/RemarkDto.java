@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class RemarkDto {
 
-  private String id;
+  private Integer id;
   private Integer user;
   private Long time;
   private String summary;

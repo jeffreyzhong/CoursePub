@@ -23,10 +23,10 @@ $(document).ready(function() {
   });
 
   $.post('/response', {
-    'id': 'q2',
+    'id': 2,
   }, function(responseJSON) {
     let responseObject = JSON.parse(responseJSON);
-    console.log(responseObject);
+
     for (let i = 0; i < responseObject.length; ++i) {
       let response = responseObject[i];
       let id = response['id'];

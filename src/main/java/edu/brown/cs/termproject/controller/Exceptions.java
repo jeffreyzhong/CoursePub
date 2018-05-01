@@ -26,3 +26,14 @@ class UserNotFoundException extends RuntimeException {
     super(e);
   }
 }
+
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+class BadRequestException extends RuntimeException {
+  BadRequestException() {
+  super();
+  }
+
+  BadRequestException(Exception e) {
+  super(e);
+  }
+}

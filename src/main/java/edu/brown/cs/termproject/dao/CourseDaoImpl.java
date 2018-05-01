@@ -15,7 +15,7 @@ public class CourseDaoImpl implements CourseDao {
 
   @Override
   public List<Course> getAllCourses() {
-    String ql = "FROM course";
+    String ql = "FROM Course";
     return entityManager.createQuery(ql).getResultList();
   }
 
