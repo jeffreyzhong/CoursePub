@@ -5,4 +5,35 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 class ResourceNotFoundException extends RuntimeException {
+
+  ResourceNotFoundException() {
+    super();
+  }
+
+  ResourceNotFoundException(Exception e) {
+    super(e);
+  }
+}
+
+@ResponseStatus(value = HttpStatus.FORBIDDEN)
+class UserNotFoundException extends RuntimeException {
+
+  UserNotFoundException() {
+    super();
+  }
+
+  UserNotFoundException(Exception e) {
+    super(e);
+  }
+}
+
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+class BadRequestException extends RuntimeException {
+  BadRequestException() {
+  super();
+  }
+
+  BadRequestException(Exception e) {
+  super(e);
+  }
 }

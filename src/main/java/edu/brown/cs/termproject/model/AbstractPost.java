@@ -1,12 +1,12 @@
 package edu.brown.cs.termproject.model;
 
 import edu.brown.cs.termproject.collect.PickySet;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -24,12 +24,8 @@ public abstract class AbstractPost<T extends AbstractUpvote> {
 
   @Id
   @Column(name = "id")
-  @GeneratedValue(generator = "uuid")
-  @GenericGenerator(
-      name = "uuid",
-      strategy = "uuid2"
-  )
-  private String id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
   @Column(name = "postTime")
   @Temporal(value = TemporalType.TIMESTAMP)
@@ -52,11 +48,11 @@ public abstract class AbstractPost<T extends AbstractUpvote> {
   )
   private Set<T> upvotes = new PickySet<>();
 
-  public String getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 
@@ -104,7 +100,7 @@ public abstract class AbstractPost<T extends AbstractUpvote> {
 
   @Override
   public String toString() {
-    return String.format("{%s: {id: %s, postTime: %s,},}",
+    return String.format("{%s: {id: %d, postTime: %s,},}",
         getTableName(), id, postTime);
   }
 

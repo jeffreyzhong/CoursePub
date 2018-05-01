@@ -12,7 +12,7 @@ body{
 }
 
 #container{
-	width:1600px;
+	width:1500px;
 	height: 900px;
 }
 
@@ -53,21 +53,21 @@ body{
 	float: left;
 	position: absolute;
 	width: 986px;
-	margin-left:7.5%;
+	margin-left:2.4%;
 	margin-top: 10px;
 }
 
 #timeDiv{
 	float: left;
 	position: absolute;
-	margin-left:7.5%;
+	margin-left:2.4%;
 	margin-top: 50px;
 	width:986px;
 }
 
 #detailDiv{
 	margin-top: 85px;
-	margin-left:7.5%;
+	margin-left:2.4%;
 	float:left;
 	position:absolute;
 	width:986px;
@@ -80,7 +80,7 @@ body{
 	width:85%;
 	height:0;
 	margin-top:15px;
-	margin-left:7.5%;
+	margin-left:2.4%;
 }
 .videoWrapper iframe {
 	position: absolute;
@@ -124,7 +124,6 @@ body{
 	color: #FFFFFF;
 	font-size: 20px;
 	font-weight: bolder;
-	color: #FFFFFF;
 }
 
 #timeLabel{
@@ -151,7 +150,7 @@ body{
 #right {
 	width: 450px;
 	height: 900px;
-	margin-left: 1078px;
+	margin-left: 1021px;
 	position:absolute;
 }
 
@@ -191,6 +190,8 @@ body{
 	color: #FFFFFF;
 	font-size: 20px;
 	text-align: justify;
+	overflow: hidden;
+	overflow-y: scroll;
 }
 
 .questionDiv{
@@ -202,7 +203,8 @@ body{
 }
 
 .questions{
-	color:#ddd;
+	color:#ffffff;
+	padding-right: 20px;
 }
 
 .questionTimeLabel{
@@ -214,11 +216,18 @@ body{
 .userLabel{
 	color: #ddd;
 	text-align: right;
+	padding-right: 20px;
 }
 
-#question0Div{
+.questionIdLabel{
+	display: none;
+	font-size: 1px;
+}
+
+#questionDiv0{
 	margin-top: -8px;
 }
+
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: #A7A7A7;
