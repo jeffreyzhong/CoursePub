@@ -6,5 +6,5 @@ public interface QuestionDao {
 
   void add(Question question);
 
-  Question ofId(String id);
+  Question ofId(Integer id);
 }

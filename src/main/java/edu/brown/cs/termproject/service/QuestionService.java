@@ -12,5 +12,5 @@ public interface QuestionService
 
   Question add(User user, Calendar videoTime, String title, String body, Video video);
 
-  Question ofId(String id);
+  Question ofId(Integer id);
 }
