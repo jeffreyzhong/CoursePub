@@ -15,9 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Comparator;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Controller
 public class PostController {
@@ -61,12 +59,13 @@ public class PostController {
       throw new ResourceNotFoundException();
     }
 
-    Set<Response> responses = question.getResponses();
-    return GSON.toJson(
-        responses.stream()
-            .map(ResponseDto::new)
-            .sorted(Comparator.comparing(ResponseDto::getId))
-            .collect(Collectors.toList()));
+    List<Response> responses = question.getResponses();
+    ImmutableList.Builder<ResponseDto> builder = ImmutableList.builder();
+    for (Response response : responses) {
+      builder.add(new ResponseDto(response));
+    }
+
+    return GSON.toJson(builder.build());
   }
 
   private static class IntegerIdRequest {
