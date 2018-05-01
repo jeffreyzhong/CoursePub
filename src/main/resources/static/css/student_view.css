@@ -4,7 +4,7 @@ input[type="number"] {
 
 
 * {
-	color: black;
+	color: white;
 }
 
 body{
@@ -17,18 +17,26 @@ body{
 }
 
 #header{
-	width: 100%;
+	display: inline-block;
 }
 
 .logo{
 	color:#FFFFFF;
 	font-size: 20px;
-	font-weight: bold;
+	font-weight: bolder;
 	font-style:normal;
 	text-align:undefined;
 	letter-spacing: 4px;
 	font-family: source-sans-pro;
 	margin-left: 25px;
+	width: 200px;
+}
+
+#searchBarTag{
+	font-family: source-sans-pro;
+	font-weight: bold;
+	letter-spacing: 1px;
+	margin-left:692px
 }
 
 .videoName{
@@ -39,6 +47,10 @@ body{
 	letter-spacing: 4px;
 	font-family: source-sans-pro;
 	margin-left: 25px;
+}
+
+#title{
+	color:white;
 }
 
 #left {
@@ -94,13 +106,21 @@ body{
 	border-radius:30px;
 	padding-left:10px;
 	padding-right:10px;
+	border: 2px solid #FFFFFF;
+}
+
+#searchBar{
+	margin-left:10px;
+	width: 400px;
+	height:20px;
+	font-size: 16px;
 }
 
 #summaryInput{
 	width: 833px;
 	height:25.5px;
 	font-size: 18px;
-	border: 2px solid #FFFFFF;
+	
 }
 
 #timeInput{
@@ -135,7 +155,7 @@ body{
 }
 
 #submitBtn{
-	margin-left:936px;
+	margin-left:875px;
 	margin-top: 300px;
 	color:#2D9AB7;
 	background-color: #FFFFFF;
@@ -210,7 +230,7 @@ body{
 .questionTimeLabel{
 	color: #ddd;
 	text-align: left;
-	font-size: 14px;
+	font-size: 16px;
 }
 
 .userLabel{

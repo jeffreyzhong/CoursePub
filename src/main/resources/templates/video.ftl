@@ -15,6 +15,7 @@
 <div id = "header">
 	<h4 class = "logo"> coursepub</h4>
 </div>
+<label id = "searchBarTag">Keep Exploring:</label><input class = "inputBox" id = "searchBar" placeholder="Learning begins here">
 <div class = "videoName">Essense of Linear Algebra</div>	
 <div id = "left" >		
 	<div class = "videoWrapper" id = "videoWrapper">
@@ -25,7 +26,6 @@
 		<label for="summary" class="inputBoxLabel">Summary:</label>
 		<input class = "inputBox" id = "summaryInput" placeholder="Summary">
 	</div>
-
 	<div id = "timeDiv">
 		<label for="time" class="inputBoxLabel" id = "timeLabel">Time:</label>
 	 	<input class = "inputBox" id = "timeInput" placeholder="00:00:00">

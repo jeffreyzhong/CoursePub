@@ -128,11 +128,16 @@ $(document).ready(() => {
 			let detail = data.payload.detail;
 			let user = data.payload.user;
 			let resolved = data.payload.resolved;
+			console.log("id: " + id + " time is " + time + " with summary " + summary + " and detail " + detail);
 			let obj = new Question(id, summary, time, detail, user, resolved);
 			questions.set(obj.id, obj);
-		  	questionsOrd = questionsOrd.splice(locationOf(obj,questionsOrd) + 1, 0, obj);
-		  	questionDisplay();	
-			
+//		  	questionsOrd = questionsOrd.splice(locationOf(obj,questionsOrd) + 1, 0, obj);
+			questionsOrd.push(obj);
+			questionsOrd.sort(compare);
+			let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
+			let index = questionsOrd.binarySearch(questionStub, compare);
+			console.log("index" + index);
+			questionDisplay(index);
 	        break;
 	    }
 	});
@@ -155,9 +160,34 @@ $(document).ready(() => {
 			});	
 		}	
 	});
-
+	setupSearchBar();
+	$("#summaryInput").focus(function() {
+	    $("#timeInput").val(convertSeconds(Math.floor(player.getCurrentTime())));
+	});
 	$("#noteBtn").click();
 });
+
+function setupSearchBar(){
+//	$("#searchBar").focus(function() {
+//	    $(this).data("hasfocus", true);
+//	});
+//
+//	$("#searchBar").blur(function() {
+//	    $(this).data("hasfocus", false);
+//	});
+
+	$("#searchBar").keyup(function(ev) {
+	    // 13 is ENTER
+	    if (ev.which === 13 && $("#post").data("hasfocus")) {
+	     	const postParameters = {content: $("#searchBar").val()};
+			$.post("/question", postParameters, responseJSON => {
+				const responseObject = JSON.parse(responseJSON);
+
+	
+	    	});
+		}
+	});		
+}
 
 
 function loadQuestions(event){
@@ -354,7 +384,6 @@ function openQuestion(){
 	for(let i = 0; i < divs.length; i++){
 		divs[i].onclick = null;
 	}
-	console.log(id);
 	let questionId = "#question" + id;
 	let timeId = "#time" + id;
 	let userId = "#user" + id;
@@ -386,7 +415,7 @@ function openQuestion(){
 	p.style.color = "white";
 	p.style.borderBottom = "2px solid #FFFFFF";
 	let qId = $("#questionId0").html();
-	let detail = questions.get(qId).detail;
+	let detail = questions.get(parseInt(qId)).detail;
 	p.innerHTML = "Question detail: " + detail;
 	div.appendChild(p);
 	
@@ -412,9 +441,11 @@ function openQuestion(){
 			let postDate = response.postDate;
 			let postTime = response.postTime;
 			let upvotes = response.upvotes;
-			let text = 'response (id ' + id + ')' + postDate + " " + postTime + '		' + detail + '	user: ' + userId + "<br>" + upvotes + ' people have upvoted.';
+			let text = 'response (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	user: ' + userId + "<br>" + upvotes + ' people have upvoted.';
 			renderList(text,ul);
 		}
+		console.log("Time to seek to: " + parseFloat(convertTime($("#time0").html())));
+		player.seekTo(parseFloat(convertTime($("#time0").html())));
 	});		
 }
 
@@ -438,10 +469,13 @@ function postClick(){
 		alert("Please put in some explanation for your question!");
 		return;
 	}
-	let jsonObject = {summary:summary, questionTimeStamp:time, detail:detail};
+	let jsonObject = {videoId: videoId, summary:summary, questionTimestamp:time, detail:detail};
 	
 	conn.send(JSON.stringify({type: 1, payload: jsonObject}));
-	console.log("Question sent to server!");
+	
+	$("#summaryInput").val("");
+	$("#timeInput").val("");
+	$("#detailInput").val("");
 }
 
 // check if the user input time is valid.
@@ -451,6 +485,9 @@ function isValidTime(time){
 		return false;
 	}
 	if(isNaN(timeArray[0])||isNaN(timeArray[1])||isNaN(timeArray[2])){
+		return false;
+	}
+	if(parseInt(timeArray[1]) >= 60 || parseInt(timeArray[2]) >= 60){
 		return false;
 	}
 	let sec = parseInt(timeArray[0])*3600 + parseInt(timeArray[1])*60 + parseInt(timeArray[2]);
@@ -603,6 +640,18 @@ function convertSeconds(seconds){
 		time = M + ":" + seconds;
 	}
 	return time;
+}
+
+//Convert seconds to "HH:MM:SS" format
+function convertTime(time){
+	let timeArr = time.split(":");
+	let seconds = 0;
+	if(duration >= 3600){
+		seconds = parseInt(timeArr[0])*3600 + parseFloat(timeArr[1])*60 + parseFloat(timeArr[2]);
+	}else{
+		seconds = parseFloat(timeArr[0])*60 + parseFloat(timeArr[1]);
+	}
+	return seconds;
 }
 
 function hideContent(){
