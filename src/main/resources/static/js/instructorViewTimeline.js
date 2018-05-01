@@ -12,6 +12,7 @@ $(document).ready(function() {
 	let linkId = extractVideoIdFromYouTubeUrl(link);
 	let url = 'https://img.youtube.com/vi/'+linkId+'/0.jpg';
 	let questionId;
+	let mouseoverId;
 	videoThumbnail.src = url;
 	videoThumbnail.style.width = "50px";
 	videoThumbnail.style.height = "50px";
@@ -24,7 +25,8 @@ $(document).ready(function() {
 	  	CONNECT: 0,
 		NEW_QUESTION: 1,
 		NEW_ANSWER: 2,
-		UPVOTE: 3
+		UPVOTE: 3, 
+		ERROR: 4
 	};
 	conn.addEventListener('message', function (event) {
 		let data = JSON.parse(event.data);
@@ -53,10 +55,13 @@ $(document).ready(function() {
 				
 				break;
 			case MESSAGE_TYPE.NEW_ANSWER:
-				
+				alert("success");
 				break;
 			case MESSAGE_TYPE.UPVOTE: 
 				
+				break;
+			case MESSAGE_TYPE.ERROR:
+				alert("error");
 				break;
 		}
 	});	
@@ -128,7 +133,7 @@ $(document).ready(function() {
 //				let responseObject = JSON.parse(responseJSON);
 //			});
 			console.log(questionId);
-			let payload = {id : questionId, response : answer};
+			let payload = {questionId : parseInt(questionId), detail : answer};
 			let toSend = JSON.stringify({type : MESSAGE_TYPE.NEW_ANSWER, payload : payload});
 			console.log(toSend);
 			conn.send(toSend);
@@ -249,11 +254,11 @@ $(document).ready(function() {
 			});
 			
 			timeline.on('mouseOver', function (properties) {
-				questionId = properties.item;
+				mouseoverId = properties.item;
 				console.log(properties);
-				if (questionId != null && timeline.getSelection().length === 0) {
+				if (mouseoverId != null && timeline.getSelection().length === 0) {
 					console.log(timeline.getSelection());
-					let info = items._data[questionId];
+					let info = items._data[mouseoverId];
 					let summary = document.getElementById("displaySummary");
 					let question = document.getElementById("displayQuestion");
 					let sum = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
