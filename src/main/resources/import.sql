@@ -3,19 +3,23 @@ INSERT INTO user (id, email) VALUES (2, 'song_yang@brown.edu');
 INSERT INTO user (id, email) VALUES (3, 'jeffrey_zhong@brown.edu');
 INSERT INTO user (id, email) VALUES (4, 'xinyang_zhou@brown.edu');
 INSERT INTO user (id, email) VALUES (5, 'john_jannotti@brown.edu');
+INSERT INTO user (id, email) VALUES (6, 'jzhong2468@gmail.com');
+INSERT INTO user (id, email) VALUES (7, 'yjnqin@gmail.com');
 
-INSERT INTO course (id, name) VALUES (1, 'Software Engineering');
-INSERT INTO course (id, name) VALUES (2, 'Linear Algebra');
+INSERT INTO course (id, name) VALUES (1, 'Linear Algebra');
+INSERT INTO course (id, name) VALUES (2, 'Software Engineering');
 
-INSERT INTO registration (id, type, course_id, user_id) VALUES (1, 0, 1, 1);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (2, 0, 1, 2);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (3, 0, 1, 3);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (4, 0, 1, 4);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (5, 0, 2, 1);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (6, 0, 2, 2);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (7, 0, 2, 3);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (8, 0, 2, 4);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (9, 1, 1, 5);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (1, 1, 1, 1);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (2, 1, 1, 2);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (3, 1, 1, 3);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (4, 1, 1, 4);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (5, 1, 2, 1);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (6, 1, 2, 2);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (7, 1, 2, 3);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (8, 1, 2, 4);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (9, 1, 2, 5);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (10, 0, 1, 6);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (11, 0, 1, 7);
 
 INSERT INTO video (id, url, course_id) VALUES (1, 'https://google.com', 1);
 

@@ -3,6 +3,7 @@ $(document).ready(function() {
 
   $.post('/question', {
     'id': id,
+    'responses': true
   }, function(responseJSON) {
     let responseObject = JSON.parse(responseJSON);
 

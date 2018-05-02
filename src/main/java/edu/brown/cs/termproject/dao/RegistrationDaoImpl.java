@@ -34,4 +34,16 @@ public class RegistrationDaoImpl implements RegistrationDao {
 
     return ret > 0;
   }
+
+  @Override
+  public Registration get(User user, Course course) {
+    String ql = "SELECT r FROM Registration r WHERE user = ?1 AND course = ?2";
+    Query query = entityManager.createQuery(ql);
+    query.setParameter(1, user);
+    query.setParameter(2, course);
+
+    Registration registration = (Registration) query.getSingleResult();
+
+    return registration;
+  }
 }

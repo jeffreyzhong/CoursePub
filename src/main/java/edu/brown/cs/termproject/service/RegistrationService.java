@@ -7,4 +7,6 @@ import edu.brown.cs.termproject.model.User;
 public interface RegistrationService {
 
   Registration add(User user, Course course, Integer type);
+
+  Registration get(User user, Course course);
 }
