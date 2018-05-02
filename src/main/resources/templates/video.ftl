@@ -15,6 +15,7 @@
 <div id = "header">
 	<h4 class = "logo"> coursepub</h4>
 </div>
+<label id = "searchBarTag">Keep Exploring:</label><input class = "inputBox" id = "searchBar" placeholder="Learning begins here">
 <div class = "videoName">Essense of Linear Algebra</div>	
 <div id = "left" >		
 	<div class = "videoWrapper" id = "videoWrapper">
@@ -25,7 +26,6 @@
 		<label for="summary" class="inputBoxLabel">Summary:</label>
 		<input class = "inputBox" id = "summaryInput" placeholder="Summary">
 	</div>
-
 	<div id = "timeDiv">
 		<label for="time" class="inputBoxLabel" id = "timeLabel">Time:</label>
 	 	<input class = "inputBox" id = "timeInput" placeholder="00:00:00">
@@ -50,36 +50,46 @@
 
 	<!-- Tab content -->
 	<div id="sideContentDiv" class="tabcontent" >
-		<div id="question0Div" class = "questionDiv">
+		<div id="questionDiv0" class = "questionDiv">
 			<label id = "time0" class = "questionTimeLabel"></label>
 			<p id = "question0" class = "questions"></p>
 			<label id = "user0" class = "userLabel"></label>
+			<label id = "questionId0" class = "questionIdLabel"></label>
 		</div>
-		<div id="question1Div" class = "questionDiv">
+		<div id = "responseList"></div>
+		<div id="questionDiv1" class = "questionDiv">
 			<label id = "time1" class = "questionTimeLabel"></label>
 			<p id = "question1" class = "questions"></p>
 			<label id = "user1" class = "userLabel"></label>
+			<label id = "questionId1" class = "questionIdLabel"></label>
 		</div>
-		<div id="question2Div" class = "questionDiv">
+		<div id="questionDiv2" class = "questionDiv">
 			<label id = "time2" class = "questionTimeLabel"></label>
 			<p id = "question2" class = "questions"></p>
 			<label id = "user2" class = "userLabel"></label>
+			<label id = "questionId2" class = "questionIdLabel"></label>
 		</div>
-		<div id="question3Div" class = "questionDiv">
+		<div id="questionDiv3" class = "questionDiv">
 			<label id = "time3" class = "questionTimeLabel"></label>
 			<p id = "question3" class = "questions"></p>
 			<label id = "user3" class = "userLabel"></label>
+			<label id = "questionId3" class = "questionIdLabel"></label>
 		</div>
-		<div id="question4Div" class = "questionDiv">
+		<div id="questionDiv4" class = "questionDiv">
 			<label id = "time4" class = "questionTimeLabel"></label>
 			<p id = "question4" class = "questions"></p>
 			<label id = "user4" class = "userLabel"></label>
+			<label id = "questionId4" class = "questionIdLabel"></label>
 		</div>	
 	</div>
-</div>
-</body>
+	
+	<div id = "answerDiv">
+		<label id = "answerLabel">Answer:</label>
+		<textarea class = "inputBox" id = "answerInput" placeholder="Answer a question!"></textarea>
+	</div>
 
 </div>
+</body>
 
 <script type="text/javascript" src="../static/js/jquery-3.1.1.js"></script>
 <script type="text/javascript" src="../static/js/student_view.js"></script>

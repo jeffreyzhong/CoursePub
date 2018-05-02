@@ -103,7 +103,7 @@ class WebSocketConfig implements WebSocketConfigurer {
           throw new UserNotFoundException(e);
         }
         assert (user != null);
-
+        logger.info("{}",payload);
         MESSAGE_TYPE responseType = type;
         Object responsePayload;
         try {
