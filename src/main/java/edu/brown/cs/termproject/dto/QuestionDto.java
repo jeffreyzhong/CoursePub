@@ -1,12 +1,11 @@
 package edu.brown.cs.termproject.dto;
 
+import edu.brown.cs.termproject.model.AbstractAnswer;
 import edu.brown.cs.termproject.model.Question;
 import edu.brown.cs.termproject.time.CalendarSerializer;
 
 import java.util.Calendar;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class QuestionDto implements Dto<Question> {
 
@@ -24,9 +23,7 @@ public class QuestionDto implements Dto<Question> {
   private Integer upvotes;
   private String postTime;
   private String postDate;
-
-  /* lazy */
-  private List<ResponseDto> responses;
+  private AnswerDto instructorAnswer;
 
   public QuestionDto(Map<String, ?> values)
       throws IllegalArgumentException {
@@ -51,6 +48,7 @@ public class QuestionDto implements Dto<Question> {
   @Override
   public void fill(Question question) {
     Calendar cal = question.getPostTime();
+    AbstractAnswer instructorAnswer = question.getInstructorAnswer();
 
     this.time = question.getVideoTime().getTimeInMillis() / 1000;
     this.id = question.getId();
@@ -59,13 +57,10 @@ public class QuestionDto implements Dto<Question> {
     this.upvotes = question.getUpvotes().size();
     this.postDate = CalendarSerializer.toDate(cal);
     this.postTime = CalendarSerializer.toTime(cal);
-  }
 
-  public void fillResponses(Question question) {
-    this.responses = question.getResponses()
-        .stream()
-        .map(ResponseDto::new)
-        .collect(Collectors.toList());
+    if (instructorAnswer != null) {
+      this.instructorAnswer = new AnswerDto(instructorAnswer);
+    }
   }
 
   public String getQuestionTimestamp() {

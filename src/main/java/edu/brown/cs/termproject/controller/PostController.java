@@ -8,7 +8,6 @@ import edu.brown.cs.termproject.model.Question;
 import edu.brown.cs.termproject.model.Response;
 import edu.brown.cs.termproject.model.Video;
 import edu.brown.cs.termproject.service.QuestionService;
-import edu.brown.cs.termproject.service.ResponseService;
 import edu.brown.cs.termproject.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,13 +42,7 @@ public class PostController {
 
     ImmutableList.Builder<QuestionDto> ret = ImmutableList.builder();
     for (Question question : video.getQuestions()) {
-      QuestionDto questionDto = new QuestionDto(question);
-
-      if (request.getResponses()) {
-        questionDto.fillResponses(question);
-      }
-
-      ret.add(questionDto);
+      ret.add(new QuestionDto(question));
     }
 
     return GSON.toJson(ret.build());
@@ -86,16 +79,6 @@ public class PostController {
     }
   }
 
-  private static class QuestionRequest extends Response {
-
-    private Boolean responses;
-
-    public Boolean getResponses() {
-      return responses;
-    }
-
-    public void setResponses(Boolean responses) {
-      this.responses = responses;
-    }
+  private static class QuestionRequest extends ResponseRequest {
   }
 }

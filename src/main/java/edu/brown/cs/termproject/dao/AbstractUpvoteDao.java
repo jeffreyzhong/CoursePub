@@ -1,11 +1,13 @@
-package edu.brown.cs.termproject.service;
+package edu.brown.cs.termproject.dao;
 
 import edu.brown.cs.termproject.model.AbstractPost;
 import edu.brown.cs.termproject.model.AbstractUpvote;
 import edu.brown.cs.termproject.model.User;
 
-public interface AbstractUpvoteService<T extends AbstractPost<? extends U>,
+public interface AbstractUpvoteDao<T extends AbstractPost<? extends U>,
     U extends AbstractUpvote<? extends T>> {
 
-  U upvote(User user, T post);
+  void add(U upvote);
+
+  boolean exists(User user, T post);
 }
