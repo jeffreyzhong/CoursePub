@@ -71,14 +71,15 @@ $(document).ready(function() {
 						console.log("RESPONSE OBJECT: " + responseObject[i]);
 						let response = responseObject[i];
 						tmpStr += response['detail']+"<br>";
-						detail.push(response['detail']);
+						toUpdate.responses.push({detail:response['detail']});
+						//detail.push(response['detail']);
 						
 						
 					}
 					displayResponse.innerHTML = tmpStr;
 				});
 				toUpdate.content = setContent(2,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
-				toUpdate.response = detail;
+				//toUpdate.responses = detail;
 				console.log("ITEMS AFTER: " + items);
 				timeline.setItems(items);
 				break;
@@ -94,7 +95,7 @@ $(document).ready(function() {
 	
 	
 	
-	let postParameters = {id:videoId responses:true};
+	let postParameters = {id:videoId, responses:true};
 	$.post("/question", postParameters, responseJSON => {
 		console.log("here");
 		let responseObject = JSON.parse(responseJSON);
@@ -108,6 +109,7 @@ $(document).ready(function() {
 			let resolved = question['resolved'];
 			let detail = question['detail'];
 			let responses = question['responses'];
+			console.log(question);
 			let formattedTime = moment().startOf('day').seconds(time).format('H,mm,ss');
 			let colonTime = moment().startOf('day').seconds(time).format('H:mm:ss');
 			console.log("formattedTime: " + formattedTime);
@@ -290,21 +292,23 @@ $(document).ready(function() {
 				if (info) {
 					summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 					question.innerHTML = info.fullQuestion;
-					if (info.response.length > 0) {
-						let res = info.response;
-						let tmpStr = "";
-						for (let i = 0; i < res.length; i++) {
-							tmpStr += res[i]+"<br>";
+					//if (info.responses) {
+						if (info.responses.length > 0) {
+							let res = info.responses;
+							let tmpStr = "";
+							for (let i = 0; i < res.length; i++) {
+								tmpStr += res[i].detail+"<br>";
+							}
+							response.innerHTML = tmpStr;
+						} else {
+							response.innerHTML = "No response yet! :(";
 						}
-						response.innerHTML = tmpStr;
-					} else {
-						response.innerHTML = "No response yet! :(";
-					}
+					//} 
 				} else {
-					summary.innerHTML = "";
-					question.innerHTML = "";
-					response.innerHTML = "";
-				}
+						summary.innerHTML = "";
+						question.innerHTML = "";
+						response.innerHTML = "";
+					}
 				
 			});
 			
@@ -321,16 +325,20 @@ $(document).ready(function() {
 					if (sum !== summary.innerHTML) {
 						summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 						question.innerHTML = info.fullQuestion;
-						if (info.response.length > 0) {
-							let res = info.response;
-							let currStr = ""
-							for (let i = 0; i < res.length; i++) {
-								currStr += res[i]+"<br>";
+						console.log(info);
+						//if (info.responses) {
+							if (info.responses.length > 0) {
+								let res = info.responses;
+								
+								let currStr = ""
+								for (let i = 0; i < res.length; i++) {
+									currStr += res[i].detail+"<br>";
+								}
+								response.innerHTML = currStr;
+							} else {
+								response.innerHTML = "No response yet! :(";
 							}
-							response.innerHTML = currStr;
-						} else {
-							response.innerHTML = "No response yet! :(";
-						}
+					//	}
 					}
 				}
 			});
@@ -340,12 +348,17 @@ $(document).ready(function() {
 	
 	function setContent(answered, numUpVotes,user,colonTime) {
 		let color = "";
-		if (answered === 0) {
-			color = "red";
-		} else if (answered === 1) {
-			color="yellow";
-		} else if (answered === 2) {
+//		if (answered === 0) {
+//			color = "red";
+//		} else if (answered === 1) {
+//			color="yellow";
+//		} else if (answered === 2) {
+//			color="green";
+//		}
+		if (answered) {
 			color="green";
+		} else {
+			color="red";
 		}
 		let padding = 7 + numUpVotes/5;
 		return '<div style="background-color:'+color+'; color:white; ' + 
