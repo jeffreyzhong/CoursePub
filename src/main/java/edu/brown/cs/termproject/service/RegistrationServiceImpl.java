@@ -40,4 +40,16 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     return registration;
   }
+
+  @Override
+  @Transactional(readOnly = true)
+  public Registration get(User user, Course course)
+      throws IllegalArgumentException {
+    if (!registrationDao.exists(user, course)) {
+      throw new IllegalArgumentException(
+          String.format("%s has not registered in %s.", user, course));
+    }
+
+    return registrationDao.get(user, course);
+  }
 }
