@@ -27,15 +27,14 @@ public class PostController {
 
   @Autowired
   public PostController(VideoService videoService,
-                        QuestionService questionService,
-                        ResponseService responseService) {
+                        QuestionService questionService) {
     this.videoService = videoService;
     this.questionService = questionService;
   }
 
   @PostMapping(path = "/question")
   @ResponseBody
-  public String question(IntegerIdRequest request) {
+  public String question(QuestionRequest request) {
     Video video = videoService.ofId(request.getId());
 
     if (video == null) {
@@ -44,7 +43,13 @@ public class PostController {
 
     ImmutableList.Builder<QuestionDto> ret = ImmutableList.builder();
     for (Question question : video.getQuestions()) {
-      ret.add(new QuestionDto(question));
+      QuestionDto questionDto = new QuestionDto(question);
+
+      if (request.getResponses()) {
+        questionDto.fillResponses(question);
+      }
+
+      ret.add(questionDto);
     }
 
     return GSON.toJson(ret.build());
@@ -52,7 +57,7 @@ public class PostController {
 
   @PostMapping(path = "/response")
   @ResponseBody
-  public String response(IntegerIdRequest request) {
+  public String response(ResponseRequest request) {
     Question question = questionService.ofId(request.getId());
 
     if (question == null) {
@@ -68,7 +73,7 @@ public class PostController {
     return GSON.toJson(builder.build());
   }
 
-  private static class IntegerIdRequest {
+  private static class ResponseRequest {
 
     private Integer id;
 
@@ -78,6 +83,19 @@ public class PostController {
 
     public void setId(Integer id) {
       this.id = id;
+    }
+  }
+
+  private static class QuestionRequest extends Response {
+
+    private Boolean responses;
+
+    public Boolean getResponses() {
+      return responses;
+    }
+
+    public void setResponses(Boolean responses) {
+      this.responses = responses;
     }
   }
 }

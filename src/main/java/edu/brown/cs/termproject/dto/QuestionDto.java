@@ -4,7 +4,9 @@ import edu.brown.cs.termproject.model.Question;
 import edu.brown.cs.termproject.time.CalendarSerializer;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class QuestionDto implements Dto<Question> {
 
@@ -22,6 +24,9 @@ public class QuestionDto implements Dto<Question> {
   private Integer upvotes;
   private String postTime;
   private String postDate;
+
+  /* lazy */
+  private List<ResponseDto> responses;
 
   public QuestionDto(Map<String, ?> values)
       throws IllegalArgumentException {
@@ -54,6 +59,13 @@ public class QuestionDto implements Dto<Question> {
     this.upvotes = question.getUpvotes().size();
     this.postDate = CalendarSerializer.toDate(cal);
     this.postTime = CalendarSerializer.toTime(cal);
+  }
+
+  public void fillResponses(Question question) {
+    this.responses = question.getResponses()
+        .stream()
+        .map(ResponseDto::new)
+        .collect(Collectors.toList());
   }
 
   public String getQuestionTimestamp() {
