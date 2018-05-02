@@ -1,6 +1,6 @@
 <#assign content>
 
-  <script src="/static/js/websocket.js"></script>
+  <script src="/static/js/${which}.js"></script>
 
   <p>The video url is ${videoUrl}</p>
 
