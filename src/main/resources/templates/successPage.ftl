@@ -5,7 +5,7 @@
       location.href = "/";
     }, 5000);
   });</script>
-  <p>Welcome to lecturepub, ${whoami}. Redirecting you to homepage in 5 seconds.</p>
+  <p>Welcome to coursepub, ${whoami}. Redirecting you to homepage in 5 seconds.</p>
 </#assign>
 
 <#include "main.ftl">

@@ -1,13 +1,12 @@
 package edu.brown.cs.termproject.model;
 
-import edu.brown.cs.termproject.collect.PickySet;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "question")
@@ -15,16 +14,16 @@ public class Question extends AbstractMasterPost<QuestionUpvote> {
 
   @OneToMany(
       cascade = CascadeType.ALL,
-      mappedBy = "question",
-      fetch = FetchType.EAGER
+      mappedBy = "question"
   )
-  private Set<Response> responses = new PickySet<>();
+  @OrderBy(value = "postTime")
+  private List<Response> responses = new ArrayList<>();
 
-  public Set<Response> getResponses() {
+  public List<Response> getResponses() {
     return responses;
   }
 
-  public void setResponses(Set<Response> responses) {
+  public void setResponses(List<Response> responses) {
     this.responses = responses;
   }
 
