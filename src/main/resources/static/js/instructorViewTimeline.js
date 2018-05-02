@@ -31,13 +31,13 @@ $(document).ready(function() {
 	conn.addEventListener('message', function (event) {
 		let data = JSON.parse(event.data);
 		console.log('Message from server: ', data);
-		
+		let newQuestion = data.payload;
 		switch (data.type) {
 			default: 
 				console.log("Unknown data type");
 				break;
 			case MESSAGE_TYPE.NEW_QUESTION:
-				let newQuestion = data.payload.new_question;
+				
 				let formattedTime = moment().startOf('day').seconds(newQuestion.time).format('H,mm,ss');
 				let colonTime = moment().startOf('day').seconds(newQuestion.time).format('H:mm:ss');
 				//console.log("formattedTime: " + formattedTime);
@@ -49,13 +49,38 @@ $(document).ready(function() {
 					start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
 					fullQuestion : newQuestion.detail,
 					user : newQuestion.user};
+				console.log("currQuestion: " + currQuestion);
 				addData.push(currQuestion);
 				timeline.setItems(addData);	
+				console.log("added");
 				items = new vis.DataSet(addData);
 				
 				break;
 			case MESSAGE_TYPE.NEW_ANSWER:
-				alert("success");
+				//alert("success");
+				let questionId = newQuestion.questionId;
+				let toUpdate = items._data[questionId];
+				console.log("ITEMS BEFORE: " + items);
+				let postParameters = {id:questionId};
+				let detail = [];
+				let displayResponse = document.getElementById("displayResponse");
+				let tmpStr = "";
+				$.post("/response",postParameters,responseJSON => {
+					let responseObject = JSON.parse(responseJSON);
+					for (let i = 0; i < responseObject.length; i++) {
+						console.log("RESPONSE OBJECT: " + responseObject[i]);
+						let response = responseObject[i];
+						tmpStr += response['detail']+"<br>";
+						detail.push(response['detail']);
+						
+						
+					}
+					displayResponse.innerHTML = tmpStr;
+				});
+				toUpdate.content = setContent(2,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
+				toUpdate.response = detail;
+				console.log("ITEMS AFTER: " + items);
+				timeline.setItems(items);
 				break;
 			case MESSAGE_TYPE.UPVOTE: 
 				
@@ -69,7 +94,7 @@ $(document).ready(function() {
 	
 	
 	
-	let postParameters = {id:videoId};
+	let postParameters = {id:videoId responses:true};
 	$.post("/question", postParameters, responseJSON => {
 		console.log("here");
 		let responseObject = JSON.parse(responseJSON);
@@ -81,7 +106,8 @@ $(document).ready(function() {
 			let summary = question['summary'];
 			let user = question['user'];
 			let resolved = question['resolved'];
-			let detail = question['detail'];			
+			let detail = question['detail'];
+			let responses = question['responses'];
 			let formattedTime = moment().startOf('day').seconds(time).format('H,mm,ss');
 			let colonTime = moment().startOf('day').seconds(time).format('H:mm:ss');
 			console.log("formattedTime: " + formattedTime);
@@ -89,10 +115,13 @@ $(document).ready(function() {
 			console.log("user id: " + user);
 			let currQuestion = {id: id,
 			content : setContent(resolved,30,user,colonTime),
+			resolved : resolved,
+			numVotes : 30,
 			summary : summary,
 			colonTime : colonTime,
 			start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
 			fullQuestion : detail,
+			responses : responses,
 			user : user};
 			addData.push(currQuestion);
 			console.log(addData);
@@ -137,6 +166,14 @@ $(document).ready(function() {
 			let toSend = JSON.stringify({type : MESSAGE_TYPE.NEW_ANSWER, payload : payload});
 			console.log(toSend);
 			conn.send(toSend);
+			instructorResponse.value = "";
+
+
+
+			
+			
+			// TELL JERRY TO AUTOMATICALLY SET THIS QUESTION TO RESOLVED
+			
 
 		}
 
@@ -248,23 +285,52 @@ $(document).ready(function() {
 				questionId = properties.items[0];
 				let summary = document.getElementById("displaySummary");
 				let question = document.getElementById("displayQuestion");
+				let response = document.getElementById("displayResponse");
 				let info = items._data[questionId];
-				summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
-				question.innerHTML = info.fullQuestion;
+				if (info) {
+					summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
+					question.innerHTML = info.fullQuestion;
+					if (info.response.length > 0) {
+						let res = info.response;
+						let tmpStr = "";
+						for (let i = 0; i < res.length; i++) {
+							tmpStr += res[i]+"<br>";
+						}
+						response.innerHTML = tmpStr;
+					} else {
+						response.innerHTML = "No response yet! :(";
+					}
+				} else {
+					summary.innerHTML = "";
+					question.innerHTML = "";
+					response.innerHTML = "";
+				}
+				
 			});
 			
 			timeline.on('mouseOver', function (properties) {
 				mouseoverId = properties.item;
-				console.log(properties);
+				//console.log(properties);
 				if (mouseoverId != null && timeline.getSelection().length === 0) {
-					console.log(timeline.getSelection());
+				//	console.log(timeline.getSelection());
 					let info = items._data[mouseoverId];
 					let summary = document.getElementById("displaySummary");
 					let question = document.getElementById("displayQuestion");
+					let response = document.getElementById("displayResponse");
 					let sum = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 					if (sum !== summary.innerHTML) {
 						summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 						question.innerHTML = info.fullQuestion;
+						if (info.response.length > 0) {
+							let res = info.response;
+							let currStr = ""
+							for (let i = 0; i < res.length; i++) {
+								currStr += res[i]+"<br>";
+							}
+							response.innerHTML = currStr;
+						} else {
+							response.innerHTML = "No response yet! :(";
+						}
 					}
 				}
 			});
@@ -274,10 +340,12 @@ $(document).ready(function() {
 	
 	function setContent(answered, numUpVotes,user,colonTime) {
 		let color = "";
-		if (answered) {
-			color = "green";
-		} else {
-			color="red";
+		if (answered === 0) {
+			color = "red";
+		} else if (answered === 1) {
+			color="yellow";
+		} else if (answered === 2) {
+			color="green";
 		}
 		let padding = 7 + numUpVotes/5;
 		return '<div style="background-color:'+color+'; color:white; ' + 

@@ -29,7 +29,7 @@
         <li><a href="#hero">home</a></li>
         <li><a href="#about">courses</a></li>
         <li> <a href="#contact">about</a></li>
-        <li> <a id="account" href="/account">sign in/sign up</a></li>
+        <li> <a id="account" href="/login/google">sign in/sign up</a></li>
       </ul>
     </nav>
   </header>

@@ -59,7 +59,6 @@
         <li><a href="/hello">home</a></li>
         <li><a href="#about">courses</a></li>
         <li> <a href="#contact">about</a></li>
-        <li> <a id="account" href="/account">sign in/sign up</a></li>
       </ul>
     </nav>
   </header>
@@ -79,8 +78,9 @@
 	<br>
 	<div id="clickedOnQuestion">
 		<div id="fullQuestion">
-            <div id="displaySummary"></div>
-			<div id="displayQuestion"></div><br>
+            <div class="displaySection" id="displaySummary"></div>
+			<div class="displaySection" id="displayQuestion"></div>
+            <div class="displaySection" id="displayResponse"></div><br>
 			<textarea class="instructorResponse" id="instructorResponse"></textarea><br>
 			<input type="submit" id="submitResponseButton">
 		</div>

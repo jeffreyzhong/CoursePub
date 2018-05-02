@@ -172,24 +172,29 @@ header {
 
 #displaySummary {
     font-size: 26px;
+    height: 40px;
+    width: 50vw;
+
+}
+
+.displaySection {
     border-radius: 10px;
     border-color: white;
     background: rgba(255, 255, 255, 0.2); 
     color: black;
-    height: 40px;
-    width: 50vw;
-    word-wrap: break-word;
+    word-wrap: break-word; 
 }
 
 #displayQuestion {
     font-size: 20px;
-    border-radius: 10px;
-    border-color: white;
-    background: rgba(255, 255, 255, 0.8);
-    color: black;
     height: 80px;
     width: 50vw;
-    word-wrap: break-word;
+}
+
+#displayResponse {
+    font-size: 20px;
+    height: 40px;
+    width: 50vw;
 }
 
 #videoSection {
