@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
+import edu.brown.cs.termproject.dto.AnswerDto;
 import edu.brown.cs.termproject.dto.QuestionDto;
 import edu.brown.cs.termproject.dto.ResponseDto;
 import edu.brown.cs.termproject.dto.UpvoteDto;
@@ -40,7 +41,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 class WebSocketConfig implements WebSocketConfigurer {
 
   private enum MESSAGE_TYPE {
-    CONNECT, NEW_QUESTION, NEW_ANSWER, UPVOTE, ERROR
+    CONNECT, NEW_QUESTION, NEW_RESPONSE, UPVOTE, INSTRUCTOR_ANSWER, ERROR
   }
 
   private static final Logger logger =
@@ -123,10 +124,10 @@ class WebSocketConfig implements WebSocketConfigurer {
               responsePayload = questionDto;
               break;
 
-            case NEW_ANSWER:
-              logger.info("Student answer from {}", session.getId());
+            case NEW_RESPONSE:
+              logger.info("Response from {}", session.getId());
               ResponseDto responseDto = new ResponseDto(payload);
-              socketService.newAnswer(user, responseDto);
+              socketService.newResponse(user, responseDto);
               responsePayload = responseDto;
               break;
 
@@ -137,10 +138,17 @@ class WebSocketConfig implements WebSocketConfigurer {
               responsePayload = upvoteDto;
               break;
 
+            case INSTRUCTOR_ANSWER:
+              logger.info("Instructor answer from {}", session.getId());
+              AnswerDto answerDto = new AnswerDto(payload);
+              socketService.instructorAnswer(user, answerDto);
+              responsePayload = answerDto;
+              break;
+
             default:
               responsePayload = Collections.emptyMap();
           }
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
           String errorMessage = e.getMessage();
           if (errorMessage == null) {
             errorMessage = "";

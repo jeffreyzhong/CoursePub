@@ -37,15 +37,7 @@ public class InstructorViewController {
       throw new ResourceNotFoundException();
     }
 
-    try {
-      Registration registration =
-          registrationService.get(user, video.getCourse());
-
-      if (registration.getType() != 1) {
-        throw new UserNotFoundException();
-      }
-
-    } catch (IllegalArgumentException e) {
+    if (!registrationService.isInstructor(user, video.getCourse())) {
       throw new UserNotFoundException();
     }
 

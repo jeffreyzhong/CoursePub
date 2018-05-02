@@ -38,3 +38,5 @@ INSERT INTO question_upvote (id, post_id, user_id) VALUES (2, 3, 3);
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (3, 3, 4);
 
 INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (1, 'You are dumb jerry', 2, 2, '2018-04-12 05:58:19');
+
+INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (1, 'You are officially dumb jerry', 5, 2, '2018-04-13 04:12:57');

@@ -8,5 +8,5 @@ public interface RegistrationService {
 
   Registration add(User user, Course course, Integer type);
 
-  Registration get(User user, Course course);
+  boolean isInstructor(User user, Course course);
 }

@@ -43,13 +43,11 @@ public class RegistrationServiceImpl implements RegistrationService {
 
   @Override
   @Transactional(readOnly = true)
-  public Registration get(User user, Course course)
-      throws IllegalArgumentException {
+  public boolean isInstructor(User user, Course course) {
     if (!registrationDao.exists(user, course)) {
-      throw new IllegalArgumentException(
-          String.format("%s has not registered in %s.", user, course));
+      return false;
     }
 
-    return registrationDao.get(user, course);
+    return registrationDao.get(user, course).getType() == 1;
   }
 }
