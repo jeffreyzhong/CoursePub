@@ -187,7 +187,7 @@ function setupSearchBar(){
 function loadQuestions(event){
 	event.target.pauseVideo();
 	
-	const postParameters = {id: videoId, responses: false};
+	const postParameters = {id: videoId};
 	$.post("/question", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
 		

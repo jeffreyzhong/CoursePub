@@ -13,6 +13,11 @@ $(document).ready(function() {
 	let url = 'https://img.youtube.com/vi/'+linkId+'/0.jpg';
 	let questionId;
 	let mouseoverId;
+	document.getElementById("displaySummary").innerHTML = " ";
+	document.getElementById("displayQuestion").innerHTML = " ";
+	document.getElementById("displayInstructorAnswer").innerHTML = " ";
+	document.getElementById("displayStudentAnswer").innerHTML = " ";
+	document.getElementById("displayThread").innerHTML = " ";
 	videoThumbnail.src = url;
 	videoThumbnail.style.width = "50px";
 	videoThumbnail.style.height = "50px";
@@ -24,9 +29,10 @@ $(document).ready(function() {
 	const MESSAGE_TYPE = {
 	  	CONNECT: 0,
 		NEW_QUESTION: 1,
-		NEW_ANSWER: 2,
-		UPVOTE: 3, 
-		ERROR: 4
+		NEW_RESPONSE: 2,
+		UPVOTE: 3,
+		INSTRUCTOR_ANSWER : 4,
+		ERROR: 5
 	};
 	conn.addEventListener('message', function (event) {
 		let data = JSON.parse(event.data);
@@ -58,26 +64,7 @@ $(document).ready(function() {
 				break;
 			case MESSAGE_TYPE.NEW_ANSWER:
 				//alert("success");
-				let questionId = newQuestion.questionId;
-				let toUpdate = items._data[questionId];
-				console.log("ITEMS BEFORE: " + items);
-				let postParameters = {id:questionId};
-				let detail = [];
-				let displayResponse = document.getElementById("displayResponse");
-				let tmpStr = "";
-				$.post("/response",postParameters,responseJSON => {
-					let responseObject = JSON.parse(responseJSON);
-					for (let i = 0; i < responseObject.length; i++) {
-						console.log("RESPONSE OBJECT: " + responseObject[i]);
-						let response = responseObject[i];
-						tmpStr += response['detail']+"<br>";
-						toUpdate.responses.push({detail:response['detail']});
-						//detail.push(response['detail']);
-						
-						
-					}
-					displayResponse.innerHTML = tmpStr;
-				});
+
 				toUpdate.content = setContent(2,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
 				//toUpdate.responses = detail;
 				console.log("ITEMS AFTER: " + items);
@@ -86,6 +73,16 @@ $(document).ready(function() {
 			case MESSAGE_TYPE.UPVOTE: 
 				
 				break;
+			case MESSAGE_TYPE.INSTRUCTOR_ANSWER:
+				let questionId = newQuestion.questionId;
+				let toUpdate = items._data[questionId];
+				console.log("ITEMS BEFORE: " + items);
+				let detail = [];
+				let instructorAnswer = document.getElementById("displayInstructorAnswer");
+				let tmpStr = "";
+				instructorAnswer.innerHTML = items._data[questionId].instructorAnswer.detail;
+
+				break
 			case MESSAGE_TYPE.ERROR:
 				alert("error");
 				break;
@@ -95,7 +92,7 @@ $(document).ready(function() {
 	
 	
 	
-	let postParameters = {id:videoId, responses:true};
+	let postParameters = {id:videoId};
 	$.post("/question", postParameters, responseJSON => {
 		console.log("here");
 		let responseObject = JSON.parse(responseJSON);
@@ -108,7 +105,7 @@ $(document).ready(function() {
 			let user = question['user'];
 			let resolved = question['resolved'];
 			let detail = question['detail'];
-			let responses = question['responses'];
+			let instructorAnswer = question['instructorAnswer'];
 			console.log(question);
 			let formattedTime = moment().startOf('day').seconds(time).format('H,mm,ss');
 			let colonTime = moment().startOf('day').seconds(time).format('H:mm:ss');
@@ -123,7 +120,7 @@ $(document).ready(function() {
 			colonTime : colonTime,
 			start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
 			fullQuestion : detail,
-			responses : responses,
+			instructorAnswer : instructorAnswer,
 			user : user};
 			addData.push(currQuestion);
 			console.log(addData);
@@ -165,11 +162,17 @@ $(document).ready(function() {
 //			});
 			console.log(questionId);
 			let payload = {questionId : parseInt(questionId), detail : answer};
-			let toSend = JSON.stringify({type : MESSAGE_TYPE.NEW_ANSWER, payload : payload});
+			let toSend = JSON.stringify({type : MESSAGE_TYPE.INSTRUCTOR_ANSWER, payload : payload});
 			console.log(toSend);
 			conn.send(toSend);
 			instructorResponse.value = "";
-
+			let toUpdate = items._data[questionId];
+			toUpdate.content = setContent(true,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
+			toUpdate.instructorAnswer = {detail: answer};
+			console.log(toUpdate.resonse);
+			//toUpdate.responses = detail;
+			console.log("ITEMS AFTER: " + items);
+			timeline.setItems(items);
 
 
 			
@@ -287,27 +290,60 @@ $(document).ready(function() {
 				questionId = properties.items[0];
 				let summary = document.getElementById("displaySummary");
 				let question = document.getElementById("displayQuestion");
-				let response = document.getElementById("displayResponse");
+				let instructorAnswer = document.getElementById("displayInstructorAnswer");
+				let studentAnswer = document.getElementById("displayStudentAnswer");
+				let thread = document.getElementById("displayThread");
 				let info = items._data[questionId];
 				if (info) {
 					summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 					question.innerHTML = info.fullQuestion;
-					//if (info.responses) {
-						if (info.responses.length > 0) {
-							let res = info.responses;
-							let tmpStr = "";
-							for (let i = 0; i < res.length; i++) {
-								tmpStr += res[i].detail+"<br>";
-							}
-							response.innerHTML = tmpStr;
-						} else {
-							response.innerHTML = "No response yet! :(";
+					console.log(info);
+					let postP = {id:questionId};
+					let tmpStr = "";
+					$.post("/response",postP,responseJSON => {
+					let responseObject = JSON.parse(responseJSON);
+					console.log("length: " + responseObject.length);
+					if (responseObject.length > 0) {
+						for (let i = 0; i < responseObject.length; i++) {
+							console.log("RESPONSE OBJECT: " + responseObject[i]);
+							let currThread = responseObject[i];
+							tmpStr += currThread['detail']+"<br>";
+							//toUpdate.responses.push({detail:response['detail']});
+							//detail.push(response['detail']);
+
+
 						}
-					//} 
+					} else {
+						thread.innerHTML = "No follow ups currently in this question thread!";
+					}
+					thread.innerHTML = tmpStr;
+				});
+					if (info.instructorAnswer) {
+						
+					//	if (info.responses.length > 0) {
+							let res = info.instructorAnswer.detail;
+							//let tmpStr = "";
+//							for (let i = 0; i < res.length; i++) {
+//								tmpStr += res[i].detail+"<br>";
+//							}
+							instructorAnswer.innerHTML = res;
+					//	} 
+
+					} else {
+							instructorAnswer.innerHTML = "No instructor answer yet! :(";
+					}
+					if (info.studentAnswer) {
+						let res = info.studentAnswer.detail;
+						studentAnswer.innerHTML = res;
+					} else {
+						studentAnswer.innerHTML = "No student answer yet! :(";
+					}
 				} else {
-						summary.innerHTML = "";
-						question.innerHTML = "";
-						response.innerHTML = "";
+					summary.innerHTML = " ";
+					question.innerHTML = " ";
+					instructorAnswer.innerHTML = " ";
+					studentAnswer.innerHTML = " ";
+					thread.innerHTML = " ";
 					}
 				
 			});
@@ -315,32 +351,39 @@ $(document).ready(function() {
 			timeline.on('mouseOver', function (properties) {
 				mouseoverId = properties.item;
 				//console.log(properties);
+				let summary = document.getElementById("displaySummary");
+				let question = document.getElementById("displayQuestion");
+				let instructorAnswer = document.getElementById("displayInstructorAnswer");
 				if (mouseoverId != null && timeline.getSelection().length === 0) {
 				//	console.log(timeline.getSelection());
 					let info = items._data[mouseoverId];
-					let summary = document.getElementById("displaySummary");
-					let question = document.getElementById("displayQuestion");
-					let response = document.getElementById("displayResponse");
+
 					let sum = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 					if (sum !== summary.innerHTML) {
 						summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 						question.innerHTML = info.fullQuestion;
 						console.log(info);
-						//if (info.responses) {
-							if (info.responses.length > 0) {
-								let res = info.responses;
+						if (info.instructorAnswer) {
+							//if (info.responses.length > 0) {
+								let res = info.instructorAnswer.detail;
 								
-								let currStr = ""
-								for (let i = 0; i < res.length; i++) {
-									currStr += res[i].detail+"<br>";
-								}
-								response.innerHTML = currStr;
-							} else {
-								response.innerHTML = "No response yet! :(";
+								let currStr = "";
+								//for (let i = 0; i < res.length; i++) {
+								//	currStr += res[i].detail+"<br>";
+							//	}
+								instructorAnswer.innerHTML = res;
+							//}
+
+						} else {
+								instructorAnswer.innerHTML = "No instructor answer yet! :(";
 							}
-					//	}
 					}
 				}
+//				else {
+//					summary.innerHTML = "";
+//					question.innerHTML = "";
+//					instructorAnswer.innerHTML = "";
+//				}
 			});
 
 		};	
@@ -348,18 +391,18 @@ $(document).ready(function() {
 	
 	function setContent(answered, numUpVotes,user,colonTime) {
 		let color = "";
-//		if (answered === 0) {
-//			color = "red";
-//		} else if (answered === 1) {
-//			color="yellow";
-//		} else if (answered === 2) {
-//			color="green";
-//		}
-		if (answered) {
+		if (answered === 0) {
+			color = "red";
+		} else if (answered === 1) {
+			color="yellow";
+		} else if (answered === 2) {
 			color="green";
-		} else {
-			color="red";
 		}
+//		if (answered) {
+//			color="green";
+//		} else {
+//			color="red";
+//		}
 		let padding = 7 + numUpVotes/5;
 		return '<div style="background-color:'+color+'; color:white; ' + 
 		'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +

@@ -172,8 +172,9 @@ header {
 
 #displaySummary {
     font-size: 26px;
-    height: 40px;
     width: 50vw;
+    min-height:60px; 
+    display: inline-block;
 
 }
 
@@ -187,13 +188,29 @@ header {
 
 #displayQuestion {
     font-size: 20px;
-    height: 80px;
+    min-height:100px; 
+    display: inline-block;
     width: 50vw;
 }
 
-#displayResponse {
+#displayInstructorAnswer {
     font-size: 20px;
-    height: 40px;
+    min-height:50px; 
+    display: inline-block;
+    width: 50vw;
+}
+
+#displayStudentAnswer {
+    font-size: 18px;
+    min-height:50px; 
+    display: inline-block;
+    width: 50vw;
+}
+
+#displayThread {
+    font-size: 13px;
+    min-height:50px; 
+    display: inline-block;
     width: 50vw;
 }
 

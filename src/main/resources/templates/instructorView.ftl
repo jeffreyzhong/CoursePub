@@ -56,7 +56,7 @@
   </a>
     <nav>
       <ul>
-        <li><a href="/hello">home</a></li>
+        <li><a href="">home</a></li>
         <li><a href="#about">courses</a></li>
         <li> <a href="#contact">about</a></li>
       </ul>
@@ -78,9 +78,17 @@
 	<br>
 	<div id="clickedOnQuestion">
 		<div id="fullQuestion">
-            <div class="displaySection" id="displaySummary"></div>
-			<div class="displaySection" id="displayQuestion"></div>
-            <div class="displaySection" id="displayResponse"></div><br>
+            Question Summary:<br>
+            <div class="displaySection" id="displaySummary"></div><br>
+            Question Details:<br>
+			<div class="displaySection" id="displayQuestion"></div><br>
+            Student Answer:<br>
+            <div class="displaySection" id="displayStudentAnswer"></div><br>
+            Instructor Answer:<br>
+            <div class="displaySection" id="displayInstructorAnswer"></div><br>
+            Follow-Up Thread:<br>
+            <div class="displaySection" id="displayThread"></div><br>
+<!--            <div class="displaySection" id="displayResponse"></div><br>-->          Answer:<br>
 			<textarea class="instructorResponse" id="instructorResponse"></textarea><br>
 			<input type="submit" id="submitResponseButton">
 		</div>
