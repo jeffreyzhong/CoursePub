@@ -1,6 +1,8 @@
 package edu.brown.cs.termproject.pageRank;
 
+import com.google.common.collect.ImmutableList;
 import edu.brown.cs.termproject.model.Course;
+import edu.brown.cs.termproject.model.Video;
 import edu.brown.cs.termproject.service.CourseService;
 import edu.brown.cs.termproject.service.UserService;
 import org.junit.Test;
@@ -50,6 +52,39 @@ public class RankTest {
         Class.forName("edu.brown.cs.termproject.model.Course");
     List<PageRankNode> result = pr.getTopResult(c, 3);
     assertTrue(result.size()==3);
+  }
+
+  @Test
+  public void garyTest() throws ClassNotFoundException{
+
+    PageRank pr = new PageRank(userService.ofId(8));
+    Class c =
+        Class.forName("edu.brown.cs.termproject.model.Course");
+    List<PageRankNode> result = pr.getTopResult(c, 3);
+    assertTrue(result.size()==3);
+  }
+
+
+  @Test
+  public void handlerTest() throws ClassNotFoundException{
+    Class c =
+        Class.forName("edu.brown.cs.termproject.model.Course");
+    User user = userService.ofId(8);
+    PageRank pr = new PageRank(user);
+    List<PageRankNode> result = pr.getTopResult(c,3);
+
+    List<Course> courses = (List<Course>)(Object)result;
+
+
+    ImmutableList.Builder<String> ret = ImmutableList.builder();
+    for (Course course : courses) {
+      System.out.println(course);
+      Video video = course.getVideos().iterator().next();
+      ret.add(Integer.toString(video.getId()));
+      ret.add(video.getUrl());
+    }
+
+    System.out.println(ret);
   }
 
   @Test

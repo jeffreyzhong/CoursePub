@@ -71,7 +71,7 @@ public class PostController {
     ImmutableList.Builder<String> ret = ImmutableList.builder();
     for (Course course : courses) {
       Video video = course.getVideos().iterator().next();
-      ret.add(Integer.toString(video.getId());
+      ret.add(Integer.toString(video.getId()));
       ret.add(video.getUrl());
     }
 
