@@ -21,7 +21,7 @@ INSERT INTO registration (id, type, course_id, user_id) VALUES (9, 1, 2, 5);
 INSERT INTO registration (id, type, course_id, user_id) VALUES (10, 0, 1, 6);
 INSERT INTO registration (id, type, course_id, user_id) VALUES (11, 0, 1, 7);
 
-INSERT INTO video (id, url, course_id) VALUES (1, 'https://google.com', 1);
+INSERT INTO video (id, url, course_id) VALUES (1, "https://www.youtube.com/embed/kjBOesZCoqc?rel=0", 1);
 
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (1, 'Who is JJ', 'Heard people talking about him all the time', '1969-12-31 19:00:12', 1, 1, '2018-02-15 11:11:11');
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (2, 'What is GitHub', '', '1969-12-31 19:00:18', 1, 1, '2018-02-15 11:13:28');

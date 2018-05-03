@@ -161,10 +161,11 @@ $(document).ready(() => {
 		}	
 	});
 	
-	$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
-		videoName.innerHTML = data.items[0].snippet.title;
+	$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linkId[0] + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
 		alert(data.items[0].snippet.title);
-	  });
+	});
+	
+	let url = 'https://img.youtube.com/vi/'+linkId[0]+'/0.jpg';
 	
 	setupSearchBar();
 	$("#summaryInput").focus(function() {
@@ -241,15 +242,47 @@ function noteClick(){
 
 //view related video
 function relClick(){
-	hideContent();
+//	hideContent();
 	expanded = -1;
-	$("#question0").html("No related video available at the moment");	
+	hideTimeandUser();
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
+	}
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "block";
+		divs[i].onclick = null;	
+		
+		let relVideoPic = document.createElement("IMG");
+		let videoId = "relVideo" + i;
+		relVideoPic.setAttribute('id',videoId);
+		relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+linkId[0]+'/0.jpg');
+		relVideoPic.style.width = "60px";
+		relVideoPic.style.height = "60px";
+		
+		let temp = "question" + i;
+		let currQuestion = document.getElementById(temp);
+		currQuestion.innerHTML = "hi!";
+		currQuestion.parentNode.insertBefore(relVideoPic, currQuestion);
+	}	
+}
+
+function hideTimeandUser(){
+	let divs = document.getElementsByClassName("questionTimeLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	divs = document.getElementsByClassName("userLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
 }
 
 //view all questions
 function allClick(){
 	questionSel = false;
 	expanded = -1;
+	deleteThumbNails();
 	document.getElementById('responseList').style.height = "0px";
 	document.getElementById('responseList').style.display = "none";
 	let divs = document.getElementsByClassName("questionDiv");
@@ -298,6 +331,7 @@ function renderList(text, ul){
 function questionClick(){
 	questionSel = true;
 	expanded = -1;
+	deleteThumbNails();
 	document.getElementById('responseList').style.height = "0px";
 	document.getElementById('responseList').style.display = "none";
 	if(document.getElementById('questionsList') !== null){
@@ -676,5 +710,17 @@ function hideContent(){
 	}
 	divs[0].style.border = "none";
 	divs[0].style.display = "block";
+	deleteThumbNails();
+}
+
+function deleteThumbNails(){
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		let relId = "relVideo" + i;
+		if(document.getElementById(relId) !== null){
+			let divId = "questionDiv" + i;
+			document.getElementById(divId).removeChild(document.getElementById(relId));
+		}
+	}
 }
 

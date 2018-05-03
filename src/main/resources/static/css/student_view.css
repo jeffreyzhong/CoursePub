@@ -32,12 +32,14 @@ body{
 	width: 200px;
 }
 
-#searchBarTag{
+.searchTags{
 	font-family: source-sans-pro;
 	font-weight: bold;
+	font-size: 15px;
 	letter-spacing: 1px;
-	margin-left:692px
+	
 }
+
 
 .videoName{
 	color:#FFFFFF;
@@ -110,17 +112,32 @@ body{
 }
 
 #searchBar{
-	margin-left:10px;
-	width: 400px;
-	height:20px;
-	font-size: 16px;
+	margin-left:5px;
+	width: 200px;
+	height:18px;
+	font-size: 15px;
+}
+
+#searchTimeInput1{
+	margin-left:5px;
+	width: 75px;
+	height:18px;
+	font-size: 15px;
+	text-align: center;
+}
+
+#searchTimeInput2{
+	margin-left:5px;
+	width: 75px;
+	height:18px;
+	font-size: 15px;
+	text-align: center;
 }
 
 #summaryInput{
 	width: 833px;
 	height:25.5px;
 	font-size: 18px;
-	
 }
 
 #timeInput{
