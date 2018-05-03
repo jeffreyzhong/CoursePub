@@ -59,6 +59,28 @@ class Question{
 	}
 }
 
+class Video{
+	constructor(id, linkId){
+		this._id = id;
+		this._linkId = linkId;
+		$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
+			this._title = data.items[0].snippet.title;
+		});
+	}
+	
+	get id(){
+		return this._id;
+	}
+	
+	get linkId(){
+		return this._linkId;
+	}
+	
+	get title(){
+		return this._title;
+	}
+}
+
 const MESSAGE_TYPE = {
 	CONNECT: 0,
 	NEW_QUESTION: 1,
@@ -80,7 +102,7 @@ let player; //Define a player object, to enable later function calls, without ha
 
 let duration = null;
 
-let linkId = ["fNk_zzaMoSs", "k7RM-ot2NWY"]
+let relVideo = [];
 // Define YT_ready function.
 let YT_ready = (function() {
     let onReady_funcs = [], api_isReady = false;
@@ -161,11 +183,6 @@ $(document).ready(() => {
 		}	
 	});
 	
-	$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linkId[0] + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
-		alert(data.items[0].snippet.title);
-	});
-	
-	let url = 'https://img.youtube.com/vi/'+linkId[0]+'/0.jpg';
 	
 	setupSearchBar();
 	$("#summaryInput").focus(function() {
@@ -195,7 +212,7 @@ function setupSearchBar(){
 
 function loadQuestions(event){
 	event.target.pauseVideo();
-	
+	setupRelatedVideo();
 	const postParameters = {id: videoId};
 	$.post("/question", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
@@ -214,9 +231,25 @@ function loadQuestions(event){
 		}   
 		
 		questionsOrd = questionsOrd.sort(compare);
+
 		event.target.playVideo();
 	});	
-	
+}
+
+function setupRelatedVideo(){
+	const postParameters = {};
+	$.post("/related", postParameters, responseJSON => {
+		const responseObject = JSON.parse(responseJSON);
+		console.log(responseObject.length);
+		for (let i = 0; i < responseObject.length; i+=2) {
+			let id = responseObject[i];
+			let url = responseObject[i+1].split("/");
+			let temp = url[url.length-1];
+			let linkId = temp.split("?")[0];
+			let obj = new Video(id, linkId);
+			relVideo.push(obj);
+		}   
+	});	
 }
 
 // Example: function stopCycle, bound to onStateChange
@@ -243,26 +276,27 @@ function noteClick(){
 //view related video
 function relClick(){
 //	hideContent();
+	questionSel = false;
 	expanded = -1;
 	hideTimeandUser();
 	if(document.getElementById('questionsList') !== null){
 		document.getElementById('questionsList').style.display = "none";
 	}
 	let divs = document.getElementsByClassName("questionDiv");
-	for(let i = 0; i < divs.length; i++){
+	for(let i = 0; i < relVideo.length; i++){
 		divs[i].style.display = "block";
 		divs[i].onclick = null;	
-		
+		let vid = relVideo[i];
 		let relVideoPic = document.createElement("IMG");
 		let videoId = "relVideo" + i;
 		relVideoPic.setAttribute('id',videoId);
-		relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+linkId[0]+'/0.jpg');
+		relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+vid.linkId()+'/0.jpg');
 		relVideoPic.style.width = "60px";
 		relVideoPic.style.height = "60px";
-		
+		console.log("linkId: " + vid.linkId() + " title " + vid.title());
 		let temp = "question" + i;
 		let currQuestion = document.getElementById(temp);
-		currQuestion.innerHTML = "hi!";
+		currQuestion.innerHTML = vid.title();
 		currQuestion.parentNode.insertBefore(relVideoPic, currQuestion);
 	}	
 }

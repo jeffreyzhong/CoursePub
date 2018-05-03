@@ -66,12 +66,12 @@ public class PostController {
     List<PageRankNode> result = pr.getTopResult(c,3);
 
     List<Course> courses = (List<Course>)(Object)result;
-
-
+    
+    System.out.println(result);
     ImmutableList.Builder<String> ret = ImmutableList.builder();
     for (Course course : courses) {
       Video video = course.getVideos().iterator().next();
-      ret.add(Integer.toString(video.getId());
+      ret.add(Integer.toString(video.getId()));
       ret.add(video.getUrl());
     }
 
