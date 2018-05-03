@@ -47,7 +47,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   @Transactional(readOnly = false)
-  public Question ofId(String id) {
+  public Question ofId(Integer id) {
     return questionDao.ofId(id);
   }
 

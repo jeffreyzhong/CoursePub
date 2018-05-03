@@ -40,4 +40,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     return registration;
   }
+
+  @Override
+  @Transactional(readOnly = true)
+  public boolean isInstructor(User user, Course course) {
+    if (!registrationDao.exists(user, course)) {
+      return false;
+    }
+
+    return registrationDao.get(user, course).getType() == 1;
+  }
 }

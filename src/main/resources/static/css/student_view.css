@@ -4,7 +4,7 @@ input[type="number"] {
 
 
 * {
-	color: black;
+	color: white;
 }
 
 body{
@@ -12,23 +12,31 @@ body{
 }
 
 #container{
-	width:1600px;
+	width:1550px;
 	height: 900px;
 }
 
 #header{
-	width: 100%;
+	display: inline-block;
 }
 
 .logo{
 	color:#FFFFFF;
 	font-size: 20px;
-	font-weight: bold;
+	font-weight: bolder;
 	font-style:normal;
 	text-align:undefined;
 	letter-spacing: 4px;
 	font-family: source-sans-pro;
 	margin-left: 25px;
+	width: 200px;
+}
+
+#searchBarTag{
+	font-family: source-sans-pro;
+	font-weight: bold;
+	letter-spacing: 1px;
+	margin-left:692px
 }
 
 .videoName{
@@ -39,6 +47,10 @@ body{
 	letter-spacing: 4px;
 	font-family: source-sans-pro;
 	margin-left: 25px;
+}
+
+#title{
+	color:white;
 }
 
 #left {
@@ -53,21 +65,21 @@ body{
 	float: left;
 	position: absolute;
 	width: 986px;
-	margin-left:7.5%;
+	margin-left:2.4%;
 	margin-top: 10px;
 }
 
 #timeDiv{
 	float: left;
 	position: absolute;
-	margin-left:7.5%;
+	margin-left:2.4%;
 	margin-top: 50px;
 	width:986px;
 }
 
 #detailDiv{
 	margin-top: 85px;
-	margin-left:7.5%;
+	margin-left:2.4%;
 	float:left;
 	position:absolute;
 	width:986px;
@@ -80,7 +92,7 @@ body{
 	width:85%;
 	height:0;
 	margin-top:15px;
-	margin-left:7.5%;
+	margin-left:2.4%;
 }
 .videoWrapper iframe {
 	position: absolute;
@@ -94,13 +106,21 @@ body{
 	border-radius:30px;
 	padding-left:10px;
 	padding-right:10px;
+	border: 2px solid #FFFFFF;
+}
+
+#searchBar{
+	margin-left:10px;
+	width: 400px;
+	height:20px;
+	font-size: 16px;
 }
 
 #summaryInput{
 	width: 833px;
 	height:25.5px;
 	font-size: 18px;
-	border: 2px solid #FFFFFF;
+	
 }
 
 #timeInput{
@@ -124,7 +144,6 @@ body{
 	color: #FFFFFF;
 	font-size: 20px;
 	font-weight: bolder;
-	color: #FFFFFF;
 }
 
 #timeLabel{
@@ -136,7 +155,7 @@ body{
 }
 
 #submitBtn{
-	margin-left:936px;
+	margin-left:875px;
 	margin-top: 300px;
 	color:#2D9AB7;
 	background-color: #FFFFFF;
@@ -151,7 +170,7 @@ body{
 #right {
 	width: 450px;
 	height: 900px;
-	margin-left: 1078px;
+	margin-left: 1021px;
 	position:absolute;
 }
 
@@ -191,6 +210,8 @@ body{
 	color: #FFFFFF;
 	font-size: 20px;
 	text-align: justify;
+	overflow: hidden;
+	overflow-y: scroll;
 }
 
 .questionDiv{
@@ -199,13 +220,59 @@ body{
 	border-top: 2px solid #FFFFFF;
 	margin-left:-1px;
 	padding: 6px;
-	
 }
 
-#question0Div{
+.questions{
+	color:#ffffff;
+	padding-right: 20px;
+}
+
+.questionTimeLabel{
+	color: #ddd;
+	text-align: left;
+	font-size: 16px;
+}
+
+.userLabel{
+	color: #ddd;
+	text-align: right;
+	padding-right: 20px;
+}
+
+.questionIdLabel{
+	display: none;
+	font-size: 1px;
+}
+
+#questionDiv0{
 	margin-top: -8px;
-
 }
+
+#answerDiv{
+	width: 500px;
+	margin-top:17px;
+}
+
+#answerLabel{
+	font-size: 25px;
+	font-weight: bolder;
+	margin-left: 5px;
+}
+
+#answerInput{
+	padding-top: 6px;
+	padding-bottom: 6px;
+	margin-top: 7px;
+	height:200px;
+	width: 426px;
+    border: 2px solid #FFFFFF;
+	color: #FFFFFF;
+	font-size: 20px;
+	font-family: Arial, Helvetica, sans-serif;
+	letter-spacing:0.5px;
+	text-align: justify;
+}
+
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: #A7A7A7;

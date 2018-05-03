@@ -7,22 +7,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Map;
 
 @Controller
-public class StudentViewController {
+@RequestMapping("/test")
+public class TestController {
 
-  private VideoService videoService;
+  VideoService videoService;
 
   @Autowired
-  public StudentViewController(VideoService videoService) {
+  public TestController(VideoService videoService) {
     this.videoService = videoService;
   }
 
-  @GetMapping(path = "/video/{id}")
-  public ModelAndView lecture(@PathVariable("id") Integer id) {
+  @GetMapping(path = "/{which}/{id}")
+  public ModelAndView lecture(@PathVariable("which") String which,
+                              @PathVariable("id") Integer id) {
     Video video = videoService.ofId(id);
 
     if (video == null) {
@@ -32,9 +35,10 @@ public class StudentViewController {
     Map<String, Object> variables = ImmutableMap.of(
         "title", "Video",
         "videoId", id,
-        "videoUrl", video.getUrl()
+        "videoUrl", video.getUrl(),
+        "which", which
     );
 
-    return new ModelAndView("video", variables);
+    return new ModelAndView("videoStub", variables);
   }
 }

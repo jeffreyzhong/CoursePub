@@ -18,7 +18,7 @@ public class QuestionDaoImpl implements QuestionDao {
   }
 
   @Override
-  public Question ofId(String id) {
+  public Question ofId(Integer id) {
     return entityManager.find(Question.class, id);
   }
 }

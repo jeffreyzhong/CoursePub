@@ -59,16 +59,21 @@ class Question{
 	}
 }
 
+const MESSAGE_TYPE = {
+	CONNECT: 0,
+	NEW_QUESTION: 1,
+	NEW_ANSWER: 2,
+	UPVOTE: 3
+};
 
-const $sideContent = $("#sideContent");
-
-//let conn = new WebSocket("ws://localhost:4567/student_view")
+let conn;
 
 let questions = new Map();
 let questionsOrd = [];
 let videoId = parseInt($('#videoId').html());
 
 let questionSel = false;
+let expanded = -1;
 let refQuestionInt;
 
 let player; //Define a player object, to enable later function calls, without having to create a new class instance again.
@@ -102,13 +107,44 @@ let YT_ready = (function() {
 
 
 $(document).ready(() => {
+	let connection = "ws://localhost:4567/websocket/" + videoId;
+
+	conn = new WebSocket(connection);
+	conn.addEventListener('message', function (event) {
+		const data = JSON.parse(event.data);
+		console.log("from server: " + data.message);
+	    switch (data.type) {
+	      default:
+	        console.log('Unknown message type!', data.type);
+	        break;
+	      case MESSAGE_TYPE.CONNECT:
+	        console.log(data.payload.msg);
+	        break;
+	      case MESSAGE_TYPE.NEW_QUESTION:
+			let id = data.payload.id;
+			let time = data.payload.time;
+			let summary = data.payload.summary;
+			let detail = data.payload.detail;
+			let user = data.payload.user;
+			let resolved = data.payload.resolved;
+			console.log("id: " + id + " time is " + time + " with summary " + summary + " and detail " + detail);
+			let obj = new Question(id, summary, time, detail, user, resolved);
+			questions.set(obj.id, obj);
+			questionsOrd.push(obj);
+			questionsOrd.sort(compare);
+			let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
+			let index = questionsOrd.binarySearch(questionStub, compare);
+			// console.log("index" + index);
+			questionDisplay(index);
+	        break;
+	    }
+	});
+
 	document.getElementById('noteBtn').onclick = noteClick;
 	document.getElementById('questionBtn').onclick = questionClick;
 	document.getElementById('relBtn').onclick = relClick;
-	
-//	document
-	
-	
+	document.getElementById('allQuestionsBtn').onclick = allClick;
+	document.getElementById('submitBtn').onclick = postClick;
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -122,17 +158,36 @@ $(document).ready(() => {
 			});	
 		}	
 	});
-
+	setupSearchBar();
+	$("#summaryInput").focus(function() {
+		$("#timeInput").val(convertSeconds(Math.floor(player.getCurrentTime())));
+	});
+	$("#answerInput").keyup(function(ev) {
+	    // 13 is ENTER
+	    if (ev.which === 13) {
+	     	answerSubmit();
+		}
+	});	
 	$("#noteBtn").click();
-	
 });
+
+function setupSearchBar(){
+	$("#searchBar").keyup(function(ev) {
+	    // 13 is ENTER
+	    if (ev.which === 13 && $("#searchBar").val() !== "") {
+	     	const postParameters = {content: $("#searchBar").val()};
+			$.post("/question", postParameters, responseJSON => {
+				const responseObject = JSON.parse(responseJSON);
+	    	});
+		}
+	});		
+}
 
 
 function loadQuestions(event){
 	event.target.pauseVideo();
 	
 	const postParameters = {id: videoId};
-	
 	$.post("/question", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
 		
@@ -142,69 +197,118 @@ function loadQuestions(event){
 			let time = question.time;
 			let summary = question.summary;
 			let user = question.user;
-			let resolved = question.isResolved;
-			let obj = new Question(id, summary, time, "", user, resolved);
+			let resolved = question.resolved;
+			let detail = question.detail
+			let obj = new Question(id, summary, time, detail, user, resolved);
 			questions.set(obj.id, obj);
 		  	questionsOrd.push(obj);
 		}   
 		
 		questionsOrd = questionsOrd.sort(compare);
-		for(let i = 0; i < questionsOrd.length; ++i){
-			alert("question (id " + questionsOrd[i].id + " with summary " + questionsOrd[i].summary + " at second " + questionsOrd[i].time);
-		}
 		event.target.playVideo();
-	});
+	});	
 	
 }
 
-function compare(a,b) {
-  if (a.time < b.time){
-    return -1;
-  }
-  if (a.time > b.time){
-    return 1;
-  }
-  return 0;
+// Example: function stopCycle, bound to onStateChange
+function stateChangeFunc(event) {
+	if(event.data === 0 || event.data === 2){
+		clearInterval(refQuestionInt);
+	}else if(event.data === 1){
+		refQuestionInt = setInterval(refQuestion, 100);
+		if(duration === null){
+			duration = player.getDuration();
+		}
+	}
 }
-
 
 //============================================================================
 //Below are code for controls sideContentDiv (e.x. click on different tabs)
 
 function noteClick(){
-	questionSel = false;
-	let divs = document.getElementsByClassName("questionDiv");
-	for(let i = 1; i < divs.length; i++){
-		divs[i].style.display = "none";
-	}
-	divs[0].style.border = "none";
+	hideContent();
+	expanded = -1;
 	$("#question0").html("Hi Class, welcome to MATH 520 Linear Algebra. In this class, I will give a brief introduction to what linear algebra is and the basic concepts that would be taught in this course. Please take a second to watch this short video and get excited for a semester long journey exploring the power of linear algebra!");
 }
 
 function relClick(){
-	questionSel = false;
-	let divs = document.getElementsByClassName("questionDiv");
-	for(let i = 1; i < divs.length; i++){
-		divs[i].style.display = "none";
-	}
-	divs[0].style.border = "none";
+	hideContent();
+	expanded = -1;
 	$("#question0").html("No related video available at the moment");	
 }
 
+function allClick(){
+	questionSel = false;
+	expanded = -1;
+	document.getElementById('responseList').style.height = "0px";
+	document.getElementById('responseList').style.display = "none";
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	let ul = null;
+	if(document.getElementById('questionsList') === null){
+		ul = document.createElement('ul');
+		ul.setAttribute('id','questionsList');
+		ul.style.listStyleType = "none";
+		ul.style.lineHeight = "30px";
+		ul.style.marginTop = "-5px";
+		ul.style.paddingRight = "20px";
+		document.getElementById("sideContentDiv").appendChild(ul);
+		
+	}else{
+		ul = document.getElementById('questionsList');
+		while (ul.firstChild) {
+			ul.removeChild(ul.firstChild);
+		}
+		ul.style.display = "block";
+	}
+	for(let i = 0; i < questionsOrd.length; i++){
+			let curr = questionsOrd[i];
+			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
+			renderList(text,ul);
+	}
+}
+
+function renderList(text, ul){
+	let li = document.createElement('li');
+	li.setAttribute('class', 'item');
+	li.style.color = 'white';
+	li.style.borderBottom = "2px solid #FFFFFF";
+	ul.appendChild(li);
+	li.innerHTML = li.innerHTML + text;
+}
+
+
+
+//============================================================================
+//Below are code for automatic question display (e.x. click on different tabs)
+
+
 function questionClick(){
 	questionSel = true;
-	questionDisplay();
+	expanded = -1;
+	document.getElementById('responseList').style.height = "0px";
+	document.getElementById('responseList').style.display = "none";
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
+	}
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].onclick = openQuestion;
+	}
+	let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
+	let index = questionsOrd.binarySearch(questionStub, compare);
+	questionDisplay(index);
 }
 
 
 function refQuestion(){
-//	console.log("execute");
-
 	let index = 0;
 	if(player.getPlayerState() === 1){
 		let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
 		index = questionsOrd.binarySearch(questionStub, compare);
-		if(questionSel && index !== null){
+		if(questionSel && expanded === -1 && index !== null){
 			questionDisplay(index);
 		}
 	}
@@ -217,12 +321,15 @@ function questionDisplay(index){
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "block";
 	}
-	let questionsEle = document.getElementsByClassName("questions");
-	for(let i = 0; i < questionsEle.length; ++i){
-		let id = "#question" + i;
-		$(id).html("");
+	divs[0].style.borderBottom = "none";
+	divs = document.getElementsByClassName("questionTimeLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "block";
 	}
-
+	divs = document.getElementsByClassName("userLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "block";
+	}
 	let min = Math.max(0, index-1);
 	if(min - 1 >= 0){
 		min -= 1;
@@ -233,34 +340,136 @@ function questionDisplay(index){
 	}
 	
 	let range = max - min;
-
-	for(let i = 0; i <= range; i++){
-		console.log("questionsOrd index is: " + min);
-		let id = "#question" + i;
-		$(id).html(questionsOrd[min].summary);
-		console.log(questionsOrd[min].summary);
+	let i;
+	for(i = 0; i <= range; i++){
+		let questionId = "#question" + i;
+		let timeId = "#time" + i;
+		let userId = "#user" + i;
+		let idLabel = "#questionId" + i;
+		$(questionId).html(questionsOrd[min].summary);
+		let time = convertSeconds(parseInt(questionsOrd[min].time));
+		$(timeId).html(time);
+		$(userId).html("User: " + questionsOrd[min].user);
+		$(idLabel).html(questionsOrd[min].id);
 		min+=1;
 	}
-}
-
-// Example: function stopCycle, bound to onStateChange
-function stateChangeFunc(event) {
-	if(event.data === 0 || event.data === 2){
-		clearInterval(refQuestionInt);
-	}else if(event.data === 1){
-		refQuestionInt = setInterval(refQuestion, 1000);
-		if(duration === null){
-			duration = player.getDuration();
-		}
+	for(let j = 4; j >= i; j--){
+		let questionId = "#question" + j;
+		let timeId = "#time" + j;
+		let userId = "#user" + j;
+		let idLabel = "#questionId" + j;
+		$(questionId).html("");
+		$(timeId).html("");
+		$(userId).html("");
+		$(idLabel).html("");
 	}
+
 }
 
+//============================================================================
+//Below are code for display a particular question
+function openQuestion(){
+	var id = this.id.substring(this.id.length-1);
+	let idLabel = "#questionId" + id;
+	expanded = parseInt($(idLabel).html());
+	document.getElementById("questionDiv0").style.borderBottom = "2px solid #FFFFFF";
+	let divs = document.getElementsByClassName("questionDiv");
+//	for(let i = 0; i < divs.length; i++){
+//		divs[i].onclick = null;
+//	}
+	divs[0].onclick = null;
+	let questionId = "#question" + id;
+	let timeId = "#time" + id;
+	let userId = "#user" + id;
+	
+	$("#question0").html($(questionId).html());
+	$("#time0").html($(timeId).html());
+	$("#user0").html($(userId).html());
+	$("#questionId0").html(expanded);
+	
+	let div = document.getElementById("responseList");
+	
+	div.style.height = $('#questionDiv0').height()*4+"px";
+	div.style.overflow = 'hidden';
+	div.style.overflowY = 'scroll';
+	div.style.display = 'block';
+	div.style.color = 'white';
+	
+	while (div.firstChild) {
+			div.removeChild(div.firstChild);
+	}
+	
+	let p = document.createElement("p");
+	p.setAttribute('id', 'detail');
+	p.style.textAlign = "left";
+	p.style.display = "block";
+	p.style.paddingLeft = "10px";
+	p.style.paddingRight = "15px";
+	p.style.paddingBottom = "10px";
+	p.style.color = "white";
+	p.style.borderBottom = "2px solid #FFFFFF";
+	console.log("expanded: " + expanded);
+	let detail = questions.get(parseInt(expanded)).detail;
+	p.innerHTML = "Question detail: " + detail;
+	div.appendChild(p);
+	
+	const postParameters = {id: expanded};
+	$.post("/response", postParameters, responseJSON => {
+		const responseObject = JSON.parse(responseJSON);
 
+		let ul = document.createElement('ul');
+		ul.setAttribute('id','remarksList');
+		ul.style.listStyleType = "none";
+		ul.style.lineHeight = "30px";
+		ul.style.marginTop = "-5px";
+		ul.style.paddingRight = "15px";
+		ul.style.textAlign = "right";
+		div.appendChild(ul);
+
+		for (let i = 0; i < responseObject.length; ++i) {
+			let response = responseObject[i];
+			let id = response.id;
+//			let questionId = response.questionId;
+			let detail = response.detail;
+			let userId = response.userId;
+			let postDate = response.postDate;
+			let postTime = response.postTime;
+			let upvotes = response.upvotes;
+			let text = 'response (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	user: ' + userId + "<br>" + upvotes + ' people have upvoted.';
+			renderList(text,ul);
+		}
+		player.seekTo(parseFloat(convertTime($("#time0").html())));
+	});		
+}
 
 //============================================================================
 //Below are code for action when post button is clicked
+// Setup the WebSocket connection for live updating of scores.
 
-
+function postClick(){
+	let summary = $("#summaryInput").val();
+	let time = $("#timeInput").val();
+	let detail = $("#detailInput").val();
+	if(summary === ""){
+		alert("Please input a summary!");
+		return;
+	}
+	if(!isValidTime(time)){
+		alert("Please input a correct time!");
+		return;
+	}
+	if(detail === ""){
+		alert("Please put in some explanation for your question!");
+		return;
+	}
+	let jsonObject = {videoId: videoId, summary:summary, questionTimestamp:time, detail:detail};
+	
+	conn.send(JSON.stringify({type: 1, payload: jsonObject}));
+	
+	$("#summaryInput").val("");
+	$("#timeInput").val("");
+	$("#detailInput").val("");
+}
 
 // check if the user input time is valid.
 function isValidTime(time){
@@ -271,6 +480,9 @@ function isValidTime(time){
 	if(isNaN(timeArray[0])||isNaN(timeArray[1])||isNaN(timeArray[2])){
 		return false;
 	}
+	if(parseInt(timeArray[1]) >= 60 || parseInt(timeArray[2]) >= 60){
+		return false;
+	}
 	let sec = parseInt(timeArray[0])*3600 + parseInt(timeArray[1])*60 + parseInt(timeArray[2]);
 	if(sec > Math.floor(+duration)){
 		return false;
@@ -278,6 +490,27 @@ function isValidTime(time){
 	return true;
 }
 
+//============================================================================
+//Below is method to submit answer to a question to backend
+function answerSubmit(){
+	let questionId = expanded;
+	let detail = $("#answerInput").val();
+	if(questionId === -1){
+		alert("Please select a question before submitting your answer");
+		return;
+	}
+	if(detail === ""){
+		alert("Please write something down for your answer");
+		return;
+	}
+	
+	
+	let jsonObject = {questionId: questionId, detail:detail};
+	
+	conn.send(JSON.stringify({type: 2, payload: jsonObject}));
+	
+	$("#answerInput").val("");
+}
 
 
 
@@ -330,31 +563,108 @@ function onYouTubePlayerAPIReady() {YT_ready(true)}
 
 
 //============================================================================
+//Below are miscellaneous helper functions
+
 //Binary search for the index of the closest question in the list
 Array.prototype.binarySearch = function(find, comparator) {
-  var low = 0, high = this.length - 1, i, comparison, prev_comparison;  
-  while (low <= high) {
-    i = Math.floor((low + high) / 2);
-    comparison = comparator(this[i], find);
-    prev_comparison = comparison
-    if (comparison < 0) { low = i + 1; continue; };
-    if (comparison > 0) { high = i - 1; continue; };
-    return i;
-  }
-  if (prev_comparison < 0) {
-      var option_low = i;
-      var option_high = i+1;
-  } else {
-      var option_low = i-1;
-      var option_high = i;
-  }
-  var dist_a = find - this[option_low];
-  var dist_b = this[option_high] - find;
-  if (dist_a < dist_b) {
-      return option_low;
-  } else {
-      return option_high;
-  }
-  return null;
+	var low = 0, high = this.length - 1, i, comparison, prev_comparison;  
+	while (low <= high) {
+	i = Math.floor((low + high) / 2);
+	comparison = comparator(this[i], find);
+	prev_comparison = comparison;
+	if (comparison < 0) { low = i + 1; continue; }
+	if (comparison > 0) { high = i - 1; continue; }
+	return i;
+	}
+	var option_low;
+	var option_high;
+	if (prev_comparison < 0) {
+	  option_low = i;
+	  option_high = i+1;
+	} else {
+	  option_low = i-1;
+	  option_high = i;
+	}
+	var dist_a = find - this[option_low];
+	var dist_b = this[option_high] - find;
+	if (dist_a < dist_b) {
+	  return option_low;
+	} else {
+	  return option_high;
+	}
+	return null;
 };
+
+function compare(a,b) {
+  if (a.time < b.time){
+    return -1;
+  }
+  if (a.time > b.time){
+    return 1;
+  }
+  return 0;
+}
+
+//Convert seconds to "HH:MM:SS" format
+function convertSeconds(seconds){
+	let time = 0;
+	if(duration >= 3600){
+		let H = Math.floor(seconds / 3600);
+		seconds = seconds % 3600;
+		let M = Math.floor(seconds / 60);
+		seconds = seconds % 60;
+		
+		if(H < 10){
+			H = "0" + H;
+		}
+		if(M < 10){
+			M = "0" + M;
+		}
+		if(seconds < 10){
+			seconds = "0" + seconds;
+		}
+		time = H + ":" + M + ":" + seconds;
+	}else{
+		let M = Math.floor(seconds / 60);
+		seconds = seconds % 60;
+		
+		if(M < 10){
+			M = "0" + M;
+		}
+		if(seconds < 10){
+			seconds = "0" + seconds;
+		}
+		time = M + ":" + seconds;
+	}
+	return time;
+}
+
+//Convert seconds to "HH:MM:SS" format
+function convertTime(time){
+	let timeArr = time.split(":");
+	let seconds = 0;
+	if(duration >= 3600){
+		seconds = parseInt(timeArr[0])*3600 + parseFloat(timeArr[1])*60 + parseFloat(timeArr[2]);
+	}else{
+		seconds = parseFloat(timeArr[0])*60 + parseFloat(timeArr[1]);
+	}
+	return seconds;
+}
+
+function hideContent(){
+	questionSel = false;
+	document.getElementById("time0").style.display = "none";
+	document.getElementById("user0").style.display = "none";
+	document.getElementById('responseList').style.height = "0px";
+	document.getElementById('responseList').style.display = "none";
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
+	}
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 1; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	divs[0].style.border = "none";
+	divs[0].style.display = "block";
+}
 
