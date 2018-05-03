@@ -80,6 +80,7 @@ let player; //Define a player object, to enable later function calls, without ha
 
 let duration = null;
 
+let linkId = ["fNk_zzaMoSs", "k7RM-ot2NWY"]
 // Define YT_ready function.
 let YT_ready = (function() {
     let onReady_funcs = [], api_isReady = false;
@@ -145,6 +146,7 @@ $(document).ready(() => {
 	document.getElementById('relBtn').onclick = relClick;
 	document.getElementById('allQuestionsBtn').onclick = allClick;
 	document.getElementById('submitBtn').onclick = postClick;
+	
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -158,6 +160,12 @@ $(document).ready(() => {
 			});	
 		}	
 	});
+	
+	$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
+		videoName.innerHTML = data.items[0].snippet.title;
+		alert(data.items[0].snippet.title);
+	  });
+	
 	setupSearchBar();
 	$("#summaryInput").focus(function() {
 		$("#timeInput").val(convertSeconds(Math.floor(player.getCurrentTime())));
@@ -231,12 +239,14 @@ function noteClick(){
 	$("#question0").html("Hi Class, welcome to MATH 520 Linear Algebra. In this class, I will give a brief introduction to what linear algebra is and the basic concepts that would be taught in this course. Please take a second to watch this short video and get excited for a semester long journey exploring the power of linear algebra!");
 }
 
+//view related video
 function relClick(){
 	hideContent();
 	expanded = -1;
 	$("#question0").html("No related video available at the moment");	
 }
 
+//view all questions
 function allClick(){
 	questionSel = false;
 	expanded = -1;
