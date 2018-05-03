@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import static org.junit.Assert.*;
 
 
 
@@ -37,13 +38,22 @@ public class RankTest {
     Class c =
       Class.forName("edu.brown.cs.termproject.model.Course");
     List<PageRankNode> result = pr.getTopResult(c, 2);
-    System.out.println(result);
-
+    assertTrue(result.size()==1);
 
   }
 
   @Test
-  public void simpleTest(){
+  public void jerryTest() throws ClassNotFoundException{
+
+    PageRank pr = new PageRank(userService.ofId(1));
+    Class c =
+        Class.forName("edu.brown.cs.termproject.model.Course");
+    List<PageRankNode> result = pr.getTopResult(c, 3);
+    assertTrue(result.size()==3);
+  }
+
+  @Test
+  public void simpleTest() throws ClassNotFoundException{
     TestPageRankNode t1 = new TestPageRankNode(1);
     TestPageRankNode t2 = new TestPageRankNode(2);
     TestPageRankNode t3 = new TestPageRankNode(3);
@@ -51,8 +61,10 @@ public class RankTest {
     t2.setNodes(t1,t3);
     t3.setNodes(t1,t2);
 
-
+    Class c =
+        Class.forName("edu.brown.cs.termproject.pageRank.TestPageRankNode");
     PageRank pr = new PageRank(t1);
+    pr.getTopResult(c,0);
 
   }
 

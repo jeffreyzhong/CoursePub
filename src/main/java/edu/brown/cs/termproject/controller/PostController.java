@@ -6,8 +6,11 @@ import edu.brown.cs.termproject.dto.QuestionDto;
 import edu.brown.cs.termproject.dto.ResponseDto;
 import edu.brown.cs.termproject.model.Question;
 import edu.brown.cs.termproject.model.Response;
+import edu.brown.cs.termproject.model.User;
 import edu.brown.cs.termproject.model.Video;
+import edu.brown.cs.termproject.pageRank.PageRank;
 import edu.brown.cs.termproject.service.QuestionService;
+import edu.brown.cs.termproject.service.UserService;
 import edu.brown.cs.termproject.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,6 +51,26 @@ public class PostController {
     return GSON.toJson(ret.build());
   }
 
+  @PostMapping(path = "/related")
+  @ResponseBody
+  public String related(EmptyRequest request, User user)
+      throws ClassNotFoundException {
+
+//    Class c =
+//        Class.forName("edu.brown.cs.termproject.model.Course");
+//
+//    PageRank pr = new PageRank(user);
+//
+//
+//    ImmutableList.Builder<QuestionDto> ret = ImmutableList.builder();
+//    for (Question question : video.getQuestions()) {
+//      ret.add(new QuestionDto(question));
+//    }
+//
+//    return GSON.toJson(ret.build());
+    return null;
+  }
+
   @PostMapping(path = "/response")
   @ResponseBody
   public String response(ResponseRequest request) {
@@ -64,6 +87,10 @@ public class PostController {
     }
 
     return GSON.toJson(builder.build());
+  }
+
+  private static class EmptyRequest {
+
   }
 
   private static class ResponseRequest {
