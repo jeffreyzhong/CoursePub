@@ -9,6 +9,10 @@ import java.util.Map;
 
 public class QuestionDto implements Dto<Question> {
 
+  private enum RESOVLED_STATE {
+      NOT_ANSWERED, STUDENT_ANSWERED, INSTRUCTOR_ANSWERED;
+  }
+
   /* request */
   private String questionTimestamp;
   private String summary;
@@ -19,11 +23,12 @@ public class QuestionDto implements Dto<Question> {
   private Long time;
   private Integer id;
   private Integer user;
-  private Boolean resolved;
+  private Integer resolved;
   private Integer upvotes;
   private String postTime;
   private String postDate;
   private AnswerDto instructorAnswer;
+  private AnswerDto studentAnswer;
 
   public QuestionDto(Map<String, ?> values)
       throws IllegalArgumentException {
@@ -49,17 +54,29 @@ public class QuestionDto implements Dto<Question> {
   public void fill(Question question) {
     Calendar cal = question.getPostTime();
     AbstractAnswer instructorAnswer = question.getInstructorAnswer();
+    AbstractAnswer studentAnswer = question.getStudentAnswer();
 
     this.time = question.getVideoTime().getTimeInMillis() / 1000;
     this.id = question.getId();
     this.user = question.getUser().getId();
-    this.resolved = false;
     this.upvotes = question.getUpvotes().size();
     this.postDate = CalendarSerializer.toDate(cal);
     this.postTime = CalendarSerializer.toTime(cal);
 
     if (instructorAnswer != null) {
       this.instructorAnswer = new AnswerDto(instructorAnswer);
+    }
+
+    if (studentAnswer != null) {
+      this.studentAnswer = new AnswerDto(studentAnswer);
+    }
+
+    if (instructorAnswer != null) {
+      this.resolved = RESOVLED_STATE.INSTRUCTOR_ANSWERED.ordinal();
+    } else if (studentAnswer != null) {
+      this.resolved = RESOVLED_STATE.STUDENT_ANSWERED.ordinal();
+    } else {
+      this.resolved = RESOVLED_STATE.NOT_ANSWERED.ordinal();
     }
   }
 
@@ -77,30 +94,6 @@ public class QuestionDto implements Dto<Question> {
 
   public Long getTime() {
     return time;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public Integer getUser() {
-    return user;
-  }
-
-  public Boolean getResolved() {
-    return resolved;
-  }
-
-  public Integer getUpvotes() {
-    return upvotes;
-  }
-
-  public String getPostTime() {
-    return postTime;
-  }
-
-  public String getPostDate() {
-    return postDate;
   }
 
   public Integer getVideoId() {
