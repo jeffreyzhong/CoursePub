@@ -100,7 +100,7 @@ public class Course implements PageRankNode<User> {
 
     ImmutableMap.Builder<User, Double> builder = ImmutableMap.builder();
 
-    double weight = 1 / registrations.size();
+    double weight = 1 / (double)registrations.size();
     for (Registration registration : registrations) {
       builder.put(registration.getUser(), weight);
     }
