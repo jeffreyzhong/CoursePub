@@ -1,5 +1,7 @@
 package edu.brown.cs.termproject.service;
 
+import edu.brown.cs.termproject.dto.AnswerDto;
+import edu.brown.cs.termproject.model.InstructorAnswer;
 import edu.brown.cs.termproject.time.CalendarSerializer;
 import edu.brown.cs.termproject.dto.QuestionDto;
 import edu.brown.cs.termproject.dto.ResponseDto;
@@ -14,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 
-
 @Service
 @Transactional(readOnly = false)
 public class SocketServiceImpl implements SocketService {
@@ -22,14 +23,17 @@ public class SocketServiceImpl implements SocketService {
   private QuestionService questionService;
   private ResponseService responseService;
   private VideoService videoService;
+  private InstructorAnswerService instructorAnswerService;
 
   @Autowired
   public SocketServiceImpl(QuestionService questionService,
                            ResponseService responseService,
-                           VideoService videoService) {
+                           VideoService videoService,
+                           InstructorAnswerService instructorAnswerService) {
     this.questionService = questionService;
     this.responseService = responseService;
     this.videoService = videoService;
+    this.instructorAnswerService = instructorAnswerService;
   }
 
   @Override
@@ -50,7 +54,7 @@ public class SocketServiceImpl implements SocketService {
   }
 
   @Override
-  public void newAnswer(User user, ResponseDto responseDto)
+  public void newResponse(User user, ResponseDto responseDto)
       throws IllegalArgumentException {
     Question question = questionService.ofId(responseDto.getQuestionId());
 
@@ -67,6 +71,22 @@ public class SocketServiceImpl implements SocketService {
 
   @Override
   public void upvote(User user, UpvoteDto upvoteDto) {
+    throw new UnsupportedOperationException("NYI");
+  }
 
+  @Override
+  public void instructorAnswer(User user, AnswerDto answerDto)
+      throws IllegalArgumentException {
+    Question question = questionService.ofId(answerDto.getQuestionId());
+
+    if (question == null) {
+      throw new IllegalArgumentException(String.format(
+          "Question of id %d is not found.", answerDto.getQuestionId()));
+    }
+
+    InstructorAnswer instructorAnswer =
+        instructorAnswerService.add(user, question, answerDto.getDetail());
+
+    answerDto.fill(instructorAnswer);
   }
 }

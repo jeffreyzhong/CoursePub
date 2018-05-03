@@ -15,10 +15,16 @@ $(document).ready(function() {
       let resolved = question['resolved'];
       let upvotes = question['upvotes'];
       let detail = question['detail'];
+      let instructorAnswer = question['instructorAnswer'];
 
       console.log('question (id ' + id + '): user ' + user + ' asked ' + summary
           + ': \"' + detail + '\" at second ' + time + ', resolve status is '
           + resolved + '. ' + upvotes + ' people have upvoted.');
+      if (instructorAnswer !== undefined) {
+        console.log('instructor ' + instructorAnswer['userId'] +
+            ' responded to question ' + instructorAnswer['questionId'] + ': '
+            + instructorAnswer['detail'] + '.')
+      }
     }
   });
 

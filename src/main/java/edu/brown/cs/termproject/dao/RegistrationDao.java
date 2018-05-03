@@ -9,4 +9,6 @@ public interface RegistrationDao {
   void add(Registration registration);
 
   boolean exists(User user, Course course);
+
+  Registration get(User user, Course course);
 }

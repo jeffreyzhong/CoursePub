@@ -8,16 +8,13 @@ import edu.brown.cs.termproject.model.Question;
 import edu.brown.cs.termproject.model.Response;
 import edu.brown.cs.termproject.model.Video;
 import edu.brown.cs.termproject.service.QuestionService;
-import edu.brown.cs.termproject.service.ResponseService;
 import edu.brown.cs.termproject.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Comparator;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Controller
 public class PostController {
@@ -29,15 +26,14 @@ public class PostController {
 
   @Autowired
   public PostController(VideoService videoService,
-                        QuestionService questionService,
-                        ResponseService responseService) {
+                        QuestionService questionService) {
     this.videoService = videoService;
     this.questionService = questionService;
   }
 
   @PostMapping(path = "/question")
   @ResponseBody
-  public String question(IntegerIdRequest request) {
+  public String question(QuestionRequest request) {
     Video video = videoService.ofId(request.getId());
 
     if (video == null) {
@@ -54,22 +50,23 @@ public class PostController {
 
   @PostMapping(path = "/response")
   @ResponseBody
-  public String response(IntegerIdRequest request) {
+  public String response(ResponseRequest request) {
     Question question = questionService.ofId(request.getId());
 
     if (question == null) {
       throw new ResourceNotFoundException();
     }
 
-    Set<Response> responses = question.getResponses();
-    return GSON.toJson(
-        responses.stream()
-            .map(ResponseDto::new)
-            .sorted(Comparator.comparing(ResponseDto::getId))
-            .collect(Collectors.toList()));
+    List<Response> responses = question.getResponses();
+    ImmutableList.Builder<ResponseDto> builder = ImmutableList.builder();
+    for (Response response : responses) {
+      builder.add(new ResponseDto(response));
+    }
+
+    return GSON.toJson(builder.build());
   }
 
-  private static class IntegerIdRequest {
+  private static class ResponseRequest {
 
     private Integer id;
 
@@ -80,5 +77,8 @@ public class PostController {
     public void setId(Integer id) {
       this.id = id;
     }
+  }
+
+  private static class QuestionRequest extends ResponseRequest {
   }
 }
