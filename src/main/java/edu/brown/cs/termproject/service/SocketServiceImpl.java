@@ -2,6 +2,7 @@ package edu.brown.cs.termproject.service;
 
 import edu.brown.cs.termproject.dto.AnswerDto;
 import edu.brown.cs.termproject.model.InstructorAnswer;
+import edu.brown.cs.termproject.model.StudentAnswer;
 import edu.brown.cs.termproject.time.CalendarSerializer;
 import edu.brown.cs.termproject.dto.QuestionDto;
 import edu.brown.cs.termproject.dto.ResponseDto;
@@ -24,16 +25,19 @@ public class SocketServiceImpl implements SocketService {
   private ResponseService responseService;
   private VideoService videoService;
   private InstructorAnswerService instructorAnswerService;
+  private StudentAnswerService studentAnswerService;
 
   @Autowired
   public SocketServiceImpl(QuestionService questionService,
                            ResponseService responseService,
                            VideoService videoService,
-                           InstructorAnswerService instructorAnswerService) {
+                           InstructorAnswerService instructorAnswerService,
+                           StudentAnswerService studentAnswerService) {
     this.questionService = questionService;
     this.responseService = responseService;
     this.videoService = videoService;
     this.instructorAnswerService = instructorAnswerService;
+    this.studentAnswerService = studentAnswerService;
   }
 
   @Override
@@ -88,5 +92,20 @@ public class SocketServiceImpl implements SocketService {
         instructorAnswerService.add(user, question, answerDto.getDetail());
 
     answerDto.fill(instructorAnswer);
+  }
+
+  @Override
+  public void studentAnswer(User user, AnswerDto answerDto) {
+    Question question = questionService.ofId(answerDto.getQuestionId());
+
+    if (question == null) {
+      throw new IllegalArgumentException(String.format(
+          "Question of id %d is not found.", answerDto.getQuestionId()));
+    }
+
+    StudentAnswer studentAnswer =
+        studentAnswerService.add(user, question, answerDto.getDetail());
+
+    answerDto.fill(studentAnswer);
   }
 }

@@ -8,9 +8,9 @@ $(document).ready(function() {
 
   socket.onopen = function() {
     socket.send(JSON.stringify({
-      'type': 4,
+      'type': 5,
       'payload': {
-        'questionId': 1,
+        'questionId': 4,
         'detail': "responseeeeee",
       },
     }));
