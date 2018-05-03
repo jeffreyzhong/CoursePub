@@ -3,6 +3,7 @@ package edu.brown.cs.termproject.trie;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -22,10 +23,11 @@ public class Trie {
    * @param input a list of strings.
    */
 
-  public void insertList(List<String> input) {
+  public void insertList(List<String> input, Calendar time) {
     for (String temp : input) {
       if (!temp.equals("")) {
-        this.insert(temp);
+        //insert time as well
+        this.insert(temp, time);
       }
     }
   }
@@ -46,7 +48,7 @@ public class Trie {
    * @param input a word
    */
 
-  public void insert(String input) {
+  public void insert(String input, Calendar time) {
 
     input = input.replaceAll("[^a-zA-Z ]", "")
         .replaceAll("\\s+", "")
@@ -68,7 +70,7 @@ public class Trie {
       if (input.length() > i + 1) {
         i += 1;
       } else if (input.length() == i + 1) {
-        currentNode.setValue(input);
+        currentNode.addValue(time);
         return;
       } else {
         return;
@@ -83,9 +85,9 @@ public class Trie {
         i += 1;
       }
 
-      currentNode.setValue(input);
+      currentNode.addValue(time);
     } else {
-      currentNode.setValue(input);
+      currentNode.addValue(time);
     }
 
   }
@@ -95,93 +97,93 @@ public class Trie {
     return referenceString.indexOf(c);
   }
 
-  List<String> traverse(List<String> outputList, TrieNode start) {
-    TrieNode[] currentChildren = start.getChildren();
+//  List<String> traverse(List<String> outputList, TrieNode start) {
+//    TrieNode[] currentChildren = start.getChildren();
+//
+//    for (int i = 0; i < currentChildren.length; i++) {
+//      if (currentChildren[i] != null) {
+//        if (currentChildren[i].getValue() != null) {
+//          outputList.add(currentChildren[i].getValue());
+//        }
+//        outputList = traverse(outputList, currentChildren[i]);
+//      }
+//    }
+//
+//    return outputList;
+//
+//  }
+//
+//  /**
+//   * Traverse a trie given max led.
+//   *
+//   * @param outputList outputlist that contains all the words
+//   * @param start      starting trienode.
+//   * @param max        max led
+//   * @param input      input string for recursive calls
+//   * @return output string
+//   */
+//
+//  public List<String> traverseMaxLED(List<String> outputList,
+//                                     TrieNode start, int max, String input) {
+//    TrieNode[] currentChildren = start.getChildren();
+//    int lowest = input.length() - max;
+//
+//    for (int i = 0; i < currentChildren.length; i++) {
+//      if (currentChildren[i] != null) {
+//        if (currentChildren[i].getValue() != null && currentChildren[i]
+//            .getLevel() >= lowest) {
+//          String curString = currentChildren[i].getValue();
+//          int led = LDistanceCalculator.calculate(curString, input);
+//          if (led <= max) {
+//            outputList.add(currentChildren[i].getValue());
+//          }
+//          int levelDiff = Math.abs(curString.length() - input.length());
+//          if (led <= max + levelDiff) {
+//            outputList = traverseMaxLED(outputList,
+//                currentChildren[i], max, input);
+//          }
+//
+//        }
+//        outputList = traverseMaxLED(outputList, currentChildren[i], max, input);
+//      }
+//    }
+//
+//    return outputList;
+//
+//  }
 
-    for (int i = 0; i < currentChildren.length; i++) {
-      if (currentChildren[i] != null) {
-        if (currentChildren[i].getValue() != null) {
-          outputList.add(currentChildren[i].getValue());
-        }
-        outputList = traverse(outputList, currentChildren[i]);
-      }
-    }
-
-    return outputList;
-
-  }
-
-  /**
-   * Traverse a trie given max led.
-   *
-   * @param outputList outputlist that contains all the words
-   * @param start      starting trienode.
-   * @param max        max led
-   * @param input      input string for recursive calls
-   * @return output string
-   */
-
-  public List<String> traverseMaxLED(List<String> outputList,
-                                     TrieNode start, int max, String input) {
-    TrieNode[] currentChildren = start.getChildren();
-    int lowest = input.length() - max;
-
-    for (int i = 0; i < currentChildren.length; i++) {
-      if (currentChildren[i] != null) {
-        if (currentChildren[i].getValue() != null && currentChildren[i]
-            .getLevel() >= lowest) {
-          String curString = currentChildren[i].getValue();
-          int led = LDistanceCalculator.calculate(curString, input);
-          if (led <= max) {
-            outputList.add(currentChildren[i].getValue());
-          }
-          int levelDiff = Math.abs(curString.length() - input.length());
-          if (led <= max + levelDiff) {
-            outputList = traverseMaxLED(outputList,
-                currentChildren[i], max, input);
-          }
-
-        }
-        outputList = traverseMaxLED(outputList, currentChildren[i], max, input);
-      }
-    }
-
-    return outputList;
-
-  }
-
-  /**
-   * This method find all words with a given prefix.
-   *
-   * @param input given prefix
-   * @return all words
-   */
-
-  public List<String> findByPrefix(String input) {
-    List<String> result = new ArrayList<>();
-
-    input = input.toLowerCase();
-    int i = 0;
-    TrieNode currentNode = root;
-    while ((currentNode.getChildren())[charToInt(input.charAt(i))] != null) {
-      currentNode
-          = (currentNode.getChildren())[charToInt(input.charAt(i))];
-
-      if (input.length() > i + 1) {
-        i += 1;
-      } else if (input.length() == i + 1) {
-        i += 1;
-        break;
-      }
-    }
-
-    if (i < input.length()) {
-      return null;
-    }
-
-    return traverse(result, currentNode);
-
-  }
+//  /**
+//   * This method find all words with a given prefix.
+//   *
+//   * @param input given prefix
+//   * @return all words
+//   */
+//
+//  public List<String> findByPrefix(String input) {
+//    List<String> result = new ArrayList<>();
+//
+//    input = input.toLowerCase();
+//    int i = 0;
+//    TrieNode currentNode = root;
+//    while ((currentNode.getChildren())[charToInt(input.charAt(i))] != null) {
+//      currentNode
+//          = (currentNode.getChildren())[charToInt(input.charAt(i))];
+//
+//      if (input.length() > i + 1) {
+//        i += 1;
+//      } else if (input.length() == i + 1) {
+//        i += 1;
+//        break;
+//      }
+//    }
+//
+//    if (i < input.length()) {
+//      return null;
+//    }
+//
+//    return traverse(result, currentNode);
+//
+//  }
 
   /**
    * Tells if a string is word in the trie.

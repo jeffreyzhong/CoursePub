@@ -5,21 +5,39 @@ INSERT INTO user (id, email) VALUES (4, 'xinyang_zhou@brown.edu');
 INSERT INTO user (id, email) VALUES (5, 'john_jannotti@brown.edu');
 INSERT INTO user (id, email) VALUES (6, 'jzhong2468@gmail.com');
 INSERT INTO user (id, email) VALUES (7, 'yjnqin@gmail.com');
+INSERT INTO user (id, email) VALUES (8, 'garyzhou98@gmail.com');
 
 INSERT INTO course (id, name) VALUES (1, 'Linear Algebra');
 INSERT INTO course (id, name) VALUES (2, 'Software Engineering');
+INSERT INTO course (id, name) VALUES (3, 'Introduction to Matrices');
+INSERT INTO course (id, name) Values (4, 'Macroeconomics');
+INSERT INTO course (id, name) Values (5, 'Machine Learning');
+
 
 INSERT INTO registration (id, type, course_id, user_id) VALUES (1, 1, 1, 1);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (2, 1, 1, 2);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (3, 1, 1, 3);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (4, 1, 1, 4);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (5, 1, 2, 1);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (6, 1, 2, 2);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (2, 1, 2, 1);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (3, 1, 1, 2);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (4, 1, 2, 2);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (5, 1, 5, 2);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (6, 1, 1, 3);
 INSERT INTO registration (id, type, course_id, user_id) VALUES (7, 1, 2, 3);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (8, 1, 2, 4);
-INSERT INTO registration (id, type, course_id, user_id) VALUES (9, 1, 2, 5);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (8, 1, 5, 3);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (9, 1, 1, 4);
+
+
 INSERT INTO registration (id, type, course_id, user_id) VALUES (10, 0, 1, 6);
 INSERT INTO registration (id, type, course_id, user_id) VALUES (11, 0, 1, 7);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (12, 1, 2, 4);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (13, 1, 5, 4);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (14, 1, 1, 5);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (15, 1, 2, 5);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (16, 1, 3, 5);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (17, 1, 4, 5);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (18, 1, 5, 5);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (19, 1, 4, 3);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (20, 1, 3, 4);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (21, 1, 4, 8);
+INSERT INTO registration (id, type, course_id, user_id) VALUES (22, 1, 5, 8);
 
 INSERT INTO video (id, url, course_id) VALUES (1, "https://www.youtube.com/embed/kjBOesZCoqc?rel=0", 1);
 
@@ -40,3 +58,5 @@ INSERT INTO question_upvote (id, post_id, user_id) VALUES (3, 3, 4);
 INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (1, 'You are dumb jerry', 2, 2, '2018-04-12 05:58:19');
 
 INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (1, 'You are officially dumb jerry', 5, 2, '2018-04-13 04:12:57');
+
+INSERT INTO student_answer (id, body, user_id, question_id, post_time) VALUES (1, 'hahaha', 7, 1, '2018-05-01 07:17:32');

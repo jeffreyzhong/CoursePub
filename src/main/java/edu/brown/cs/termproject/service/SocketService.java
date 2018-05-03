@@ -16,4 +16,6 @@ public interface SocketService {
   void upvote(User user, UpvoteDto upvoteDto);
 
   void instructorAnswer(User user, AnswerDto answerDto);
+
+  void studentAnswer(User user, AnswerDto answerDto);
 }

@@ -1,5 +1,9 @@
 package edu.brown.cs.termproject.trie;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 /**
  * This is a Trienode class.
  *
@@ -11,7 +15,7 @@ public class TrieNode {
   private TrieNode[] children = new TrieNode[maxChildren];
   private char content;
   private int level;
-  private String value;
+  private List<Calendar> timeList = new ArrayList<>();
 
   /**
    * Constructor of trienode.
@@ -48,17 +52,17 @@ public class TrieNode {
    * @return value of the trie.
    */
 
-  public String getValue() {
-    return value;
+  public List<Calendar> getValue() {
+    return timeList;
   }
 
   /**
    * Sets the value of the trie.
-   * @param v value to be set.
+   * @param time value to be set.
    */
 
-  public void setValue(String v) {
-    value = v;
+  public void addValue(Calendar time) {
+    timeList.add(time);
   }
 
   /**

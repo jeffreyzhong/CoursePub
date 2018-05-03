@@ -41,7 +41,8 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 class WebSocketConfig implements WebSocketConfigurer {
 
   private enum MESSAGE_TYPE {
-    CONNECT, NEW_QUESTION, NEW_RESPONSE, UPVOTE, INSTRUCTOR_ANSWER, ERROR
+    CONNECT, NEW_QUESTION, NEW_RESPONSE, UPVOTE, INSTRUCTOR_ANSWER,
+    STUDENT_ANSWER, ERROR
   }
 
   private static final Logger logger =
@@ -140,9 +141,16 @@ class WebSocketConfig implements WebSocketConfigurer {
 
             case INSTRUCTOR_ANSWER:
               logger.info("Instructor answer from {}", session.getId());
-              AnswerDto answerDto = new AnswerDto(payload);
-              socketService.instructorAnswer(user, answerDto);
-              responsePayload = answerDto;
+              AnswerDto instructorAnswerDto = new AnswerDto(payload);
+              socketService.instructorAnswer(user, instructorAnswerDto);
+              responsePayload = instructorAnswerDto;
+              break;
+
+            case STUDENT_ANSWER:
+              logger.info("Student answer from {}", session.getId());
+              AnswerDto studentAnswerDto = new AnswerDto(payload);
+              socketService.studentAnswer(user, studentAnswerDto);
+              responsePayload = studentAnswerDto;
               break;
 
             default:
