@@ -308,10 +308,12 @@ function relClick(){
 			let videoId = "relVideo" + i;
 			relVideoPic.setAttribute('id',videoId);
 			relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+vid.linkId +'/0.jpg');
-			relVideoPic.setAttribute('href', "hhttp://localhost:4567/video/" + vid.id)
+			relVideoPic.setAttribute('href', "http://localhost:4567/video/" + vid.id)
 			relVideoPic.style.width = "65px";
 			relVideoPic.style.height = "55px";
-			
+			relVideoPic.onclick = function() { 
+				window.open("http://localhost:4567/video/" + vid.id, '_blank');
+			}
 			// console.log("linkId: " + vid.linkId + " title " + vid.title);
 			$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + vid.linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
 				let temp = "question" + i;
@@ -336,6 +338,8 @@ function relClick(){
 }
 
 function hideTimeandUser(){
+	document.getElementById('responseList').style.height = "0px";
+	document.getElementById('responseList').style.display = "none";
 	let divs = document.getElementsByClassName("questionTimeLabel");
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "none";
