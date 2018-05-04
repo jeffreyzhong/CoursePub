@@ -36,6 +36,21 @@ public class PostController {
     this.videoService = videoService;
     this.questionService = questionService;
   }
+  
+  @PostMapping(path = "/setup")
+  @ResponseBody
+  public String setup(QuestionRequest request) {
+    Video video = videoService.ofId(request.getId());
+
+    if (video == null) {
+      throw new ResourceNotFoundException();
+    }
+
+    ImmutableList.Builder<String> ret = ImmutableList.builder();
+    ret.add(video.getUrl());
+
+    return GSON.toJson(ret.build());
+  }
 
   @PostMapping(path = "/question")
   @ResponseBody
@@ -67,14 +82,13 @@ public class PostController {
 
     List<Course> courses = (List<Course>)(Object)result;
     
-    System.out.println(result);
     ImmutableList.Builder<String> ret = ImmutableList.builder();
     for (Course course : courses) {
       Video video = course.getVideos().iterator().next();
       ret.add(Integer.toString(video.getId()));
       ret.add(video.getUrl());
     }
-
+ 
     return GSON.toJson(ret.build());
   }
 

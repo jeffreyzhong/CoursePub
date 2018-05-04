@@ -15,8 +15,11 @@
 <div id = "header">
 	<h4 class = "logo"> coursepub</h4>
 </div>
-<label id = "searchBarTag">Keep Exploring:</label><input class = "inputBox" id = "searchBar" placeholder="Learning begins here">
-<div class = "videoName">Essense of Linear Algebra</div>	
+<div class = "videoName"><label id = "title">Essense of Linear Algebra</label><br>
+	<label id = "searchBarTag" class = "searchTags">Keep Exploring:</label><input class = "inputBox" id = "searchBar" placeholder="Learning begins here">
+	<label id = "timeTag1" class = "searchTags">Between :</label><input class = "inputBox" id = "searchTimeInput1" placeholder="00:00:00">
+	<label id = "timeTag2" class = "searchTags">and</label><input class = "inputBox" id = "searchTimeInput2" placeholder="00:00:00">
+</div>	
 <div id = "left" >		
 	<div class = "videoWrapper" id = "videoWrapper">
 		<iframe src="https://www.youtube.com/embed/kjBOesZCoqc?rel=0&enablejsapi=1" frameborder="0" allowfullscreen id = "video"></iframe>	
