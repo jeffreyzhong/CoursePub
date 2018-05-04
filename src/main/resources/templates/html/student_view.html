@@ -19,6 +19,7 @@
 	<label id = "searchBarTag" class = "searchTags">Keep Exploring:</label><input class = "inputBox" id = "searchBar" placeholder="Learning begins here">
 	<label id = "timeTag1" class = "searchTags">Between :</label><input class = "inputBox" id = "searchTimeInput1" placeholder="00:00:00">
 	<label id = "timeTag2" class = "searchTags">and</label><input class = "inputBox" id = "searchTimeInput2" placeholder="00:00:00">
+	<button type="submit" value = "Go!" id = "searchBtn">Go</button>
 </div>	
 <div id = "left" >		
 	<div class = "videoWrapper" id = "videoWrapper">
@@ -84,6 +85,15 @@
 	
   	<div id = "answerDiv">
 		<label id = "answerLabel">Answer:</label>
+		<input type = "radio"
+                 value = "byXYZ"
+			   	 id = "followUp"
+                 checked = "checked" />
+          <label for = "sizeSmall">Answer</label>
+          <input type = "radio"
+                 value = "byName"
+                 id = "studentAnswer"/>
+          <label for = "sizeSmall">Follow-up Question</label><br>
 		<textarea class = "inputBox" id = "answerInput" placeholder="Answer a question!"></textarea>
 	</div>
 	

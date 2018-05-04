@@ -16,9 +16,10 @@
 	<h4 class = "logo"> coursepub</h4>
 </div>
 <div class = "videoName"><label id = "title">Essense of Linear Algebra</label><br>
-	<label id = "searchBarTag" class = "searchTags">Keep Exploring:</label><input class = "inputBox" id = "searchBar" placeholder="Learning begins here">
+	<label id = "searchBarTag" class = "searchTags">Search for Keyword:</label><input class = "inputBox" id = "searchBar" placeholder="Learning begins here">
 	<label id = "timeTag1" class = "searchTags">Between :</label><input class = "inputBox" id = "searchTimeInput1" placeholder="00:00:00">
 	<label id = "timeTag2" class = "searchTags">and</label><input class = "inputBox" id = "searchTimeInput2" placeholder="00:00:00">
+	<button type="submit" value = "Go!" id = "searchBtn">Go</button><br><br>
 </div>	
 <div id = "left" >		
 	<div class = "videoWrapper" id = "videoWrapper">
@@ -47,7 +48,7 @@
 	<div class="tab">
 	  <button class="tablinks" id = "noteBtn">Notes</button>
 	  <button class="tablinks" id = "questionBtn">Questions</button>
-	  <button class="tablinks" id = "relBtn">Related</button>
+	  <button class="tablinks" id = "relBtn">Suggested Video</button>
 	  <button class="tablinks" id = "allQuestionsBtn">All Questions</button>
 	</div>
 
@@ -88,6 +89,15 @@
 	
 	<div id = "answerDiv">
 		<label id = "answerLabel">Answer:</label>
+		<input type = "radio"
+                 value = "byXYZ"
+			   	 id = "followUp"
+                 checked = "checked" />
+		<label for = "sizeSmall">Answer</label>
+		<input type = "radio"
+		     value = "byName"
+		     id = "studentAnswer"/>
+		<label for = "sizeSmall">Follow-up Question</label><br>
 		<textarea class = "inputBox" id = "answerInput" placeholder="Answer a question!"></textarea>
 	</div>
 

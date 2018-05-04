@@ -1,13 +1,23 @@
 /*jshint esversion: 6 */
 // Waits for DOM to load before running
 class Question{
-	constructor(id, summary, time, detail, user, isResolved){
+	constructor(id, summary, time, detail, user, isResolved, instructorAnswer, studentAnswer){
 		this._id = id;
 		this._summary = summary;
 		this._time = time;
 		this._detail = detail;
 		this._user = user;
 		this._resolved = isResolved;
+		this._instructorAnswer = instructorAnswer;
+		this._studnetAnswer = studentAnswer;
+	}
+
+	get instructorAnswer(){
+		return this._instructorAnswer;
+	}
+
+	get studentAnswer(){
+		return this._studnetAnswer;
 	}
 	
 	get id(){
@@ -239,7 +249,9 @@ function loadQuestions(event){
 			let user = question.user;
 			let resolved = question.resolved;
 			let detail = question.detail
-			let obj = new Question(id, summary, time, detail, user, resolved);
+			let instructorAnswer = question.instructorAnswer;
+			let studentAnswer = student.studentAnswer;
+			let obj = new Question(id, summary, time, detail, user, resolved, instructorAnswer, studentAnswer);
 			questions.set(obj.id, obj);
 		  	questionsOrd.push(obj);
 		}   
@@ -529,19 +541,54 @@ function openQuestion(){
 	p.innerHTML = "Question detail: " + detail;
 	div.appendChild(p);
 	
+	let instructorAns = questions.get(parseInt(expanded)).instructorAnswer;
+	let studentAns = questions.get(parseInt(expanded)).studentAnswer;
+	
+	let ul = document.createElement('ul');
+	ul.setAttribute('id','remarksList');
+	ul.style.listStyleType = "none";
+	ul.style.lineHeight = "30px";
+	ul.style.marginTop = "-5px";
+	ul.style.paddingRight = "15px";
+	ul.style.textAlign = "right";
+	div.appendChild(ul);
+	
+	if(instructorAns){
+		let id = instructorAns.id;
+//			let questionId = response.questionId;
+		let detail = instructorAns.detail;
+		let userId = instructorAns.userId;
+		let postDate = instructorAns.postDate;
+		let postTime = instructorAns.postTime;
+		let text = 'Instructor Answer (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	Instructor: ' + userId + "<br>";
+		let li = document.createElement('li');
+		li.setAttribute('class', 'item');
+		li.style.color = 'white';
+		li.style.borderBottom = "2px solid #FFFFFF";
+		li.style.fontWeight = "bold";
+		ul.appendChild(li);
+		li.innerHTML = li.innerHTML + text;
+	}
+	
+	if(studentAns){
+		let id = studentAns.id;
+//			let questionId = response.questionId;
+		let detail = studentAns.detail;
+		let userId = studentAns.userId;
+		let postDate = studentAns.postDate;
+		let postTime = studentAns.postTime;
+		let text = 'Instructor Answer (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	Student: ' + userId + "<br>";
+		let li = document.createElement('li');
+		li.setAttribute('class', 'item');
+		li.style.color = 'white';
+		li.style.borderBottom = "2px solid #FFFFFF";
+		ul.appendChild(li);
+		li.innerHTML = li.innerHTML + text;
+	}
+	
 	const postParameters = {id: expanded};
 	$.post("/response", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
-
-		let ul = document.createElement('ul');
-		ul.setAttribute('id','remarksList');
-		ul.style.listStyleType = "none";
-		ul.style.lineHeight = "30px";
-		ul.style.marginTop = "-5px";
-		ul.style.paddingRight = "15px";
-		ul.style.textAlign = "right";
-		div.appendChild(ul);
-
 		for (let i = 0; i < responseObject.length; ++i) {
 			let response = responseObject[i];
 			let id = response.id;
@@ -551,7 +598,7 @@ function openQuestion(){
 			let postDate = response.postDate;
 			let postTime = response.postTime;
 			let upvotes = response.upvotes;
-			let text = 'response (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	user: ' + userId + "<br>" + upvotes + ' people have upvoted.';
+			let text = 'response (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	user: ' + userId;
 			renderList(text,ul);
 		}
 		player.seekTo(parseFloat(convertTime($("#time0").html())));
@@ -620,8 +667,13 @@ function answerSubmit(){
 		return;
 	}
 	
-	
-	let jsonObject = {questionId: questionId, detail:detail};
+	let answerType;
+	if(document.getElementById('followUp').checked){
+		answerType = 0;
+	}else if(document.getElementById('followUp').checked){
+		answerType = 1;
+	}
+	let jsonObject = {questionId: questionId, detail:detail, answerType: answerType};
 	
 	conn.send(JSON.stringify({type: 2, payload: jsonObject}));
 	
