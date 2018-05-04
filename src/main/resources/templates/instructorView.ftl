@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>coursepub</title>
+<title>CoursePub</title>
 <link href="/static/css/instructorView.css" rel="stylesheet" type="text/css">
 <!--The following script tag downloads a font from the Adobe Edge Web Fonts server for use within the web page. We recommend that you do not modify it.-->
 <script>var __adobewebfontsappname__="dreamweaver"</script>
@@ -52,12 +52,12 @@
 <div class="container"> 
   <!-- Navigation -->
   <header> <a href="">
-    <h4 class="logo">coursepub</h4>
+    <h4 class="logo">CoursePub</h4>
   </a>
     <nav>
       <ul>
-        <li><a href="">home</a></li>
-        <li><a href="#about">courses</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="#about">Courses</a></li>
         <li> <a href="#contact">about</a></li>
       </ul>
     </nav>
