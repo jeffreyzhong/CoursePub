@@ -94,7 +94,8 @@
 		</div>
 	</div>
 	<div id="videoSection">
-		<iframe id="videoFrame" width="560" height="315" src="https://www.youtube.com/embed/kjBOesZCoqc?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+		<iframe id="videoFrame" width="560" height="315" frameborder="0"
+        src=""allow="autoplay; encrypted-media" allowfullscreen></iframe>
 	</div>
 </div>
 <!-- Main Container Ends -->

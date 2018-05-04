@@ -8,23 +8,26 @@ $(document).ready(function() {
 	let videoThumbnail = document.getElementById("videoThumbnail");
 	let videoName = document.getElementById("videoName");
 	let timeline;
-	let link = document.getElementById("videoFrame").src;
-	let linkId = extractVideoIdFromYouTubeUrl(link);
-	let url = 'https://img.youtube.com/vi/'+linkId+'/0.jpg';
-	let questionId;
-	let mouseoverId;
-	document.getElementById("displaySummary").innerHTML = " ";
-	document.getElementById("displayQuestion").innerHTML = " ";
-	document.getElementById("displayInstructorAnswer").innerHTML = " ";
-	document.getElementById("displayStudentAnswer").innerHTML = " ";
-	document.getElementById("displayThread").innerHTML = " ";
-	videoThumbnail.src = url;
-	videoThumbnail.style.width = "50px";
-	videoThumbnail.style.height = "50px";
-	$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linkId + "&key=" + "AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
-		videoName.innerHTML = data.items[0].snippet.title;
-		//alert(data.items[0].snippet.title);
+	let linkId;
+	$.post("/setup",{id:videoId},responseJSON => {
+		let responseObject = JSON.parse(responseJSON);
+		console.log("LINK: " + responseObject);
+		document.getElementById("videoFrame").setAttribute("src",responseObject[0]);
+		console.log("IFRAME: " + document.getElementById("videoFrame").src);
+		let link = document.getElementById("videoFrame").src;
+		linkId = extractVideoIdFromYouTubeUrl(link);
+		let url = 'https://img.youtube.com/vi/'+linkId+'/0.jpg';
+
+		videoThumbnail.src = url;
+		videoThumbnail.style.width = "50px";
+		videoThumbnail.style.height = "50px";
+		$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linkId + "&key=" + "AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
+			videoName.innerHTML = data.items[0].snippet.title;
+			//alert(data.items[0].snippet.title);
+		});
 	});
+		let questionId;
+		let mouseoverId;
 	
 	const MESSAGE_TYPE = {
 	  	CONNECT: 0,
@@ -240,15 +243,33 @@ $(document).ready(function() {
 		request.open("GET", url, true);
 		request.send();
 		getElements = function(response) {
+			console.log(response);
+			if (!response['items']['0']) {
+				console.log("reload");
+				window.location.reload();
+			}
 			let duration = response['items']['0']['contentDetails']['duration'];
 			let videoEndTime = parseDuration(duration).split(",");
 			console.log(videoEndTime);
+			let step;
+			if (parseInt(videoEndTime[1]) > 50) {
+				step = 300;
+			} else if (parseInt(videoEndTime[1]) > 40) {
+				step = 240;
+			} else if (parseInt(videoEndTime[2]) > 30) {
+				step = 180;
+			} else if (parseInt(videoEndTime) > 20) {
+				step = 120;
+			} else if (parseInt(videoEndTime) > 10 || parseInt(videoEndTime) < 10) {
+				step = 60;
+			}
 			let options = {
 				width: '100%',
 				height: '320px',
-				timeAxis: {scale: 'second', step: 60}
+				timeAxis: {scale: 'second', step: step}
 			};
-			options.zoomMax = 420000;
+			console.log(parseInt(videoEndTime[0])*60*60*1000+parseInt(videoEndTime[1])*60*1000+parseInt(videoEndTime[2])*1000);
+			options.zoomMax = parseInt(videoEndTime[0])*60*60*1000+parseInt(videoEndTime[1])*60*1000+parseInt(videoEndTime[2])*1000;
 			options.zoomMin = 1000;
 			options.min = new Date(0,0,0,0,0,0,0);
 			console.log(videoEndTime[0] + " " + videoEndTime[1] + " " + videoEndTime[2]);
