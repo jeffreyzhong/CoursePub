@@ -248,9 +248,9 @@ function loadQuestions(event){
 			let summary = question.summary;
 			let user = question.user;
 			let resolved = question.resolved;
-			let detail = question.detail
+			let detail = question.detail;
 			let instructorAnswer = question.instructorAnswer;
-			let studentAnswer = student.studentAnswer;
+			let studentAnswer = question.studentAnswer;
 			let obj = new Question(id, summary, time, detail, user, resolved, instructorAnswer, studentAnswer);
 			questions.set(obj.id, obj);
 		  	questionsOrd.push(obj);
@@ -320,12 +320,12 @@ function relClick(){
 			let videoId = "relVideo" + i;
 			relVideoPic.setAttribute('id',videoId);
 			relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+vid.linkId +'/0.jpg');
-			relVideoPic.setAttribute('href', "http://localhost:4567/video/" + vid.id)
+			relVideoPic.setAttribute('href', "http://localhost:4567/video/" + vid.id);
 			relVideoPic.style.width = "65px";
 			relVideoPic.style.height = "55px";
 			relVideoPic.onclick = function() { 
 				window.open("http://localhost:4567/video/" + vid.id, '_blank');
-			}
+			};
 			// console.log("linkId: " + vid.linkId + " title " + vid.title);
 			$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + vid.linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
 				let temp = "question" + i;
@@ -402,6 +402,7 @@ function renderList(text, ul){
 	li.setAttribute('class', 'item');
 	li.style.color = 'white';
 	li.style.borderBottom = "2px solid #FFFFFF";
+	li.style.fontSize = "15px";
 	ul.appendChild(li);
 	li.innerHTML = li.innerHTML + text;
 }
@@ -566,6 +567,7 @@ function openQuestion(){
 		li.style.color = 'white';
 		li.style.borderBottom = "2px solid #FFFFFF";
 		li.style.fontWeight = "bold";
+		li.style.fontSize = "16px";
 		ul.appendChild(li);
 		li.innerHTML = li.innerHTML + text;
 	}
@@ -577,11 +579,12 @@ function openQuestion(){
 		let userId = studentAns.userId;
 		let postDate = studentAns.postDate;
 		let postTime = studentAns.postTime;
-		let text = 'Instructor Answer (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	Student: ' + userId + "<br>";
+		let text = 'Student Answer (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	Student: ' + userId + "<br>";
 		let li = document.createElement('li');
 		li.setAttribute('class', 'item');
 		li.style.color = 'white';
 		li.style.borderBottom = "2px solid #FFFFFF";
+		li.style.fontSize = "15px";
 		ul.appendChild(li);
 		li.innerHTML = li.innerHTML + text;
 	}

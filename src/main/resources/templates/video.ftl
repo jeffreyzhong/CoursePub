@@ -48,7 +48,7 @@
 	<div class="tab">
 	  <button class="tablinks" id = "noteBtn">Notes</button>
 	  <button class="tablinks" id = "questionBtn">Questions</button>
-	  <button class="tablinks" id = "relBtn">Suggested Video</button>
+	  <button class="tablinks" id = "relBtn">Suggested</button>
 	  <button class="tablinks" id = "allQuestionsBtn">All Questions</button>
 	</div>
 
