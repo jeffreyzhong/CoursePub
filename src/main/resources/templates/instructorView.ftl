@@ -86,16 +86,17 @@
             <div class="displaySection" id="displayStudentAnswer"></div><br>
             Instructor Answer:<br>
             <div class="displaySection" id="displayInstructorAnswer"></div><br>
-            Follow-Up Thread:<br>
-            <div class="displaySection" id="displayThread"></div><br>
-<!--            <div class="displaySection" id="displayResponse"></div><br>-->          Answer:<br>
+            Answer:<br>
 			<textarea class="instructorResponse" id="instructorResponse"></textarea><br>
-			<input type="submit" id="submitResponseButton">
+			<input type="submit" id="submitResponseButton"><br>
+            Follow-Up Thread:<br>
+            <div class="displaySection" id="displayThread"></div>
+<!--            <div class="displaySection" id="displayResponse"></div><br>-->          
 		</div>
 	</div>
 	<div id="videoSection">
 		<iframe id="videoFrame" width="560" height="315" frameborder="0"
-        src=""allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 	</div>
 </div>
 <!-- Main Container Ends -->

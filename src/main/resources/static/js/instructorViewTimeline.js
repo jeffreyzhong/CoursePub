@@ -425,11 +425,11 @@ $(document).ready(function() {
 		if (color === "red" || color === "green") {
 			return '<div style="background-color:'+color+'; color:white; ' + 
 			'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +
-			'padding-bottom:'+padding+'px; border-radius: 20px;">'+user + ' @ ' + colonTime +'</div>';
+			'padding-bottom:'+padding+'px; border-radius: 20px;">'+numUpVotes + 'UP' + ' @ ' + colonTime +'</div>';
 		} else {
 			return '<div style="background-color:'+color+'; color:black; ' + 
 			'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +
-			'padding-bottom:'+padding+'px; border-radius: 20px;">'+user + ' @ ' + colonTime +'</div>';
+			'padding-bottom:'+padding+'px; border-radius: 20px;">'+numUpVotes + 'UP' + ' @ ' + colonTime +'</div>';
 		}
 	}
 	
