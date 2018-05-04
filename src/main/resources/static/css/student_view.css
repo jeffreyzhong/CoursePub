@@ -50,6 +50,19 @@ body{
 	font-family: source-sans-pro;
 	margin-left: 25px;
 }
+#searchArea{
+	margin-top: 5px;
+}
+#item{
+	margin-left: 25px;
+	width : 450px;
+	float: left;
+}
+
+#timeTag1{
+	margin-left: -100px;
+	margin-top:10px;
+}
 
 p{
 	margin-top: 10px;
@@ -120,9 +133,11 @@ p{
 	width: 200px;
 	height:18px;
 	font-size: 15px;
+	border-radius:0px;
 }
 
 #searchTimeInput1{
+	border-radius:0px;
 	margin-left:5px;
 	width: 75px;
 	height:18px;
@@ -131,6 +146,7 @@ p{
 }
 
 #searchTimeInput2{
+	border-radius:0px;
 	margin-left:5px;
 	width: 75px;
 	height:18px;
@@ -186,6 +202,18 @@ p{
 	display: inline-block;
 	font-weight: bold;
 	font-size:18px;
+}
+
+#searchBtn{
+	margin-left:5px;
+	color:#2D9AB7;
+	background-color: #FFFFFF;
+	border:1px;
+	border-radius:30px;
+	padding: 2px 15px;
+	display: inline-block;
+	font-weight: bold;
+	font-size:16px;
 }
 
 #right {

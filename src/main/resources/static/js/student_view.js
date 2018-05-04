@@ -1,13 +1,23 @@
 /*jshint esversion: 6 */
 // Waits for DOM to load before running
 class Question{
-	constructor(id, summary, time, detail, user, isResolved){
+	constructor(id, summary, time, detail, user, isResolved, instructorAnswer, studentAnswer){
 		this._id = id;
 		this._summary = summary;
 		this._time = time;
 		this._detail = detail;
 		this._user = user;
 		this._resolved = isResolved;
+		this._instructorAnswer = instructorAnswer;
+		this._studnetAnswer = studentAnswer;
+	}
+
+	get instructorAnswer(){
+		return this._instructorAnswer;
+	}
+
+	get studentAnswer(){
+		return this._studnetAnswer;
 	}
 	
 	get id(){
@@ -172,7 +182,6 @@ $(document).ready(() => {
 	// Add function to execute when the API is ready
 	YT_ready(function(){
 		let frameID = getFrameID("video");
-		console.log(frameID);
 		if (frameID) { //If the frame exists
 			player = new YT.Player(frameID, {
 				events: {
@@ -211,19 +220,6 @@ function init(){
 	});	
 }
 
-function setupSearchBar(){
-	$("#searchBar").keyup(function(ev) {
-	    // 13 is ENTER
-	    if (ev.which === 13 && $("#searchBar").val() !== "") {
-	     	const postParameters = {content: $("#searchBar").val()};
-			$.post("/question", postParameters, responseJSON => {
-				const responseObject = JSON.parse(responseJSON);
-	    	});
-		}
-	});		
-}
-
-
 function loadQuestions(event){
 	event.target.pauseVideo();
 	setupRelatedVideo();
@@ -238,8 +234,10 @@ function loadQuestions(event){
 			let summary = question.summary;
 			let user = question.user;
 			let resolved = question.resolved;
-			let detail = question.detail
-			let obj = new Question(id, summary, time, detail, user, resolved);
+			let detail = question.detail;
+			let instructorAnswer = question.instructorAnswer;
+			let studentAnswer = question.studentAnswer;
+			let obj = new Question(id, summary, time, detail, user, resolved, instructorAnswer, studentAnswer);
 			questions.set(obj.id, obj);
 		  	questionsOrd.push(obj);
 		}   
@@ -278,6 +276,60 @@ function stateChangeFunc(event) {
 }
 
 //============================================================================
+//Below are code for searching transcripts within video
+function setupSearchBar(){
+	console.log("Hi!");
+	document.getElementById('searchBtn').onclick = function() {
+	    // 13 is ENTER
+		console.log("Hey!" + $("#searchBar").val());
+	    if ($("#searchBar").val() !== "") {
+			let item = document.getElementById("item");
+			let ul = document.createElement("ul");
+			ul.setAttribute("id", "searchResults");
+			ul.style.position = "absolute";
+			ul.style.overflow = "hidden";
+			ul.style.overflowY = "auto";
+			ul.style.zIndex = "999";
+			ul.style.listStyle = "none";
+			ul.style.margin = "0px";
+			ul.style.marginLeft = "112.58px";
+			ul.style.padding = "0px";
+			ul.style.backgroundColor = "#2D9AB7";
+			ul.style.width = "224px";
+			ul.style.height = "300px";
+			
+			for(let i = 0; i < 100; i++){
+				let text = "Testing" + i;
+				let li = document.createElement('li');
+				li.setAttribute('class', 'item');
+				li.style.margin = "0px";
+				li.style.padding = "0px";
+				li.style.color = "white";
+				li.style.border = "2px solid #FFFFFF";
+				if(i === 1){
+					li.style.borderTop = "none";
+				}
+				if(i !== 99){
+					li.style.borderBottom = "none";
+				}
+				li.style.fontSize = "15px";
+				li.style.display = "block";
+				ul.appendChild(li);
+				li.innerHTML = li.innerHTML + text;
+				
+			}
+			
+			item.appendChild(ul);
+//			const postParameters = {content: $("#searchBar").val(), startTime: $("#searchTimeInput1").val(), endTime: $("#searchTimeInput2").val()};
+//			$.post("/searchTranscript", postParameters, responseJSON => {
+//				const responseObject = JSON.parse(responseJSON);
+//				
+//			});
+		}
+	};		
+}
+
+//============================================================================
 //Below are code for controls sideContentDiv (e.x. click on different tabs)
 
 function noteClick(){
@@ -308,12 +360,12 @@ function relClick(){
 			let videoId = "relVideo" + i;
 			relVideoPic.setAttribute('id',videoId);
 			relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+vid.linkId +'/0.jpg');
-			relVideoPic.setAttribute('href', "http://localhost:4567/video/" + vid.id)
+			relVideoPic.setAttribute('href', "http://localhost:4567/video/" + vid.id);
 			relVideoPic.style.width = "65px";
 			relVideoPic.style.height = "55px";
 			relVideoPic.onclick = function() { 
 				window.open("http://localhost:4567/video/" + vid.id, '_blank');
-			}
+			};
 			// console.log("linkId: " + vid.linkId + " title " + vid.title);
 			$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + vid.linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
 				let temp = "question" + i;
@@ -390,6 +442,7 @@ function renderList(text, ul){
 	li.setAttribute('class', 'item');
 	li.style.color = 'white';
 	li.style.borderBottom = "2px solid #FFFFFF";
+	li.style.fontSize = "15px";
 	ul.appendChild(li);
 	li.innerHTML = li.innerHTML + text;
 }
@@ -524,24 +577,60 @@ function openQuestion(){
 	p.style.paddingBottom = "10px";
 	p.style.color = "white";
 	p.style.borderBottom = "2px solid #FFFFFF";
-	console.log("expanded: " + expanded);
 	let detail = questions.get(parseInt(expanded)).detail;
 	p.innerHTML = "Question detail: " + detail;
 	div.appendChild(p);
 	
+	let instructorAns = questions.get(parseInt(expanded)).instructorAnswer;
+	let studentAns = questions.get(parseInt(expanded)).studentAnswer;
+	
+	let ul = document.createElement('ul');
+	ul.setAttribute('id','remarksList');
+	ul.style.listStyleType = "none";
+	ul.style.lineHeight = "30px";
+	ul.style.marginTop = "-5px";
+	ul.style.paddingRight = "15px";
+	ul.style.textAlign = "right";
+	div.appendChild(ul);
+	
+	if(instructorAns){
+		let id = instructorAns.id;
+//			let questionId = response.questionId;
+		let detail = instructorAns.detail;
+		let userId = instructorAns.userId;
+		let postDate = instructorAns.postDate;
+		let postTime = instructorAns.postTime;
+		let text = 'Instructor Answer (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	Instructor: ' + userId + "<br>";
+		let li = document.createElement('li');
+		li.setAttribute('class', 'item');
+		li.style.color = 'white';
+		li.style.borderBottom = "2px solid #FFFFFF";
+		li.style.fontWeight = "bold";
+		li.style.fontSize = "16px";
+		ul.appendChild(li);
+		li.innerHTML = li.innerHTML + text;
+	}
+	
+	if(studentAns){
+		let id = studentAns.id;
+//			let questionId = response.questionId;
+		let detail = studentAns.detail;
+		let userId = studentAns.userId;
+		let postDate = studentAns.postDate;
+		let postTime = studentAns.postTime;
+		let text = 'Student Answer (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	Student: ' + userId + "<br>";
+		let li = document.createElement('li');
+		li.setAttribute('class', 'item');
+		li.style.color = 'white';
+		li.style.borderBottom = "2px solid #FFFFFF";
+		li.style.fontSize = "15px";
+		ul.appendChild(li);
+		li.innerHTML = li.innerHTML + text;
+	}
+	
 	const postParameters = {id: expanded};
 	$.post("/response", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
-
-		let ul = document.createElement('ul');
-		ul.setAttribute('id','remarksList');
-		ul.style.listStyleType = "none";
-		ul.style.lineHeight = "30px";
-		ul.style.marginTop = "-5px";
-		ul.style.paddingRight = "15px";
-		ul.style.textAlign = "right";
-		div.appendChild(ul);
-
 		for (let i = 0; i < responseObject.length; ++i) {
 			let response = responseObject[i];
 			let id = response.id;
@@ -551,7 +640,7 @@ function openQuestion(){
 			let postDate = response.postDate;
 			let postTime = response.postTime;
 			let upvotes = response.upvotes;
-			let text = 'response (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	user: ' + userId + "<br>" + upvotes + ' people have upvoted.';
+			let text = 'response (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	user: ' + userId;
 			renderList(text,ul);
 		}
 		player.seekTo(parseFloat(convertTime($("#time0").html())));
@@ -620,8 +709,13 @@ function answerSubmit(){
 		return;
 	}
 	
-	
-	let jsonObject = {questionId: questionId, detail:detail};
+	let answerType;
+	if(document.getElementById('followUp').checked){
+		answerType = 0;
+	}else if(document.getElementById('followUp').checked){
+		answerType = 1;
+	}
+	let jsonObject = {questionId: questionId, detail:detail, answerType: answerType};
 	
 	conn.send(JSON.stringify({type: 2, payload: jsonObject}));
 	
