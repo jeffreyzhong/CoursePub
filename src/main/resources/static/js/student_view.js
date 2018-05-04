@@ -59,6 +59,27 @@ class Question{
 	}
 }
 
+class Video{
+	constructor(id, linkId){
+		this._id = id;
+		this._linkId = linkId;
+		// this._title = "";
+	}
+	
+	get id(){
+		return this._id;
+	}
+	
+	get linkId(){
+		return this._linkId;
+	}
+	
+	// get title(){
+	// 	return this._title;
+	// }
+
+}
+
 const MESSAGE_TYPE = {
 	CONNECT: 0,
 	NEW_QUESTION: 1,
@@ -80,6 +101,7 @@ let player; //Define a player object, to enable later function calls, without ha
 
 let duration = null;
 
+let relVideo = [];
 // Define YT_ready function.
 let YT_ready = (function() {
     let onReady_funcs = [], api_isReady = false;
@@ -108,7 +130,7 @@ let YT_ready = (function() {
 
 $(document).ready(() => {
 	let connection = "ws://localhost:4567/websocket/" + videoId;
-
+	init();
 	conn = new WebSocket(connection);
 	conn.addEventListener('message', function (event) {
 		const data = JSON.parse(event.data);
@@ -145,10 +167,12 @@ $(document).ready(() => {
 	document.getElementById('relBtn').onclick = relClick;
 	document.getElementById('allQuestionsBtn').onclick = allClick;
 	document.getElementById('submitBtn').onclick = postClick;
+	
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
 		let frameID = getFrameID("video");
+		console.log(frameID);
 		if (frameID) { //If the frame exists
 			player = new YT.Player(frameID, {
 				events: {
@@ -158,6 +182,8 @@ $(document).ready(() => {
 			});	
 		}	
 	});
+	
+	
 	setupSearchBar();
 	$("#summaryInput").focus(function() {
 		$("#timeInput").val(convertSeconds(Math.floor(player.getCurrentTime())));
@@ -170,6 +196,20 @@ $(document).ready(() => {
 	});	
 	$("#noteBtn").click();
 });
+
+function init(){
+	const postParameters = {id: videoId};
+	$.post("/setup", postParameters, responseJSON => {
+		const responseObject = JSON.parse(responseJSON);
+		document.getElementById('video').setAttribute('src', responseObject[0]);
+		let url = responseObject[0].split("/");
+		let temp = url[url.length-1];
+		let linkId = temp.split("?")[0];
+		$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
+				document.getElementById('title').innerHTML = data.items[0].snippet.title;
+		});	
+	});	
+}
 
 function setupSearchBar(){
 	$("#searchBar").keyup(function(ev) {
@@ -186,7 +226,7 @@ function setupSearchBar(){
 
 function loadQuestions(event){
 	event.target.pauseVideo();
-	
+	setupRelatedVideo();
 	const postParameters = {id: videoId};
 	$.post("/question", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
@@ -205,9 +245,24 @@ function loadQuestions(event){
 		}   
 		
 		questionsOrd = questionsOrd.sort(compare);
+
 		event.target.playVideo();
 	});	
-	
+}
+
+function setupRelatedVideo(){
+	const postParameters = {};
+	$.post("/related", postParameters, responseJSON => {
+		const responseObject = JSON.parse(responseJSON);
+		for (let i = 0; i < responseObject.length; i+=2) {
+			let id = responseObject[i];
+			let url = responseObject[i+1].split("/");
+			let temp = url[url.length-1];
+			let linkId = temp.split("?")[0];
+			let obj = new Video(id, linkId);
+			relVideo.push(obj);
+		}   
+	});	
 }
 
 // Example: function stopCycle, bound to onStateChange
@@ -231,15 +286,71 @@ function noteClick(){
 	$("#question0").html("Hi Class, welcome to MATH 520 Linear Algebra. In this class, I will give a brief introduction to what linear algebra is and the basic concepts that would be taught in this course. Please take a second to watch this short video and get excited for a semester long journey exploring the power of linear algebra!");
 }
 
+//view related video
 function relClick(){
-	hideContent();
+//	hideContent();
+	questionSel = false;
 	expanded = -1;
-	$("#question0").html("No related video available at the moment");	
+	hideTimeandUser();
+	if(document.getElementById('questionsList') !== null){
+		document.getElementById('questionsList').style.display = "none";
+	}
+	let divs = document.getElementsByClassName("questionDiv");
+	if(relVideo.length == 0){
+		hideContent();
+		$("#question0").html("No suggested video at this time.");
+	}else if(document.getElementById('relVideo0') === null){
+		for(let i = 0; i < relVideo.length; i++){
+			divs[i].style.display = "block";
+			divs[i].onclick = null;	
+			let vid = relVideo[i];
+			let relVideoPic = document.createElement("IMG");
+			let videoId = "relVideo" + i;
+			relVideoPic.setAttribute('id',videoId);
+			relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+vid.linkId +'/0.jpg');
+			relVideoPic.setAttribute('href', "hhttp://localhost:4567/video/" + vid.id)
+			relVideoPic.style.width = "65px";
+			relVideoPic.style.height = "55px";
+			
+			// console.log("linkId: " + vid.linkId + " title " + vid.title);
+			$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + vid.linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
+				let temp = "question" + i;
+				let currQuestion = document.getElementById(temp);
+				// relVideo.innerHTML = data.items[0].snippet.title;
+				currQuestion.innerHTML = data.items[0].snippet.title;
+				currQuestion.parentNode.insertBefore(relVideoPic, currQuestion);
+			});	
+		}
+		for(let j = 4; j >= relVideo.length; j--){
+			let questionId = "#question" + j;
+			let timeId = "#time" + j;
+			let userId = "#user" + j;
+			let idLabel = "#questionId" + j;
+			$(questionId).html("");
+			$(timeId).html("");
+			$(userId).html("");
+			$(idLabel).html("");
+		}
+	
+	}
 }
 
+function hideTimeandUser(){
+	let divs = document.getElementsByClassName("questionTimeLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	divs = document.getElementsByClassName("userLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+}
+
+//view all questions
 function allClick(){
 	questionSel = false;
 	expanded = -1;
+	deleteThumbNails();
 	document.getElementById('responseList').style.height = "0px";
 	document.getElementById('responseList').style.display = "none";
 	let divs = document.getElementsByClassName("questionDiv");
@@ -288,6 +399,7 @@ function renderList(text, ul){
 function questionClick(){
 	questionSel = true;
 	expanded = -1;
+	deleteThumbNails();
 	document.getElementById('responseList').style.height = "0px";
 	document.getElementById('responseList').style.display = "none";
 	if(document.getElementById('questionsList') !== null){
@@ -666,5 +778,17 @@ function hideContent(){
 	}
 	divs[0].style.border = "none";
 	divs[0].style.display = "block";
+	deleteThumbNails();
+}
+
+function deleteThumbNails(){
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		let relId = "relVideo" + i;
+		if(document.getElementById(relId) !== null){
+			let divId = "questionDiv" + i;
+			document.getElementById(divId).removeChild(document.getElementById(relId));
+		}
+	}
 }
 

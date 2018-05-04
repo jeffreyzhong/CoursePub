@@ -4,10 +4,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import edu.brown.cs.termproject.dto.QuestionDto;
 import edu.brown.cs.termproject.dto.ResponseDto;
+import edu.brown.cs.termproject.model.Course;
 import edu.brown.cs.termproject.model.Question;
 import edu.brown.cs.termproject.model.Response;
+import edu.brown.cs.termproject.model.User;
 import edu.brown.cs.termproject.model.Video;
+import edu.brown.cs.termproject.pageRank.PageRank;
+import edu.brown.cs.termproject.pageRank.PageRankNode;
 import edu.brown.cs.termproject.service.QuestionService;
+import edu.brown.cs.termproject.service.UserService;
 import edu.brown.cs.termproject.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class PostController {
@@ -29,6 +35,21 @@ public class PostController {
                         QuestionService questionService) {
     this.videoService = videoService;
     this.questionService = questionService;
+  }
+  
+  @PostMapping(path = "/setup")
+  @ResponseBody
+  public String setup(QuestionRequest request) {
+    Video video = videoService.ofId(request.getId());
+
+    if (video == null) {
+      throw new ResourceNotFoundException();
+    }
+
+    ImmutableList.Builder<String> ret = ImmutableList.builder();
+    ret.add(video.getUrl());
+
+    return GSON.toJson(ret.build());
   }
 
   @PostMapping(path = "/question")
@@ -48,6 +69,29 @@ public class PostController {
     return GSON.toJson(ret.build());
   }
 
+  @PostMapping(path = "/related")
+  @ResponseBody
+  public String related(EmptyRequest request, User user)
+      throws ClassNotFoundException {
+
+    Class c =
+        Class.forName("edu.brown.cs.termproject.model.Course");
+
+    PageRank pr = new PageRank(user);
+    List<PageRankNode> result = pr.getTopResult(c,3);
+
+    List<Course> courses = (List<Course>)(Object)result;
+    
+    ImmutableList.Builder<String> ret = ImmutableList.builder();
+    for (Course course : courses) {
+      Video video = course.getVideos().iterator().next();
+      ret.add(Integer.toString(video.getId()));
+      ret.add(video.getUrl());
+    }
+ 
+    return GSON.toJson(ret.build());
+  }
+
   @PostMapping(path = "/response")
   @ResponseBody
   public String response(ResponseRequest request) {
@@ -64,6 +108,10 @@ public class PostController {
     }
 
     return GSON.toJson(builder.build());
+  }
+
+  private static class EmptyRequest {
+
   }
 
   private static class ResponseRequest {
