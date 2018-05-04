@@ -106,6 +106,7 @@ $(document).ready(function() {
 			let resolved = question['resolved'];
 			let detail = question['detail'];
 			let instructorAnswer = question['instructorAnswer'];
+			let studentAnswer = question['studentAnswer'];
 			console.log(question);
 			let formattedTime = moment().startOf('day').seconds(time).format('H,mm,ss');
 			let colonTime = moment().startOf('day').seconds(time).format('H:mm:ss');
@@ -121,6 +122,7 @@ $(document).ready(function() {
 			start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
 			fullQuestion : detail,
 			instructorAnswer : instructorAnswer,
+			studentAnswer : studentAnswer,
 			user : user};
 			addData.push(currQuestion);
 			console.log(addData);
@@ -167,17 +169,12 @@ $(document).ready(function() {
 			conn.send(toSend);
 			instructorResponse.value = "";
 			let toUpdate = items._data[questionId];
-			toUpdate.content = setContent(true,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
+			toUpdate.content = setContent(2,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
 			toUpdate.instructorAnswer = {detail: answer};
 			console.log(toUpdate.resonse);
 			//toUpdate.responses = detail;
 			console.log("ITEMS AFTER: " + items);
 			timeline.setItems(items);
-
-
-			
-			
-			// TELL JERRY TO AUTOMATICALLY SET THIS QUESTION TO RESOLVED
 			
 
 		}
@@ -404,9 +401,15 @@ $(document).ready(function() {
 //			color="red";
 //		}
 		let padding = 7 + numUpVotes/5;
-		return '<div style="background-color:'+color+'; color:white; ' + 
-		'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +
-		'padding-bottom:'+padding+'px; border-radius: 20px;">'+user + ' @ ' + colonTime +'</div>';
+		if (color === "red" || color === "green") {
+			return '<div style="background-color:'+color+'; color:white; ' + 
+			'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +
+			'padding-bottom:'+padding+'px; border-radius: 20px;">'+user + ' @ ' + colonTime +'</div>';
+		} else {
+			return '<div style="background-color:'+color+'; color:black; ' + 
+			'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +
+			'padding-bottom:'+padding+'px; border-radius: 20px;">'+user + ' @ ' + colonTime +'</div>';
+		}
 	}
 	
 	
