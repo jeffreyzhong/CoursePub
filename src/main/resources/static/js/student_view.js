@@ -182,7 +182,6 @@ $(document).ready(() => {
 	// Add function to execute when the API is ready
 	YT_ready(function(){
 		let frameID = getFrameID("video");
-		console.log(frameID);
 		if (frameID) { //If the frame exists
 			player = new YT.Player(frameID, {
 				events: {
@@ -220,19 +219,6 @@ function init(){
 		});	
 	});	
 }
-
-function setupSearchBar(){
-	$("#searchBar").keyup(function(ev) {
-	    // 13 is ENTER
-	    if (ev.which === 13 && $("#searchBar").val() !== "") {
-	     	const postParameters = {content: $("#searchBar").val()};
-			$.post("/question", postParameters, responseJSON => {
-				const responseObject = JSON.parse(responseJSON);
-	    	});
-		}
-	});		
-}
-
 
 function loadQuestions(event){
 	event.target.pauseVideo();
@@ -287,6 +273,60 @@ function stateChangeFunc(event) {
 			duration = player.getDuration();
 		}
 	}
+}
+
+//============================================================================
+//Below are code for searching transcripts within video
+function setupSearchBar(){
+	console.log("Hi!");
+	document.getElementById('searchBtn').onclick = function() {
+	    // 13 is ENTER
+		console.log("Hey!" + $("#searchBar").val());
+	    if ($("#searchBar").val() !== "") {
+			let item = document.getElementById("item");
+			let ul = document.createElement("ul");
+			ul.setAttribute("id", "searchResults");
+			ul.style.position = "absolute";
+			ul.style.overflow = "hidden";
+			ul.style.overflowY = "auto";
+			ul.style.zIndex = "999";
+			ul.style.listStyle = "none";
+			ul.style.margin = "0px";
+			ul.style.marginLeft = "112.58px";
+			ul.style.padding = "0px";
+			ul.style.backgroundColor = "#2D9AB7";
+			ul.style.width = "224px";
+			ul.style.height = "300px";
+			
+			for(let i = 0; i < 100; i++){
+				let text = "Testing" + i;
+				let li = document.createElement('li');
+				li.setAttribute('class', 'item');
+				li.style.margin = "0px";
+				li.style.padding = "0px";
+				li.style.color = "white";
+				li.style.border = "2px solid #FFFFFF";
+				if(i === 1){
+					li.style.borderTop = "none";
+				}
+				if(i !== 99){
+					li.style.borderBottom = "none";
+				}
+				li.style.fontSize = "15px";
+				li.style.display = "block";
+				ul.appendChild(li);
+				li.innerHTML = li.innerHTML + text;
+				
+			}
+			
+			item.appendChild(ul);
+//			const postParameters = {content: $("#searchBar").val(), startTime: $("#searchTimeInput1").val(), endTime: $("#searchTimeInput2").val()};
+//			$.post("/searchTranscript", postParameters, responseJSON => {
+//				const responseObject = JSON.parse(responseJSON);
+//				
+//			});
+		}
+	};		
 }
 
 //============================================================================
@@ -537,7 +577,6 @@ function openQuestion(){
 	p.style.paddingBottom = "10px";
 	p.style.color = "white";
 	p.style.borderBottom = "2px solid #FFFFFF";
-	console.log("expanded: " + expanded);
 	let detail = questions.get(parseInt(expanded)).detail;
 	p.innerHTML = "Question detail: " + detail;
 	div.appendChild(p);

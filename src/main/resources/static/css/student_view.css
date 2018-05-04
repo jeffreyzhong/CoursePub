@@ -50,6 +50,19 @@ body{
 	font-family: source-sans-pro;
 	margin-left: 25px;
 }
+#searchArea{
+	margin-top: 5px;
+}
+#item{
+	margin-left: 25px;
+	width : 450px;
+	float: left;
+}
+
+#timeTag1{
+	margin-left: -100px;
+	margin-top:10px;
+}
 
 p{
 	margin-top: 10px;
