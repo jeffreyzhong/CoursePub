@@ -347,7 +347,6 @@ function stateChangeFunc(event) {
 function setupSearchBar(){
 	document.getElementById('searchBtn').onclick = function() {
 	    // 13 is ENTER
-		console.log("Hey!" + $("#searchBar").val());
 	    if ($("#searchBar").val() !== "" && document.getElementById("searchResults") === null) {
 			let item = document.getElementById("item");
 			let ul = document.createElement("ul");
@@ -363,8 +362,8 @@ function setupSearchBar(){
 			ul.style.backgroundColor = "#2D9AB7";
 			ul.style.width = "224px";
 			ul.style.height = "300px";
-			
-			const postParameters = {content: $("#searchBar").val(), startTime: convertTime($("#searchTimeInput1").val()), endTime: convertTime($("#searchTimeInput2").val())};
+			console.log("word " +  $("#searchBar").val() + " start " + convertTime($("#searchTimeInput1").val()) + " end " + convertTime($("#searchTimeInput2").val()));
+			const postParameters = {word: $("#searchBar").val(), start: convertTime($("#searchTimeInput1").val()), end: convertTime($("#searchTimeInput2").val())};
 			$.post("/searchTranscript", postParameters, responseJSON => {
 				const responseObject = JSON.parse(responseJSON);
 				
@@ -952,7 +951,12 @@ function convertTime(time){
 	if(duration >= 3600){
 		seconds = parseFloat(timeArr[0])*3600 + parseFloat(timeArr[1])*60 + parseFloat(timeArr[2]);
 	}else{
-		seconds = parseFloat(timeArr[0])*60 + parseFloat(timeArr[1]);
+		if(timeArr.length === 3){
+			seconds = parseFloat(timeArr[1])*60 + parseFloat(timeArr[2]);
+		}else{
+			seconds = parseFloat(timeArr[0])*60 + parseFloat(timeArr[1]);
+		}
+		
 	}
 	return seconds;
 }
