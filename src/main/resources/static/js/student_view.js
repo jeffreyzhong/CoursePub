@@ -195,7 +195,11 @@ $(document).ready(() => {
 	
 	setupSearchBar();
 	$("#summaryInput").focus(function() {
-		$("#timeInput").val(convertSeconds(Math.floor(player.getCurrentTime())));
+		if(player.getDuration() >= 3600){
+			$("#timeInput").val(convertSeconds(Math.floor(player.getCurrentTime())));
+		}else{
+			$("#timeInput").val("00:" + convertSeconds(Math.floor(player.getCurrentTime())));
+		}
 	});
 	$("#answerInput").keyup(function(ev) {
 	    // 13 is ENTER
@@ -203,6 +207,18 @@ $(document).ready(() => {
 	     	answerSubmit();
 		}
 	});	
+	
+	document.getElementById('container').onclick = function(ev){
+		console.log(ev.target.id + " class: " + ev.target.className);
+		if(ev.target.id !== "searchBtn" && ev.target.className !== "searchItem"){
+			if(document.getElementById('searchResults') !== null){
+				let toRemove = document.getElementById('searchResults');
+				toRemove.parentNode.removeChild(toRemove);
+			}
+		}
+	};
+	
+	
 	$("#noteBtn").click();
 });
 
@@ -282,7 +298,7 @@ function setupSearchBar(){
 	document.getElementById('searchBtn').onclick = function() {
 	    // 13 is ENTER
 		console.log("Hey!" + $("#searchBar").val());
-	    if ($("#searchBar").val() !== "") {
+	    if ($("#searchBar").val() !== "" && document.getElementById("searchResults") === null) {
 			let item = document.getElementById("item");
 			let ul = document.createElement("ul");
 			ul.setAttribute("id", "searchResults");
@@ -298,33 +314,35 @@ function setupSearchBar(){
 			ul.style.width = "224px";
 			ul.style.height = "300px";
 			
-			for(let i = 0; i < 100; i++){
-				let text = "Testing" + i;
-				let li = document.createElement('li');
-				li.setAttribute('class', 'item');
-				li.style.margin = "0px";
-				li.style.padding = "0px";
-				li.style.color = "white";
-				li.style.border = "2px solid #FFFFFF";
-				if(i === 1){
-					li.style.borderTop = "none";
-				}
-				if(i !== 99){
-					li.style.borderBottom = "none";
-				}
-				li.style.fontSize = "15px";
-				li.style.display = "block";
-				ul.appendChild(li);
-				li.innerHTML = li.innerHTML + text;
+			const postParameters = {content: $("#searchBar").val(), startTime: convertTime($("#searchTimeInput1").val()), endTime: convertTime($("#searchTimeInput2").val())};
+			$.post("/searchTranscript", postParameters, responseJSON => {
+				const responseObject = JSON.parse(responseJSON);
 				
-			}
+				for(let i = 0; i < responseObject.length; i+=2){
+					let text = convertSeconds(responseObject[i]) + " \"" + responseObject[i+1] + "\"";
+					let li = document.createElement('li');
+					li.setAttribute('class', 'searchItem');
+					li.style.margin = "0px";
+					li.style.padding = "0px";
+					li.style.color = "white";
+					li.style.border = "2px solid #FFFFFF";
+					if(i === 0){
+						li.style.borderTop = "none";
+					}
+					if(i !== responseObject.length - 1){
+						li.style.borderBottom = "none";
+					}
+					li.style.fontSize = "15px";
+					li.style.display = "block";
+					ul.appendChild(li);
+					li.innerHTML = li.innerHTML + text;
+					li.onclick = function(){
+						player.seekTo(parseFloat(responseObject[i]));
+					}
+				}
 			
-			item.appendChild(ul);
-//			const postParameters = {content: $("#searchBar").val(), startTime: $("#searchTimeInput1").val(), endTime: $("#searchTimeInput2").val()};
-//			$.post("/searchTranscript", postParameters, responseJSON => {
-//				const responseObject = JSON.parse(responseJSON);
-//				
-//			});
+				item.appendChild(ul);	
+			});
 		}
 	};		
 }
@@ -854,7 +872,7 @@ function convertTime(time){
 	let timeArr = time.split(":");
 	let seconds = 0;
 	if(duration >= 3600){
-		seconds = parseInt(timeArr[0])*3600 + parseFloat(timeArr[1])*60 + parseFloat(timeArr[2]);
+		seconds = parseFloat(timeArr[0])*3600 + parseFloat(timeArr[1])*60 + parseFloat(timeArr[2]);
 	}else{
 		seconds = parseFloat(timeArr[0])*60 + parseFloat(timeArr[1]);
 	}
