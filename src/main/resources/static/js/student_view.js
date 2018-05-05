@@ -159,9 +159,10 @@ let YT_ready = (function() {
 
 
 $(document).ready(() => {
-	let connection = "ws://localhost:4567/websocket/" + videoId;
+	let windowlocation = window.location.href.split('/')[2];
+	let ws = "ws://"+windowlocation+"/websocket/"+videoId;
 	init();
-	conn = new WebSocket(connection);
+	conn = new WebSocket(ws);
 	conn.addEventListener('message', function (event) {
 		const data = JSON.parse(event.data);
 //		console.log("from server: " + data.message);

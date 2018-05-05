@@ -2,7 +2,11 @@ $(document).ready(function() {
 	let container = document.getElementById('visualization');
 	let instructorResponse = document.getElementById("instructorResponse");
 	let videoId = parseInt($('#videoId').html());
-	let conn = new WebSocket("ws://localhost:4567/websocket/"+videoId);
+	let windowlocation = window.location.href.split('/')[2];
+	console.log(windowlocation);
+	let ws = "ws://"+windowlocation+"/websocket/"+videoId;
+	console.log(ws);
+	let conn = new WebSocket(ws);
 	let addData = [];
 	let instructorSubmit = document.getElementById("submitResponseButton");
 	let videoThumbnail = document.getElementById("videoThumbnail");
@@ -50,17 +54,17 @@ $(document).ready(function() {
 				break;
 			case MESSAGE_TYPE.NEW_QUESTION:
 				
-				let formattedTime = moment().startOf('day').seconds(newQuestion.time).format('H,mm,ss');
-				let colonTime = moment().startOf('day').seconds(newQuestion.time).format('H:mm:ss');
+				let formattedTime = moment().startOf('day').seconds(newMessage.time).format('H,mm,ss');
+				let colonTime = moment().startOf('day').seconds(newMessage.time).format('H:mm:ss');
 				//console.log("formattedTime: " + formattedTime);
 				let timeArray = formattedTime.split(",");
-				let currQuestion = {id: newQuestion.id,
-					content : setContent(newQuestion.resolved,newQuestion.upvotes,newQuestion.user,colonTime),
-					summary : newQuestion.summary,
+				let currQuestion = {id: newMessage.id,
+					content : setContent(newMessage.resolved,newMessage.upvotes,newMessage.user,colonTime),
+					summary : newMessage.summary,
 					colonTime : colonTime,
 					start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
-					fullQuestion : newQuestion.detail,
-					user : newQuestion.user};
+					fullQuestion : newMessage.detail,
+					user : newMessage.user};
 				console.log("currQuestion: " + currQuestion);
 				addData.push(currQuestion);
 				timeline.setItems(addData);	
@@ -98,7 +102,7 @@ $(document).ready(function() {
 				timeline.setItems(items);
 				break;
 			case MESSAGE_TYPE.ERROR:
-				alert("error");
+				alert("There was a websocket error!: Check console.");
 				break;
 		}
 	});	
@@ -433,7 +437,7 @@ $(document).ready(function() {
 //		} else {
 //			color="red";
 //		}
-		let padding = 7 + numUpVotes*10;
+		let padding = 15 + numUpVotes*5;
 		if (color === "red" || color === "green") {
 			return '<div style="background-color:'+color+'; color:white; ' + 
 			'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +
