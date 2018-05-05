@@ -50,6 +50,13 @@ public class Video {
   )
   private Set<Remark> remarks = new PickySet<>();
 
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      mappedBy = "video",
+      fetch = FetchType.EAGER
+  )
+  private Set<Sentence> sentences = new PickySet<>();
+
   public Integer getId() {
     return id;
   }
@@ -78,7 +85,7 @@ public class Video {
     return Collections.unmodifiableSet(remarks);
   }
 
-  public void setRemarkss(Set<Remark> remarks) {
+  public void setRemarks(Set<Remark> remarks) {
     this.remarks = remarks;
   }
 
@@ -88,6 +95,14 @@ public class Video {
 
   public void setQuestions(Set<Question> questions) {
     this.questions = questions;
+  }
+
+  public Set<Sentence> getSentences() {
+    return sentences;
+  }
+
+  public void setSentences(Set<Sentence> sentences) {
+    this.sentences = sentences;
   }
 
   public void addQuestion(Question question) {
