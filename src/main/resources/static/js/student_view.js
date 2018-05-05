@@ -8,6 +8,7 @@ class Question{
 		this._detail = detail;
 		this._user = user;
 		this._resolved = isResolved;
+		this._upvotes = upvotes;
 		this._instructorAnswer = instructorAnswer;
 		this._studnetAnswer = studentAnswer;
 	}
@@ -305,7 +306,6 @@ function loadQuestions(event){
 			let instructorAnswer = question.instructorAnswer;
 			let studentAnswer = question.studentAnswer;
 			let obj = new Question(id, summary, time, detail, user, resolved, upvotes, instructorAnswer, studentAnswer);
-
 			questions.set(obj.id, obj);
 		  	questionsOrd.push(obj);
 		}   
@@ -364,7 +364,7 @@ function setupSearchBar(){
 			ul.style.backgroundColor = "#2D9AB7";
 			ul.style.width = "224px";
 			ul.style.height = "300px";
-
+			
 			const postParameters = {content: $("#searchBar").val(), startTime: convertTime($("#searchTimeInput1").val()), endTime: convertTime($("#searchTimeInput2").val())};
 			$.post("/searchTranscript", postParameters, responseJSON => {
 				const responseObject = JSON.parse(responseJSON);
@@ -395,7 +395,6 @@ function setupSearchBar(){
 			
 				item.appendChild(ul);	
 			});
-
 		}
 	};		
 }
