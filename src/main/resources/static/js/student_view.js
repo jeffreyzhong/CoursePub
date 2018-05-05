@@ -156,7 +156,7 @@ $(document).ready(() => {
 		console.log("from server: " + data.message);
 	    switch (data.type) {
 			default:
-				console.log('Unknown message type!', data.type);
+				console.log('Unknown message type! ' + data.payload.message, data.type);
 			break;
 			case MESSAGE_TYPE.CONNECT:
 				console.log(data.payload.msg);
@@ -179,13 +179,13 @@ $(document).ready(() => {
 				questionDisplay(index);
 				break;
 			case MESSAGE_TYPE.UPVOTE:
-				let id = data.payload.id;
+				let questionId = data.payload.id;
 				let type = data.payload.upvoteType;
 				let num = data.payload.num;
-				console.log("id:" + id + " type " + type + " num: " + num);
+				console.log("id:" + questionId + " type " + type + " num: " + num);
 				if(type === 0){
 					if(num === 1){
-						let old = questions.get(id).upvotes;
+						let old = questions.get(questionId).upvotes;
 						questions.get(id).upvotes(old + 1);
 					}else{
 						alert("You have already upvoted this question!");
@@ -526,7 +526,6 @@ function refQuestion(){
 	if(player.getPlayerState() === 1){
 		let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false, 0,"","");
 		index = questionsOrd.binarySearch(questionStub, compare);
-		console.log(index);
 		if(questionSel && expanded === -1 && index !== null){
 			
 			questionDisplay(index);
@@ -580,6 +579,12 @@ function questionDisplay(index){
 		$(idLabel).html(questionsOrd[min].id);
 		document.getElementById("upvote" + i).style.display = "inline-block";
 		min+=1;
+		document.getElementById("upvote" + i).onclick = function(){
+			let questionId = "#questionId" + i;
+			let jsonObject = {upvoteType: 0, id:questionsOrd[min].id};
+			console.log("upvote websocket set " + questionsOrd[min].id)
+			conn.send(JSON.stringify({type: 3, payload: jsonObject}));
+		};
 	}
 	for(let j = 4; j >= i; j--){
 		let questionId = "#question" + j;
@@ -595,15 +600,10 @@ function questionDisplay(index){
 		document.getElementById("upvote" + j).style.display = "none";
 	}
 	
-	divs = document.getElementsByClassName("upvotes");
-	for(let i = 0; i < divs.length; i++){
-		divs[i].onclick = function(){
-			let questionId = "#questionId" + i;
-			let jsonObject = {upvoteType: 0, id:$(questionId).html()};
-			console.log("upvote websocket set")
-			conn.send(JSON.stringify({type: 3, payload: jsonObject}));
-		};
-	}
+//	divs = document.getElementsByClassName("upvotes");
+//	for(let i = 0; i < divs.length; i++){
+//		
+//	}
 
 }
 
