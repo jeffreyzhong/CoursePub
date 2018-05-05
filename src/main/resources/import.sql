@@ -39,11 +39,11 @@ INSERT INTO registration (id, type, course_id, user_id) VALUES (20, 1, 3, 4);
 INSERT INTO registration (id, type, course_id, user_id) VALUES (21, 1, 4, 8);
 INSERT INTO registration (id, type, course_id, user_id) VALUES (22, 1, 5, 8);
 
-INSERT INTO video (id, url, course_id) VALUES (1, "https://www.youtube.com/embed/kjBOesZCoqc?rel=0", 1);
-INSERT INTO video (id, url, course_id) VALUES (2, "https://www.youtube.com/embed/O753uuutqH8?rel=0", 2);
-INSERT INTO video (id, url, course_id) VALUES (3, "https://www.youtube.com/embed/xyAuNHPsq-g?rel=0", 3);
-INSERT INTO video (id, url, course_id) VALUES (4, "https://www.youtube.com/embed/oLhohwfwf_U?rel=0", 4);
-INSERT INTO video (id, url, course_id) VALUES (5, "https://www.youtube.com/embed/h0e2HAPTGF4?rel=0", 5);
+INSERT INTO video (id, url, course_id) VALUES (1, "https://www.youtube.com/embed/kjBOesZCoqc?rel=0&enablejsapi=1", 1);
+INSERT INTO video (id, url, course_id) VALUES (2, "https://www.youtube.com/embed/O753uuutqH8?rel=0&enablejsapi=1", 2);
+INSERT INTO video (id, url, course_id) VALUES (3, "https://www.youtube.com/embed/xyAuNHPsq-g?rel=0&enablejsapi=1", 3);
+INSERT INTO video (id, url, course_id) VALUES (4, "https://www.youtube.com/embed/oLhohwfwf_U?rel=0&enablejsapi=1", 4);
+INSERT INTO video (id, url, course_id) VALUES (5, "https://www.youtube.com/embed/h0e2HAPTGF4?rel=0&enablejsapi=1", 5);
 
 
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (1, 'Who is JJ', 'Heard people talking about him all the time', '1969-12-31 19:00:12', 1, 1, '2018-02-15 11:11:11');
@@ -56,12 +56,25 @@ INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time)
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (8, 'Jerry is God', 'not', '1969-12-31 19:00:57', 2, 1, '2018-02-15 12:00:00');
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (9, 'Song[fire emoji]', 'Have fun!', '1969-12-31 19:02:00', 3, 1, '2018-02-15 12:00:00');
 
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (10, 'Difference between interface and inheritance?', 'I\'\ m really confused as to what the differences are. They seem to be very similar', '1969-12-31 19:00:12', 1, 2, '2018-02-15 11:11:11');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (11, 'Why is checkstyle worth so many points?', 'It seems like it takes up more of our grade than it needs to', '1969-12-31 19:00:18', 1, 2, '2018-02-15 11:13:28');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (12, 'type checking in Java', 'Why can\'\ t I cast an int to a list?', '1969-12-31 19:01:34', 2, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (13, 'grade cutoffs for 32 this year?', 'I\'\ m pretty worried about my overall grade in this course. Can someone tell me what the grade cutoffs will roughly be based on years past?', '1969-12-31 19:00:34', 2, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (14, 'Lab won\'\ t compile', 'Getting a weird bug in the lab...', '1969-12-31 19:01:00', 3, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (15, 'Website is currently down', '^^^', '1969-12-31 19:00:42', 1, 2, '2018-04-15 11:13:28');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (16, 'What does JJ mean here?', 'Couldn\'\ t quite hear what he was saying', '1969-12-31 19:02:09', 2, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (17, 'Why is polymorphism important', 'It seems kind of repetitive and over-engineering...', '1969-12-31 19:03:57', 2, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (18, 'Which IDE is JJ using?', 'It looks so cool!', '1969-12-31 19:05:23', 3, 2, '2018-02-15 12:00:00');
+
+
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (1, 3, 2);
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (2, 3, 3);
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (3, 3, 4);
 
 INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (1, 'You are dumb jerry', 2, 2, '2018-04-12 05:58:19');
-
 INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (1, 'You are officially dumb jerry', 5, 2, '2018-04-13 04:12:57');
-
 INSERT INTO student_answer (id, body, user_id, question_id, post_time) VALUES (1, 'hahaha', 7, 1, '2018-05-01 07:17:32');
+
+INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (2, 'But it\'\ s just worth soooo much more than I think it should.' , 2, 2, '2018-04-12 05:58:19');
+INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (2, 'Because checkstyle makes sure that you are writing code that is easy to read!', 5, 2, '2018-04-13 04:12:57');
+INSERT INTO student_answer (id, body, user_id, question_id, post_time) VALUES (2, 'Honestly I relate so much', 7, 2, '2018-05-01 07:17:32');
