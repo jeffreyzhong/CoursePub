@@ -1,17 +1,26 @@
 /*jshint esversion: 6 */
 // Waits for DOM to load before running
 class Question{
-	constructor(id, summary, time, detail, user, isResolved, instructorAnswer, studentAnswer){
+	constructor(id, summary, time, detail, user, isResolved, upvotes, instructorAnswer, studentAnswer){
 		this._id = id;
 		this._summary = summary;
 		this._time = time;
 		this._detail = detail;
 		this._user = user;
 		this._resolved = isResolved;
+		this._upvotes = upvotes;
 		this._instructorAnswer = instructorAnswer;
 		this._studnetAnswer = studentAnswer;
 	}
-
+	
+	get upvotes(){
+		return this._upvotes;
+	}
+	
+	set upvotes(upvotes){
+		this._upvotes = upvotes;
+	}
+	
 	get instructorAnswer(){
 		return this._instructorAnswer;
 	}
@@ -146,29 +155,43 @@ $(document).ready(() => {
 		const data = JSON.parse(event.data);
 		console.log("from server: " + data.message);
 	    switch (data.type) {
-	      default:
-	        console.log('Unknown message type!', data.type);
-	        break;
-	      case MESSAGE_TYPE.CONNECT:
-	        console.log(data.payload.msg);
-	        break;
-	      case MESSAGE_TYPE.NEW_QUESTION:
-			let id = data.payload.id;
-			let time = data.payload.time;
-			let summary = data.payload.summary;
-			let detail = data.payload.detail;
-			let user = data.payload.user;
-			let resolved = data.payload.resolved;
-			console.log("id: " + id + " time is " + time + " with summary " + summary + " and detail " + detail);
-			let obj = new Question(id, summary, time, detail, user, resolved);
-			questions.set(obj.id, obj);
-			questionsOrd.push(obj);
-			questionsOrd.sort(compare);
-			let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
-			let index = questionsOrd.binarySearch(questionStub, compare);
-			// console.log("index" + index);
-			questionDisplay(index);
-	        break;
+			default:
+				console.log('Unknown message type!', data.type);
+			break;
+			case MESSAGE_TYPE.CONNECT:
+				console.log(data.payload.msg);
+				break;
+			case MESSAGE_TYPE.NEW_QUESTION:
+				let id = data.payload.id;
+				let time = data.payload.time;
+				let summary = data.payload.summary;
+				let detail = data.payload.detail;
+				let user = data.payload.user;
+				let resolved = data.payload.resolved;
+				console.log("id: " + id + " time is " + time + " with summary " + summary + " and detail " + detail);
+				let obj = new Question(id, summary, time, detail, user, resolved);
+				questions.set(obj.id, obj);
+				questionsOrd.push(obj);
+				questionsOrd.sort(compare);
+				let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false, 0, "", "");
+				let index = questionsOrd.binarySearch(questionStub, compare);
+				// console.log("index" + index);
+				questionDisplay(index);
+				break;
+			case MESSAGE_TYPE.UPVOTE:
+				let id = data.payload.id;
+				let type = data.payload.upvoteType;
+				let num = data.payload.num;
+				console.log("id:" + id + " type " + type + " num: " + num);
+				if(type === 0){
+					if(num === 1){
+						let old = questions.get(id).upvotes;
+						questions.get(id).upvotes(old + 1);
+					}else{
+						alert("You have already upvoted this question!");
+					}
+				}
+				break;
 	    }
 	});
 
@@ -209,7 +232,6 @@ $(document).ready(() => {
 	});	
 	
 	document.getElementById('container').onclick = function(ev){
-		console.log(ev.target.id + " class: " + ev.target.className);
 		if(ev.target.id !== "searchBtn" && ev.target.className !== "searchItem"){
 			if(document.getElementById('searchResults') !== null){
 				let toRemove = document.getElementById('searchResults');
@@ -251,9 +273,10 @@ function loadQuestions(event){
 			let user = question.user;
 			let resolved = question.resolved;
 			let detail = question.detail;
+			let upvotes = question.upvotes;
 			let instructorAnswer = question.instructorAnswer;
 			let studentAnswer = question.studentAnswer;
-			let obj = new Question(id, summary, time, detail, user, resolved, instructorAnswer, studentAnswer);
+			let obj = new Question(id, summary, time, detail, user, resolved, upvotes, instructorAnswer, studentAnswer);
 			questions.set(obj.id, obj);
 		  	questionsOrd.push(obj);
 		}   
@@ -294,7 +317,6 @@ function stateChangeFunc(event) {
 //============================================================================
 //Below are code for searching transcripts within video
 function setupSearchBar(){
-	console.log("Hi!");
 	document.getElementById('searchBtn').onclick = function() {
 	    // 13 is ENTER
 		console.log("Hey!" + $("#searchBar").val());
@@ -329,7 +351,7 @@ function setupSearchBar(){
 					if(i === 0){
 						li.style.borderTop = "none";
 					}
-					if(i !== responseObject.length - 1){
+					if(i+1 !== responseObject.length - 1){
 						li.style.borderBottom = "none";
 					}
 					li.style.fontSize = "15px";
@@ -337,8 +359,9 @@ function setupSearchBar(){
 					ul.appendChild(li);
 					li.innerHTML = li.innerHTML + text;
 					li.onclick = function(){
+						console.log("time: " + parseFloat(responseObject[i]));
 						player.seekTo(parseFloat(responseObject[i]));
-					}
+					};
 				}
 			
 				item.appendChild(ul);	
@@ -366,7 +389,7 @@ function relClick(){
 		document.getElementById('questionsList').style.display = "none";
 	}
 	let divs = document.getElementsByClassName("questionDiv");
-	if(relVideo.length == 0){
+	if(relVideo.length === 0){
 		hideContent();
 		$("#question0").html("No suggested video at this time.");
 	}else if(document.getElementById('relVideo0') === null){
@@ -415,6 +438,14 @@ function hideTimeandUser(){
 		divs[i].style.display = "none";
 	}
 	divs = document.getElementsByClassName("userLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	divs = document.getElementsByClassName("upvotes");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	divs = document.getElementsByClassName("upvoteLabel");
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "none";
 	}
@@ -484,7 +515,7 @@ function questionClick(){
 	for(let i = 0; i < divs.length; i++){
 		divs[i].onclick = openQuestion;
 	}
-	let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
+	let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "",false, 0,"","");
 	let index = questionsOrd.binarySearch(questionStub, compare);
 	questionDisplay(index);
 }
@@ -493,9 +524,11 @@ function questionClick(){
 function refQuestion(){
 	let index = 0;
 	if(player.getPlayerState() === 1){
-		let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false);
+		let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false, 0,"","");
 		index = questionsOrd.binarySearch(questionStub, compare);
+		console.log(index);
 		if(questionSel && expanded === -1 && index !== null){
+			
 			questionDisplay(index);
 		}
 	}
@@ -511,9 +544,14 @@ function questionDisplay(index){
 	divs[0].style.borderBottom = "none";
 	divs = document.getElementsByClassName("questionTimeLabel");
 	for(let i = 0; i < divs.length; i++){
-		divs[i].style.display = "block";
+		divs[i].style.display = "inline-block";
 	}
 	divs = document.getElementsByClassName("userLabel");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "block";
+	}
+	
+	divs = document.getElementsByClassName("upvoteLabel");
 	for(let i = 0; i < divs.length; i++){
 		divs[i].style.display = "block";
 	}
@@ -532,137 +570,158 @@ function questionDisplay(index){
 		let questionId = "#question" + i;
 		let timeId = "#time" + i;
 		let userId = "#user" + i;
+		let upvoteId = "#upvoteLabel" + i;
 		let idLabel = "#questionId" + i;
 		$(questionId).html(questionsOrd[min].summary);
 		let time = convertSeconds(parseInt(questionsOrd[min].time));
 		$(timeId).html(time);
 		$(userId).html("User: " + questionsOrd[min].user);
+		$(upvoteId).html(questionsOrd[min].upvotes + " Upvotes");
 		$(idLabel).html(questionsOrd[min].id);
+		document.getElementById("upvote" + i).style.display = "inline-block";
 		min+=1;
 	}
 	for(let j = 4; j >= i; j--){
 		let questionId = "#question" + j;
 		let timeId = "#time" + j;
 		let userId = "#user" + j;
+		let upvoteId = "#upvoteLabel" + j;
 		let idLabel = "#questionId" + j;
 		$(questionId).html("");
 		$(timeId).html("");
 		$(userId).html("");
+		$(upvoteId).html("");
 		$(idLabel).html("");
+		document.getElementById("upvote" + j).style.display = "none";
+	}
+	
+	divs = document.getElementsByClassName("upvotes");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].onclick = function(){
+			let questionId = "#questionId" + i;
+			let jsonObject = {upvoteType: 0, id:$(questionId).html()};
+			console.log("upvote websocket set")
+			conn.send(JSON.stringify({type: 3, payload: jsonObject}));
+		};
 	}
 
 }
 
 //============================================================================
 //Below are code for display a particular question
-function openQuestion(){
-	var id = this.id.substring(this.id.length-1);
-	let idLabel = "#questionId" + id;
-	expanded = parseInt($(idLabel).html());
-	document.getElementById("questionDiv0").style.borderBottom = "2px solid #FFFFFF";
-	let divs = document.getElementsByClassName("questionDiv");
-//	for(let i = 0; i < divs.length; i++){
-//		divs[i].onclick = null;
-//	}
-	divs[0].onclick = null;
-	let questionId = "#question" + id;
-	let timeId = "#time" + id;
-	let userId = "#user" + id;
-	
-	$("#question0").html($(questionId).html());
-	$("#time0").html($(timeId).html());
-	$("#user0").html($(userId).html());
-	$("#questionId0").html(expanded);
-	
-	let div = document.getElementById("responseList");
-	
-	div.style.height = $('#questionDiv0').height()*4+"px";
-	div.style.overflow = 'hidden';
-	div.style.overflowY = 'scroll';
-	div.style.display = 'block';
-	div.style.color = 'white';
-	
-	while (div.firstChild) {
-			div.removeChild(div.firstChild);
-	}
-	
-	let p = document.createElement("p");
-	p.setAttribute('id', 'detail');
-	p.style.textAlign = "left";
-	p.style.display = "block";
-	p.style.paddingLeft = "10px";
-	p.style.paddingRight = "15px";
-	p.style.paddingBottom = "10px";
-	p.style.color = "white";
-	p.style.borderBottom = "2px solid #FFFFFF";
-	let detail = questions.get(parseInt(expanded)).detail;
-	p.innerHTML = "Question detail: " + detail;
-	div.appendChild(p);
-	
-	let instructorAns = questions.get(parseInt(expanded)).instructorAnswer;
-	let studentAns = questions.get(parseInt(expanded)).studentAnswer;
-	
-	let ul = document.createElement('ul');
-	ul.setAttribute('id','remarksList');
-	ul.style.listStyleType = "none";
-	ul.style.lineHeight = "30px";
-	ul.style.marginTop = "-5px";
-	ul.style.paddingRight = "15px";
-	ul.style.textAlign = "right";
-	div.appendChild(ul);
-	
-	if(instructorAns){
-		let id = instructorAns.id;
-//			let questionId = response.questionId;
-		let detail = instructorAns.detail;
-		let userId = instructorAns.userId;
-		let postDate = instructorAns.postDate;
-		let postTime = instructorAns.postTime;
-		let text = 'Instructor Answer (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	Instructor: ' + userId + "<br>";
-		let li = document.createElement('li');
-		li.setAttribute('class', 'item');
-		li.style.color = 'white';
-		li.style.borderBottom = "2px solid #FFFFFF";
-		li.style.fontWeight = "bold";
-		li.style.fontSize = "16px";
-		ul.appendChild(li);
-		li.innerHTML = li.innerHTML + text;
-	}
-	
-	if(studentAns){
-		let id = studentAns.id;
-//			let questionId = response.questionId;
-		let detail = studentAns.detail;
-		let userId = studentAns.userId;
-		let postDate = studentAns.postDate;
-		let postTime = studentAns.postTime;
-		let text = 'Student Answer (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	Student: ' + userId + "<br>";
-		let li = document.createElement('li');
-		li.setAttribute('class', 'item');
-		li.style.color = 'white';
-		li.style.borderBottom = "2px solid #FFFFFF";
-		li.style.fontSize = "15px";
-		ul.appendChild(li);
-		li.innerHTML = li.innerHTML + text;
-	}
-	
-	const postParameters = {id: expanded};
-	$.post("/response", postParameters, responseJSON => {
-		const responseObject = JSON.parse(responseJSON);
-		for (let i = 0; i < responseObject.length; ++i) {
-			let response = responseObject[i];
-			let id = response.id;
-//			let questionId = response.questionId;
-			let detail = response.detail;
-			let userId = response.userId;
-			let postDate = response.postDate;
-			let postTime = response.postTime;
-			let upvotes = response.upvotes;
-			let text = 'response (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	user: ' + userId;
-			renderList(text,ul);
+function openQuestion(ev){
+	if(ev.target.className !== "upvotes"){
+		var id = this.id.substring(this.id.length-1);
+		let idLabel = "#questionId" + id;
+		expanded = parseInt($(idLabel).html());
+		document.getElementById("questionDiv0").style.borderBottom = "2px solid #FFFFFF";
+		let divs = document.getElementsByClassName("questionDiv");
+	//	for(let i = 0; i < divs.length; i++){
+	//		divs[i].onclick = null;
+	//	}
+		divs[0].onclick = null;
+		let questionId = "#question" + id;
+		let timeId = "#time" + id;
+		let userId = "#user" + id;
+		let upvoteId = "#upvoteLabel" + id;
+
+		$("#question0").html($(questionId).html());
+		$("#time0").html($(timeId).html());
+		$("#user0").html($(userId).html());
+		$("#upvoteLabel0").html($(upvoteId).html());
+		$("#questionId0").html(expanded);
+
+		let div = document.getElementById("responseList");
+
+		div.style.height = $('#questionDiv0').height()*4+"px";
+		div.style.overflow = 'hidden';
+		div.style.overflowY = 'scroll';
+		div.style.display = 'block';
+		div.style.color = 'white';
+
+		while (div.firstChild) {
+				div.removeChild(div.firstChild);
 		}
-		player.seekTo(parseFloat(convertTime($("#time0").html())));
-	});		
+
+		let p = document.createElement("p");
+		p.setAttribute('id', 'detail');
+		p.style.textAlign = "left";
+		p.style.display = "block";
+		p.style.paddingLeft = "10px";
+		p.style.paddingRight = "15px";
+		p.style.paddingBottom = "10px";
+		p.style.color = "white";
+		p.style.borderBottom = "2px solid #FFFFFF";
+		let detail = questions.get(parseInt(expanded)).detail;
+		p.innerHTML = "Question detail: " + detail;
+		div.appendChild(p);
+
+		let instructorAns = questions.get(parseInt(expanded)).instructorAnswer;
+		let studentAns = questions.get(parseInt(expanded)).studentAnswer;
+
+		let ul = document.createElement('ul');
+		ul.setAttribute('id','remarksList');
+		ul.style.listStyleType = "none";
+		ul.style.lineHeight = "30px";
+		ul.style.marginTop = "-5px";
+		ul.style.paddingRight = "15px";
+		ul.style.textAlign = "right";
+		div.appendChild(ul);
+
+		if(instructorAns){
+			let id = instructorAns.id;
+	//			let questionId = response.questionId;
+			let detail = instructorAns.detail;
+			let userId = instructorAns.userId;
+			let postDate = instructorAns.postDate;
+			let postTime = instructorAns.postTime;
+			let text = 'Instructor Answer (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	Instructor: ' + userId + "<br>";
+			let li = document.createElement('li');
+			li.setAttribute('class', 'item');
+			li.style.color = 'white';
+			li.style.borderBottom = "2px solid #FFFFFF";
+			li.style.fontWeight = "bold";
+			li.style.fontSize = "16px";
+			ul.appendChild(li);
+			li.innerHTML = li.innerHTML + text;
+		}
+
+		if(studentAns){
+			let id = studentAns.id;
+	//			let questionId = response.questionId;
+			let detail = studentAns.detail;
+			let userId = studentAns.userId;
+			let postDate = studentAns.postDate;
+			let postTime = studentAns.postTime;
+			let text = 'Student Answer (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	Student: ' + userId + "<br>";
+			let li = document.createElement('li');
+			li.setAttribute('class', 'item');
+			li.style.color = 'white';
+			li.style.borderBottom = "2px solid #FFFFFF";
+			li.style.fontSize = "15px";
+			ul.appendChild(li);
+			li.innerHTML = li.innerHTML + text;
+		}
+
+		const postParameters = {id: expanded};
+		$.post("/response", postParameters, responseJSON => {
+			const responseObject = JSON.parse(responseJSON);
+			for (let i = 0; i < responseObject.length; ++i) {
+				let response = responseObject[i];
+				let id = response.id;
+	//			let questionId = response.questionId;
+				let detail = response.detail;
+				let userId = response.userId;
+				let postDate = response.postDate;
+				let postTime = response.postTime;
+				let upvotes = response.upvotes;
+				let text = 'response (id ' + id + ')' + postDate + " " + postTime + ':' + "<br>" + detail + "<br>" + '	user: ' + userId;
+				renderList(text,ul);
+			}
+			player.seekTo(parseFloat(convertTime($("#time0").html())));
+		});		
+	}
+	
 }
 
 //============================================================================
@@ -883,6 +942,8 @@ function hideContent(){
 	questionSel = false;
 	document.getElementById("time0").style.display = "none";
 	document.getElementById("user0").style.display = "none";
+	document.getElementById("upvote0").style.display = "none";
+	document.getElementById("upvoteLabel0").style.display = "none";
 	document.getElementById('responseList').style.height = "0px";
 	document.getElementById('responseList').style.display = "none";
 	if(document.getElementById('questionsList') !== null){

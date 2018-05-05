@@ -39,6 +39,22 @@ public class PostController {
     this.videoService = videoService;
     this.questionService = questionService;
   }
+  
+  @PostMapping(path = "/setup")
+  @ResponseBody
+  public String setup(ResponseRequest request) {
+	  Video video = videoService.ofId(request.getId());
+
+	  if (video == null) {
+	      throw new ResourceNotFoundException();
+	    }
+
+    
+    ImmutableList.Builder<String> ret = ImmutableList.builder();
+    ret.add(video.getUrl());
+
+    return GSON.toJson(ret.build());
+  }
 
   @PostMapping(path = "/question")
   @ResponseBody
