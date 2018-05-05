@@ -2,6 +2,7 @@ package edu.brown.cs.termproject.service;
 
 import edu.brown.cs.termproject.dto.AnswerDto;
 import edu.brown.cs.termproject.model.InstructorAnswer;
+import edu.brown.cs.termproject.model.QuestionUpvote;
 import edu.brown.cs.termproject.model.StudentAnswer;
 import edu.brown.cs.termproject.time.CalendarSerializer;
 import edu.brown.cs.termproject.dto.QuestionDto;
@@ -75,7 +76,22 @@ public class SocketServiceImpl implements SocketService {
 
   @Override
   public void upvote(User user, UpvoteDto upvoteDto) {
-    throw new UnsupportedOperationException("NYI");
+    if (upvoteDto.getUpvoteType() == 0) {
+      Question question = questionService.ofId(upvoteDto.getId());
+
+      if (question == null) {
+        throw new IllegalArgumentException(String.format(
+            "Question of id %d is not found.", upvoteDto.getId()));
+      }
+
+
+      QuestionUpvote questionUpvote = questionService.upvote(user, question);
+
+      upvoteDto.fill(questionUpvote);
+
+    } else {
+      throw new UnsupportedOperationException("NYI");
+    }
   }
 
   @Override

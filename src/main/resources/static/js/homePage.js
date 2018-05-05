@@ -52,33 +52,40 @@ $(document).ready(function() {
 	}
 	
 	function submitSearch() {
-		console.log(searchCourses.value);
-		let postParams = {input : searchCourses.value};
-		while (invisible.firstChild) {
-			invisible.removeChild(invisible.firstChild);
-		}
-        $.post("/homePageSearchSubmit",postParams, responseJSON => {
-			
-            let responseObject = JSON.parse(responseJSON);
-			let courseInfo = responseObject['courseInfo'];
-			let courseName = responseObject['courseName'];
-			isInstructor = responseObject['isInstructor'];
-			console.log(responseObject);
-			console.log(responseObject['courseName']);
-			console.log(responseObject['courseInfo']);
-			console.log(responseObject.courseName);
-			$suggestedVideos.html("");
-            for (let i = 0; i < courseInfo.length; i++) {
-				let url = 'https://img.youtube.com/vi/'+extractVideoIdFromYouTubeUrl(courseInfo[i]['0'])+'/0.jpg';
-//				$suggestedVideos.append($("<img id=\"courseImage"+i+"\"src=\""+url+"\" style=\"width:200px; height:200px;\">"));
-//				$suggestedVideos.append($("<li id=\"courseName\"style=\"list-style-type:none; font-size:50px; color:white; \"value=\""+courseName+"\">").text(courseName));
-//				document.getElementById("courseImage"+i).addEventListener("click",loadPage);
-			$suggestedVideos.append($("<p id=\"para"+i+"\"style=\"font-size:50px; color:white;\"><img id=\"courseImage"+i+"\"src=\""+url+"\" style=\"width:300px; height:300px; align:left;\">"+courseName+"</p>"));
-//			$courseList.append($("<li id=\"courseName\"style=\"list-style-type:none; font-size:50px; color:white; \"value=\""+courseName+"\">").text(courseName));
-			document.getElementById("courseImage"+i).addEventListener("click",loadPage);
-				urlToId[url] = courseInfo[i]['1'];
-            }
-        });
+		$.get("/whoami",{},responseJSON => {
+			let responseObject = JSON.parse(responseJSON);
+			if (responseObject) {
+				console.log(searchCourses.value);
+				let postParams = {input : searchCourses.value};
+				while (invisible.firstChild) {
+					invisible.removeChild(invisible.firstChild);
+				}
+				$.post("/homePageSearchSubmit",postParams, responseJSON => {
+
+					let responseObject = JSON.parse(responseJSON);
+					let courseInfo = responseObject['courseInfo'];
+					let courseName = responseObject['courseName'];
+					isInstructor = responseObject['isInstructor'];
+					console.log(responseObject);
+					console.log(responseObject['courseName']);
+					console.log(responseObject['courseInfo']);
+					console.log(responseObject.courseName);
+					$suggestedVideos.html("");
+					for (let i = 0; i < courseInfo.length; i++) {
+						let url = 'https://img.youtube.com/vi/'+extractVideoIdFromYouTubeUrl(courseInfo[i]['0'])+'/0.jpg';
+		//				$suggestedVideos.append($("<img id=\"courseImage"+i+"\"src=\""+url+"\" style=\"width:200px; height:200px;\">"));
+		//				$suggestedVideos.append($("<li id=\"courseName\"style=\"list-style-type:none; font-size:50px; color:white; \"value=\""+courseName+"\">").text(courseName));
+		//				document.getElementById("courseImage"+i).addEventListener("click",loadPage);
+					$suggestedVideos.append($("<p id=\"para"+i+"\"style=\"font-size:50px; color:white;\"><img id=\"courseImage"+i+"\"src=\""+url+"\" style=\"width:300px; height:300px; align:left;\">"+courseName+"</p>"));
+		//			$courseList.append($("<li id=\"courseName\"style=\"list-style-type:none; font-size:50px; color:white; \"value=\""+courseName+"\">").text(courseName));
+					document.getElementById("courseImage"+i).addEventListener("click",loadPage);
+						urlToId[url] = courseInfo[i]['1'];
+					}
+				});
+			} else {
+				alert("To see courses, please log in first!");
+			}
+		});
 	}
 	
 //	function loadPage() {
