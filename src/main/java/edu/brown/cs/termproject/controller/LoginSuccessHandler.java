@@ -9,12 +9,14 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Map;
 
 @Controller
@@ -26,6 +28,12 @@ public class LoginSuccessHandler
   @Autowired
   public LoginSuccessHandler(UserService userService) {
     this.userService = userService;
+  }
+
+  @GetMapping("/whoami")
+  @ResponseBody
+  public Boolean whoami(Principal principal) {
+    return principal != null;
   }
 
   @GetMapping("/success")
