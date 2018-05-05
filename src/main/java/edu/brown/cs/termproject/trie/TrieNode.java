@@ -2,7 +2,11 @@ package edu.brown.cs.termproject.trie;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This is a Trienode class.
@@ -13,19 +17,18 @@ import java.util.List;
 public class TrieNode {
   private int maxChildren = Trie.getReferenceString().length();
   private TrieNode[] children = new TrieNode[maxChildren];
-  private char content;
   private int level;
-  private List<Calendar> timeList = new ArrayList<>();
+  private char letter;
+  private Set<Double> timeList = new TreeSet<>();
 
   /**
    * Constructor of trienode.
-   * @param c char of trienode.
    * @param l level of trinode.
    */
 
-  public TrieNode(char c, int l) {
-    content = c;
+  public TrieNode(char content, int l) {
     level = l;
+    letter = content;
   }
 
   /**
@@ -37,22 +40,13 @@ public class TrieNode {
     return children;
   }
 
-  /**
-   * Set the children for trieNode.
-   * @param node node to be set.
-   * @param index index for node to be set.
-   */
-
-  public void setChildren(TrieNode node, int index) {
-    this.children[index] = node;
-  }
 
   /**
    * Returns the value of the trie.
    * @return value of the trie.
    */
 
-  public List<Calendar> getValue() {
+  public Set<Double> getTimeList(){
     return timeList;
   }
 
@@ -61,8 +55,9 @@ public class TrieNode {
    * @param time value to be set.
    */
 
-  public void addValue(Calendar time) {
+  public void addValue(Double time) {
     timeList.add(time);
+
   }
 
   /**
@@ -73,4 +68,6 @@ public class TrieNode {
   public int getLevel() {
     return level;
   }
+
+
 }
