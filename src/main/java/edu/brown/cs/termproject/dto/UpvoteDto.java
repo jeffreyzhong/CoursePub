@@ -15,8 +15,13 @@ public class UpvoteDto implements Dto<AbstractUpvote> {
   /* fill */
   private Integer num;
 
-  public UpvoteDto(Map<String, ?> values) {
-
+  public UpvoteDto(Map<String, ?> values) throws IllegalArgumentException {
+    try {
+      this.upvoteType = ((Double) values.get("upvoteType")).intValue();
+      this.id = ((Double) values.get("id")).intValue();
+    } catch (Throwable t) {
+      throw new IllegalArgumentException(t);
+    }
   }
 
   public UpvoteDto(QuestionUpvote questionUpvote) {
@@ -38,9 +43,9 @@ public class UpvoteDto implements Dto<AbstractUpvote> {
   @Override
   public void fill(AbstractUpvote upvote) {
     if (upvote != null) {
-      num = 1;
+      this.num = 1;
     } else {
-      num = 0;
+      this.num = 0;
     }
   }
 }

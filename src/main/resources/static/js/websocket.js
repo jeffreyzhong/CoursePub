@@ -8,10 +8,10 @@ $(document).ready(function() {
 
   socket.onopen = function() {
     socket.send(JSON.stringify({
-      'type': 5,
+      'type': 3,
       'payload': {
-        'questionId': 4,
-        'detail': "responseeeeee",
+        'upvoteType': 0,
+        'id': 3,
       },
     }));
   };
