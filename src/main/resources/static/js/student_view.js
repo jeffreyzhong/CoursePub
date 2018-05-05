@@ -364,7 +364,7 @@ function setupSearchBar(){
 			ul.style.width = "224px";
 			ul.style.height = "300px";
 			
-			const postParameters = {content: $("#searchBar").val(), startTime: convertTime($("#searchTimeInput1").val()), endTime: convertTime($("#searchTimeInput2").val())};
+			const postParameters = {id: videoId, word: $("#searchBar").val(), start: convertTime($("#searchTimeInput1").val()), end: convertTime($("#searchTimeInput2").val())};
 			$.post("/searchTranscript", postParameters, responseJSON => {
 				const responseObject = JSON.parse(responseJSON);
 				

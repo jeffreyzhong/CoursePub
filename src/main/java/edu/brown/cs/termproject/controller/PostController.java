@@ -105,6 +105,11 @@ public class PostController {
   @PostMapping(path = "/searchTranscript")
   @ResponseBody
   public String question(TranscriptRequest request) {
+
+    System.out.println(request.getEnd());
+    System.out.println(request.getStart());
+    System.out.println(request.getId());
+    System.out.println(request.getWord());
     Integer id = request.getId();
     if (!TrieManager.hasTrie(id)) {
       Video tempVideo = videoService.ofId(id);
