@@ -52,12 +52,12 @@ header {
     border-radius: 30px; 
     outline: 0px; 
     height:33px; 
-    width: 450px; 
+    width: 280px; 
     background-color: transparent;
     color: pink;
     text-shadow: 1.5px 1.5px 1.5px black;
     resize: none;
-    text-align: center;
+/*    text-align: center;*/
     font-size: 25px;
     font-family: "Open Sans";
 	font-style: normal;
@@ -93,33 +93,35 @@ header {
 #fullQuestion {
 	color: white;
 	font-size: 20px;
+/*    width: 200px;*/
+    word-wrap: break-word;
 }
 
 #videoName {
-	padding-left: 0;
-    padding-right: 0;
     margin-left: auto;
     margin-right: auto;
     display: block;
 	color: white;
 	letter-spacing: 2px;
-	font-size: 25px;
+	font-size: 30px;
+    float: left;
+    padding-left: 25px;
 }
 
 #instructorResponse {
-/*	 border: 2px solid pink; */
+	 border: 1px solid white; 
 /*    s-webkit-border-radius: 0px; */
 /*    -moz-border-radius: 10px; */
 /*    -webkit-transition-duration: 0.4s;*/
     transition-duration: 0.4s;
-    border-radius: 30px; 
+    border-radius: 10px; 
     outline: 0px; 
     height:auto; 
-    width: 500px; 
+    width: 50vw; 
     padding-left:10px; 
     padding-right:10px;
     background-color: transparent;
-    color: pink;
+    color: white;
     text-shadow: 1.5px 1.5px 1.5px black;
     resize: none;
     font-size: 25px;
@@ -129,11 +131,18 @@ header {
 	font-weight: 100;
 }
 
+#thumbnailDiv {
+    float: left;
+    padding-left: 20px;
+}
+
+
+
 #clickedOnQuestion {
 	float: left;
 }
 
-#submitCourseButton {
+#submitResponseButton {
 		 border: 2px solid pink; 
 /*    s-webkit-border-radius: 0px; */
 /*    -moz-border-radius: 10px; */
@@ -146,7 +155,7 @@ header {
     padding-left:10px; 
     padding-right:10px;
     background-color: transparent;
-    color: pink;
+    color: white;
     text-shadow: 1.5px 1.5px 1.5px black;
     resize: none;
     font-size: 25px;
@@ -154,15 +163,55 @@ header {
 	font-style: normal;
 	font-variant: normal;
 	font-weight: 100;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-	
 }
 
-#submitCourseButton:hover {
+#submitResponseButton:hover {
 	background-color: white;
 	color: #2D9AB7;
+}
+
+#displaySummary {
+    font-size: 26px;
+    width: 50vw;
+    min-height:60px; 
+    display: inline-block;
+
+}
+
+.displaySection {
+    border-radius: 10px;
+    border-color: white;
+    background: rgba(255, 255, 255, 0.2); 
+    color: black;
+    word-wrap: break-word; 
+}
+
+#displayQuestion {
+    font-size: 20px;
+    min-height:100px; 
+    display: inline-block;
+    width: 50vw;
+}
+
+#displayInstructorAnswer {
+    font-size: 20px;
+    min-height:50px; 
+    display: inline-block;
+    width: 50vw;
+}
+
+#displayStudentAnswer {
+    font-size: 18px;
+    min-height:50px; 
+    display: inline-block;
+    width: 50vw;
+}
+
+#displayThread {
+    font-size: 13px;
+    min-height:50px; 
+    display: inline-block;
+    width: 50vw;
 }
 
 #videoSection {
