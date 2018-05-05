@@ -48,6 +48,8 @@ $(document).ready(function() {
 		let newMessage = data.payload;
 		let questionId = newMessage.questionId;
 		let toUpdate = items._data[questionId];
+		console.log(data.type);
+		console.log(MESSAGE_TYPE.UPVOTE);
 		switch (data.type) {
 			default: 
 				console.log("Unknown data type");
@@ -80,9 +82,6 @@ $(document).ready(function() {
 				console.log("ITEMS AFTER: " + items);
 				timeline.setItems(items);
 				break;
-			case MESSAGE_TYPE.UPVOTE: 
-				
-				break;
 			case MESSAGE_TYPE.INSTRUCTOR_ANSWER:
 				console.log("ITEMS BEFORE: " + items);
 				let detail = [];
@@ -92,13 +91,17 @@ $(document).ready(function() {
 
 				break
 			case MESSAGE_TYPE.STUDENT_ANSWER:
+				console.log("STUDENT ANSWER");
 				toUpdate.studentAnswer = newMessage.detail;
 				timeline.setItems(items);
 				break;
 			
 			case MESSAGE_TYPE.UPVOTE:
-				toUpdate.numVotes = toUpdate.numVotes + 1;
-				toUpdate.content = setContent(toUpdate.resolved,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
+				console.log("UPVOTE");
+				let update = items._data[newMessage.id];
+				update.numVotes = update.numVotes + newMessage.num;
+				update.content = setContent(update.resolved,update.numVotes,update.user,update.colonTime);
+				console.log("number of votes: " + update.numVotes);
 				timeline.setItems(items);
 				break;
 			case MESSAGE_TYPE.ERROR:
