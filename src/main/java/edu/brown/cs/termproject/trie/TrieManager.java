@@ -14,6 +14,10 @@ public final class TrieManager {
 
   private static HashMap<Integer, Trie> trieMap = new HashMap<>();
 
+  public static boolean hasTrie(Integer videoId){
+    return trieMap.containsKey(videoId);
+  }
+
   public static void insertVideoTranscript(Integer videoId, Map<String, Double>
       sentenceTimeSet) {
     if (trieMap.containsKey(videoId)) {
