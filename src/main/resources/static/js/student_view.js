@@ -363,8 +363,10 @@ function setupSearchBar(){
 			ul.style.backgroundColor = "#2D9AB7";
 			ul.style.width = "224px";
 			ul.style.height = "300px";
+
 			console.log("word " +  $("#searchBar").val() + " start " + convertTime($("#searchTimeInput1").val()) + " end " + convertTime($("#searchTimeInput2").val()));
-			const postParameters = {word: $("#searchBar").val(), start: convertTime($("#searchTimeInput1").val()), end: convertTime($("#searchTimeInput2").val())};
+			const postParameters = {id: videoId, word: $("#searchBar").val(), start: convertTime($("#searchTimeInput1").val()), end: convertTime($("#searchTimeInput2").val())};
+
 			$.post("/searchTranscript", postParameters, responseJSON => {
 				const responseObject = JSON.parse(responseJSON);
 				
