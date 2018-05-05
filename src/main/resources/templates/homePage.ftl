@@ -24,14 +24,13 @@
 <div class="container"> 
   <!-- Navigation -->
   <header> <a href="">
-    <h4 class="logo">coursepub</h4>
+    <h4 class="logo">CoursePub</h4>
   </a>
     <nav>
       <ul>
-        <li><a href="">home</a></li>
-        <li><a href="#about">courses</a></li>
-        <li> <a href="#contact">about</a></li>
-        <li> <a id="account" href="/login/google">sign in/sign up</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/courses">Courses</a></li>
+        <li> <a id="account" href="/login/google">Sign In/Sign Up</a></li>
       </ul>
     </nav>
   </header>
@@ -40,12 +39,16 @@
 		<li><a id="learningStartsHere">learning starts here.</a></li><br>
 		<li><textarea class="searchCourses" id="searchCourses"></textarea></li>
 	</div>
+    <br>
 	<div class="submit" style="list-style-type: none">
 	<input type="submit" id="submitCourseButton" value="Search">
 	</div>
     <ul id="searchSuggestions"></ul>
     <div class="suggestions" style="list-style-type: none">
     <li id="suggestedVideos"></li>
+    </div>
+    <div id="invisibleParent">
+    <div id="invisible"></div>
     </div>
 <!-- Hero Section -->
   <!-- About Section -->

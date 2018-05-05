@@ -15,6 +15,7 @@ import edu.brown.cs.termproject.pageRank.PageRank;
 import edu.brown.cs.termproject.pageRank.PageRankNode;
 import edu.brown.cs.termproject.service.CourseService;
 import edu.brown.cs.termproject.service.QuestionService;
+import edu.brown.cs.termproject.service.RegistrationService;
 import edu.brown.cs.termproject.service.UserService;
 import edu.brown.cs.termproject.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,22 +38,26 @@ public class PostController {
   private VideoService videoService;
   private QuestionService questionService;
   private CourseService courseService;
+  private RegistrationService registrationService;
   private Trie trie;
   private Map<String,Course> nameToCourse;
+  private Map<String,Set<Video>> courseToVideos;
 
   @Autowired
   public PostController(VideoService videoService,
-                        QuestionService questionService, CourseService courseServ) {
+                        QuestionService questionService, CourseService courseServ, RegistrationService registrationService) {
     this.videoService = videoService;
     this.questionService = questionService;
+    this.registrationService = registrationService;
     trie = new Trie();
     nameToCourse = new HashMap<String,Course>();
+    courseToVideos = new HashMap<String,Set<Video>>();
     this.courseService = courseServ;
     List<Course> courses = courseService.getAllCourses();
     for (Course c : courses) {
       trie.add(c.getName());
       nameToCourse.put(c.getName(), c);
-      
+      courseToVideos.put(Integer.toString(c.getId()), c.getVideos());
     }
  
     trie.getControl().setPrefix(true);
@@ -138,31 +143,89 @@ public class PostController {
   @ResponseBody
   public String homePageSearchSuggestions(SearchSuggest searchSuggest) {
     String userInput = searchSuggest.getInput();
-    
+    userInput.toLowerCase();
     List<String> res = trie.courseCorrect(userInput);
-
-    return GSON.toJson(res);
+    List<String> newRes = new ArrayList<String>();
+    for (String word : res) { 
+      newRes.add(Trie.getCaseInsensitive().get(word));
+    }
+    return GSON.toJson(newRes);
   }
   
   @PostMapping(path = "/homePageSearchSubmit")
   @ResponseBody
-  public String homePageSearchSubmit(SearchSuggest searchSubmit) {
+  public String homePageSearchSubmit(SearchSuggest searchSubmit, User user) {
     String userInput = searchSubmit.getInput();
-    System.out.println("INPUTTTT: " + userInput);
-    userInput.toLowerCase();
-    userInput = Trie.getCaseInsensitive().get(userInput);
+    Map<String,Object> map = new HashMap<String,Object>();
     Course course = nameToCourse.get(userInput);
+    boolean isInstructor = registrationService.isInstructor(user, course);
     Iterator<Video> videos = course.getVideos().iterator();
-    List<String> videoURLs = new ArrayList<String>();
-    videoURLs.add(userInput);
+    map.put("courseName", userInput);
+    List<List<String>> videoList = new ArrayList<List<String>>();
     while (videos.hasNext()) {
-      videoURLs.add(videos.next().getUrl());
+      List<String> tmp = new ArrayList<String>();
+      Video video = videos.next();
+      tmp.add(video.getUrl());
+      tmp.add(Integer.toString(video.getId()));
+      videoList.add(tmp);
     }
-    return GSON.toJson(videoURLs);
+    map.put("courseInfo", videoList);
+    map.put("isInstructor", isInstructor);
+    return GSON.toJson(map);
+  }
+  
+  @PostMapping(path = "/courseCatalog")
+  @ResponseBody
+  public String courseCatalog() {
+    List<Course> courses = courseService.getAllCourses();
+    List<Map<String,String>> ret = new ArrayList<Map<String,String>>();
+    for (Course c : courses) {
+      Map<String,String> map = new HashMap<String,String>();
+      map.put("courseName", c.getName());
+      map.put("courseId", Integer.toString(c.getId()));
+      map.put("courseThumbnail", c.getVideos().iterator().next().getUrl());
+      ret.add(map);
+    }
+    return GSON.toJson(ret);
+  }
+  
+  @PostMapping(path = "/getCourseVideos")
+  @ResponseBody
+  public String getCourseVideos(CourseVideo courseVideo, User user) {
+    String courseId = courseVideo.getCourseId();
+    
+    boolean isInstructor = registrationService.isInstructor(user, courseService.ofId(Integer.valueOf(courseId)));
+    
+    System.out.println("IDDDDD: " + courseId);
+    Iterator<Video> videoSet = courseToVideos.get(courseId).iterator();
+    List<Map<String,Object>> ret = new ArrayList<Map<String,Object>>();
+    while (videoSet.hasNext()) {
+      Video vid = videoSet.next();
+      Map<String,Object> map = new HashMap<String,Object>();
+      map.put("videoUrl", vid.getUrl());
+      map.put("videoId", Integer.toString(vid.getId()));
+      ret.add(map);
+    }
+    Map<String,Object> isInstruct = new HashMap<String,Object>();
+    isInstruct.put("isInstructor", isInstructor);
+    ret.add(isInstruct);
+    return GSON.toJson(ret);
   }
 
   private static class EmptyRequest {
 
+  }
+  
+  private static class CourseVideo {
+    private String courseId;
+    
+    public String getCourseId() {
+      return courseId;
+    }
+    
+    public void setCourseId(String id) {
+      this.courseId = id;
+    }
   }
   
   private static class SearchSuggest {

@@ -57,8 +57,7 @@
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="#about">Courses</a></li>
-        <li> <a href="#contact">about</a></li>
+        <li><a href="/courses">Courses</a></li>
       </ul>
     </nav>
   </header>
