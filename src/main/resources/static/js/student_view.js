@@ -17,16 +17,24 @@ class Question{
 		return this._upvotes;
 	}
 	
-	set upvotes(upvotes){
-		this._upvotes = upvotes;
+	set upvotes(numUpvotes){
+		this._upvotes = numUpvotes;
 	}
 	
 	get instructorAnswer(){
 		return this._instructorAnswer;
 	}
-
+	
+	set instructorAnswer(ans){
+		this._instructorAnswer = ans;
+	}
+	
 	get studentAnswer(){
 		return this._studnetAnswer;
+	}
+	
+	set studentAnswer(ans){
+		this._studnetAnswer = ans;
 	}
 	
 	get id(){
@@ -103,7 +111,11 @@ const MESSAGE_TYPE = {
 	CONNECT: 0,
 	NEW_QUESTION: 1,
 	NEW_ANSWER: 2,
-	UPVOTE: 3
+	UPVOTE: 3,
+	instructorAnswer:4,
+	studentAnswer: 5,
+	ERROR: -1
+	
 };
 
 let conn;
@@ -153,7 +165,7 @@ $(document).ready(() => {
 	conn = new WebSocket(connection);
 	conn.addEventListener('message', function (event) {
 		const data = JSON.parse(event.data);
-		console.log("from server: " + data.message);
+//		console.log("from server: " + data.message);
 	    switch (data.type) {
 			default:
 				console.log('Unknown message type! ' + data.payload.message, data.type);
@@ -165,11 +177,13 @@ $(document).ready(() => {
 				let id = data.payload.id;
 				let time = data.payload.time;
 				let summary = data.payload.summary;
-				let detail = data.payload.detail;
 				let user = data.payload.user;
 				let resolved = data.payload.resolved;
-				console.log("id: " + id + " time is " + time + " with summary " + summary + " and detail " + detail);
-				let obj = new Question(id, summary, time, detail, user, resolved);
+				let detail = data.payload.detail;
+				let upvotes = data.payload.upvotes;
+				let instructorAnswer = data.payload.instructorAnswer;
+				let studentAnswer = data.payload.studentAnswer;
+				let obj = new Question(id, summary, time, detail, user, resolved, upvotes, instructorAnswer, studentAnswer);
 				questions.set(obj.id, obj);
 				questionsOrd.push(obj);
 				questionsOrd.sort(compare);
@@ -182,16 +196,30 @@ $(document).ready(() => {
 				let questionId = data.payload.id;
 				let type = data.payload.upvoteType;
 				let num = data.payload.num;
-				console.log("id:" + questionId + " type " + type + " num: " + num);
+				console.log("id:" + questionId + " type " + type + " num: " + num + "original: " + questions.get(questionId).upvotes);
 				if(type === 0){
 					if(num === 1){
 						let old = questions.get(questionId).upvotes;
-						questions.get(id).upvotes(old + 1);
-					}else{
-						alert("You have already upvoted this question!");
+						questions.get(questionId).upvotes = old + 1;
+						let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "",false, 0,"","");
+						let index = questionsOrd.binarySearch(questionStub, compare);
+					//	console.log("INDEX: " + index);
+						$("#questionBtn").click();
+						
+//						console.log("id:" + questionId + " type " + type + " num: " + num + "new: " + questions.get(questionId).upvotes);
 					}
 				}
 				break;
+			case MESSAGE_TYPE.instructorAnswer:
+				questions.get(data.payload.questionId).instructorAnswer = data.payload;
+				break;
+			case MESSAGE_TYPE.studentAnswer:
+				questions.get(data.payload.questionId).studentAnswer = data.payload;
+				break;
+			case MESSAGE_TYPE.ERROR:
+				alert("You have already upvoted this question!");
+				break;
+					
 	    }
 	});
 
@@ -517,6 +545,7 @@ function questionClick(){
 	}
 	let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "",false, 0,"","");
 	let index = questionsOrd.binarySearch(questionStub, compare);
+//	console.log("INDEX: " + index);
 	questionDisplay(index);
 }
 
@@ -526,13 +555,12 @@ function refQuestion(){
 	if(player.getPlayerState() === 1){
 		let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false, 0,"","");
 		index = questionsOrd.binarySearch(questionStub, compare);
+//		console.log("INDEX: " + index);
 		if(questionSel && expanded === -1 && index !== null){
-			
 			questionDisplay(index);
 		}
 	}
 }
-
 
 //display questions in each div
 function questionDisplay(index){
@@ -580,9 +608,8 @@ function questionDisplay(index){
 		document.getElementById("upvote" + i).style.display = "inline-block";
 		min+=1;
 		document.getElementById("upvote" + i).onclick = function(){
-			let questionId = "#questionId" + i;
-			let jsonObject = {upvoteType: 0, id:questionsOrd[min].id};
-			console.log("upvote websocket set " + questionsOrd[min].id)
+			let jsonObject = {upvoteType: 0, id:parseInt($(idLabel).html())};
+			console.log("upvote websocket set " + parseInt($(idLabel).html()));
 			conn.send(JSON.stringify({type: 3, payload: jsonObject}));
 		};
 	}
@@ -600,11 +627,6 @@ function questionDisplay(index){
 		document.getElementById("upvote" + j).style.display = "none";
 	}
 	
-//	divs = document.getElementsByClassName("upvotes");
-//	for(let i = 0; i < divs.length; i++){
-//		
-//	}
-
 }
 
 //============================================================================
@@ -616,9 +638,6 @@ function openQuestion(ev){
 		expanded = parseInt($(idLabel).html());
 		document.getElementById("questionDiv0").style.borderBottom = "2px solid #FFFFFF";
 		let divs = document.getElementsByClassName("questionDiv");
-	//	for(let i = 0; i < divs.length; i++){
-	//		divs[i].onclick = null;
-	//	}
 		divs[0].onclick = null;
 		let questionId = "#question" + id;
 		let timeId = "#time" + id;
