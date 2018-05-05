@@ -9,7 +9,7 @@ import re
 QL = "INSERT INTO `sentence` (`video_id`, `video_time`, `words`) VALUES (%s, %s, %s)"
 
 if __name__ == '__main__':
-  connection = pymysql.connect(host='localhost', user='root', password='', db='stub', charset='utf8mb4')
+  connection = pymysql.connect(host='localhost', user='root', password='OCanada2@', db='stub', port = 3306, charset='utf8mb4')
 
   pattern = re.compile('^https://www.youtube.com/embed/([^\?]+)\?*')
 
