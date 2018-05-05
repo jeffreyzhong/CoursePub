@@ -80,11 +80,13 @@ public class RankTest {
     for (Course course : courses) {
       System.out.println(course);
       Video video = course.getVideos().iterator().next();
+      System.out.println(video);
       ret.add(Integer.toString(video.getId()));
       ret.add(video.getUrl());
+
     }
 
-    System.out.println(ret);
+    assertTrue(ret.build().size()==6);
   }
 
   @Test
