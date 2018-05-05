@@ -165,18 +165,26 @@ class WebSocketConfig implements WebSocketConfigurer {
           responsePayload = ImmutableMap.of("message", errorMessage);
         }
 
-        /* builds response object */
-        TextMessage response = new TextMessage(GSON.toJson(
-            ImmutableMap.of(
-                "type", responseType.ordinal(),
-                "payload", responsePayload
-            )
-        ));
-
         if (responseType == MESSAGE_TYPE.ERROR) {
+          /* builds response object */
+          TextMessage response = new TextMessage(GSON.toJson(
+              ImmutableMap.of(
+                  "type", -1,
+                  "payload", responsePayload
+              )
+          ));
+
           /* notifies session if error */
           session.sendMessage(response);
         } else {
+          /* builds response object */
+          TextMessage response = new TextMessage(GSON.toJson(
+              ImmutableMap.of(
+                  "type", responseType.ordinal(),
+                  "payload", responsePayload
+              )
+          ));
+
           /* sends update to everyone watching this video */
           for (WebSocketSession other : sessions.get(id)) {
             other.sendMessage(response);
