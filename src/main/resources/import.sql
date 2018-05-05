@@ -75,6 +75,6 @@ INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (1, 'You
 INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (1, 'You are officially dumb jerry', 5, 2, '2018-04-13 04:12:57');
 INSERT INTO student_answer (id, body, user_id, question_id, post_time) VALUES (1, 'hahaha', 7, 1, '2018-05-01 07:17:32');
 
-INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (2, 'But it\'\ s just worth soooo much more than I think it should.' , 2, 2, '2018-04-12 05:58:19');
-INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (2, 'Because checkstyle makes sure that you are writing code that is easy to read!', 5, 2, '2018-04-13 04:12:57');
-INSERT INTO student_answer (id, body, user_id, question_id, post_time) VALUES (2, 'Honestly I relate so much', 7, 2, '2018-05-01 07:17:32');
+INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (2, 'But it\'\ s just worth soooo much more than I think it should.' , 2, 11, '2018-04-12 05:58:19');
+INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (2, 'Because checkstyle makes sure that you are writing code that is easy to read!', 5, 11, '2018-04-13 04:12:57');
+INSERT INTO student_answer (id, body, user_id, question_id, post_time) VALUES (2, 'Honestly I relate so much', 7, 11, '2018-05-01 07:17:32');
