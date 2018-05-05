@@ -30,17 +30,20 @@ $(document).ready(function() {
 		let mouseoverId;
 	
 	const MESSAGE_TYPE = {
+		ERROR: -1,
 	  	CONNECT: 0,
 		NEW_QUESTION: 1,
 		NEW_RESPONSE: 2,
 		UPVOTE: 3,
 		INSTRUCTOR_ANSWER : 4,
-		ERROR: 5
+		STUDENT_ANSWER: 5,
 	};
 	conn.addEventListener('message', function (event) {
 		let data = JSON.parse(event.data);
 		console.log('Message from server: ', data);
-		let newQuestion = data.payload;
+		let newMessage = data.payload;
+		let questionId = newMessage.questionId;
+		let toUpdate = items._data[questionId];
 		switch (data.type) {
 			default: 
 				console.log("Unknown data type");
@@ -77,8 +80,6 @@ $(document).ready(function() {
 				
 				break;
 			case MESSAGE_TYPE.INSTRUCTOR_ANSWER:
-				let questionId = newQuestion.questionId;
-				let toUpdate = items._data[questionId];
 				console.log("ITEMS BEFORE: " + items);
 				let detail = [];
 				let instructorAnswer = document.getElementById("displayInstructorAnswer");
@@ -86,6 +87,16 @@ $(document).ready(function() {
 				instructorAnswer.innerHTML = items._data[questionId].instructorAnswer.detail;
 
 				break
+			case MESSAGE_TYPE.STUDENT_ANSWER:
+				toUpdate.studentAnswer = newMessage.detail;
+				timeline.setItems(items);
+				break;
+			
+			case MESSAGE_TYPE.UPVOTE:
+				toUpdate.numVotes = toUpdate.numVotes + 1;
+				toUpdate.content = setContent(toUpdate.resolved,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
+				timeline.setItems(items);
+				break;
 			case MESSAGE_TYPE.ERROR:
 				alert("error");
 				break;
@@ -108,6 +119,7 @@ $(document).ready(function() {
 			let user = question['user'];
 			let resolved = question['resolved'];
 			let detail = question['detail'];
+			let numUpVotes = question['upvotes'];
 			let instructorAnswer = question['instructorAnswer'];
 			let studentAnswer = question['studentAnswer'];
 			console.log(question);
@@ -117,9 +129,9 @@ $(document).ready(function() {
 			let timeArray = formattedTime.split(",");
 			console.log("user id: " + user);
 			let currQuestion = {id: id,
-			content : setContent(resolved,30,user,colonTime),
+			content : setContent(resolved,numUpVotes,user,colonTime),
 			resolved : resolved,
-			numVotes : 30,
+			numVotes : numUpVotes,
 			summary : summary,
 			colonTime : colonTime,
 			start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
@@ -421,7 +433,7 @@ $(document).ready(function() {
 //		} else {
 //			color="red";
 //		}
-		let padding = 7 + numUpVotes/5;
+		let padding = 7 + numUpVotes*10;
 		if (color === "red" || color === "green") {
 			return '<div style="background-color:'+color+'; color:white; ' + 
 			'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +

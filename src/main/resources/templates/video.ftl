@@ -60,33 +60,43 @@
 	<div id="sideContentDiv" class="tabcontent" >
 		<div id="questionDiv0" class = "questionDiv">
 			<label id = "time0" class = "questionTimeLabel"></label>
+			<button class="upvotes" id = "upvote0">Upvote!</button>
 			<p id = "question0" class = "questions"></p>
 			<label id = "user0" class = "userLabel"></label>
+			<label id = "upvoteLabel0" class = "upvoteLabel"></label>
 			<label id = "questionId0" class = "questionIdLabel"></label>
 		</div>
 		<div id = "responseList"></div>
 		<div id="questionDiv1" class = "questionDiv">
 			<label id = "time1" class = "questionTimeLabel"></label>
+			<button class="upvotes" id = "upvote1">Upvote!</button>
 			<p id = "question1" class = "questions"></p>
 			<label id = "user1" class = "userLabel"></label>
+			<label id = "upvoteLabel1" class = "upvoteLabel"></label>
 			<label id = "questionId1" class = "questionIdLabel"></label>
 		</div>
 		<div id="questionDiv2" class = "questionDiv">
 			<label id = "time2" class = "questionTimeLabel"></label>
+			<button class="upvotes" id = "upvote2">Upvote!</button>
 			<p id = "question2" class = "questions"></p>
 			<label id = "user2" class = "userLabel"></label>
+			<label id = "upvoteLabel2" class = "upvoteLabel"></label>
 			<label id = "questionId2" class = "questionIdLabel"></label>
 		</div>
 		<div id="questionDiv3" class = "questionDiv">
 			<label id = "time3" class = "questionTimeLabel"></label>
+			<button class="upvotes" id = "upvote3">Upvote!</button>
 			<p id = "question3" class = "questions"></p>
 			<label id = "user3" class = "userLabel"></label>
+			<label id = "upvoteLabel3" class = "upvoteLabel"></label>
 			<label id = "questionId3" class = "questionIdLabel"></label>
 		</div>
 		<div id="questionDiv4" class = "questionDiv">
 			<label id = "time4" class = "questionTimeLabel"></label>
+			<button class="upvotes" id = "upvote4">Upvote!</button>
 			<p id = "question4" class = "questions"></p>
 			<label id = "user4" class = "userLabel"></label>
+			<label id = "upvoteLabel4" class = "upvoteLabel"></label>
 			<label id = "questionId4" class = "questionIdLabel"></label>
 		</div>	
 	</div>

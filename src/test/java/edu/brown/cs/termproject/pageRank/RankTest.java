@@ -37,10 +37,9 @@ public class RankTest {
   public void testUserCourse() throws ClassNotFoundException{
 
     PageRank pr = new PageRank(userService.ofId(5));
-    Class c =
-      Class.forName("edu.brown.cs.termproject.model.Course");
+    Class c =Course.class;
     List<PageRankNode> result = pr.getTopResult(c, 2);
-    assertTrue(result.size()==1);
+    assertTrue(result.size()==0);
 
   }
 
