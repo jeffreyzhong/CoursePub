@@ -7,6 +7,7 @@ import edu.brown.cs.termproject.dto.ResponseDto;
 import edu.brown.cs.termproject.model.Course;
 import edu.brown.cs.termproject.model.Question;
 import edu.brown.cs.termproject.model.Response;
+import edu.brown.cs.termproject.model.Sentence;
 import edu.brown.cs.termproject.model.User;
 import edu.brown.cs.termproject.model.Video;
 import edu.brown.cs.termproject.pageRank.PageRank;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,17 +63,18 @@ public class PostController {
   @ResponseBody
   public String question(TranscriptRequest request) {
     Integer id = request.getId();
-    Map<String, Double> testMao = new HashMap<>();
-    testMao.put("This is my first sentence", 0.1);
-    testMao.put("The second thing I say is this", 3.4);
-    testMao.put("Please try testing me", 5.3);
-    testMao.put("Thanks for testing me", 8.4);
-
-    TrieManager.insertVideoTranscript(1,testMao);
-    List<String> result = TrieManager.getWordTimeList("testing",
-        1, 0.5, 10.0);
-
-
+    if (!TrieManager.hasTrie(id)) {
+      Video tempVideo = videoService.ofId(id);
+      Set<Sentence> sentences = tempVideo.getSentences();
+      Map<String, Double> tempMap = new HashMap<>();
+      for(Sentence s:sentences){
+        Long c = s.getVideoTime().getTimeInMillis();
+        tempMap.put(s.getWords(), (double)c/1000);
+      }
+      TrieManager.insertVideoTranscript(1,tempMap);
+    }
+    List<String> result = TrieManager.getWordTimeList(request.getWord(),
+        id, request.getStart(), request.getEnd());
     ImmutableList.Builder<String> ret = ImmutableList.builder();
     for (String st:result) {
       ret.add(st);
@@ -143,6 +146,20 @@ public class PostController {
   }
 
   private static class TranscriptRequest extends ResponseRequest{
+    private Double start;
+    private Double end;
+    private String word;
 
+    public Double getEnd() {
+      return end;
+    }
+
+    public String getWord() {
+      return word;
+    }
+
+    public Double getStart() {
+      return start;
+    }
   }
 }
