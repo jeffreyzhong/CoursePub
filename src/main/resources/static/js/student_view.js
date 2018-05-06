@@ -364,8 +364,12 @@ function setupSearchBar(){
 			ul.style.width = "224px";
 			ul.style.height = "300px";
 
-			console.log("word " +  $("#searchBar").val() + " start " + convertTime($("#searchTimeInput1").val()) + " end " + convertTime($("#searchTimeInput2").val()));
+
+//			console.log("word " +  $("#searchBar").val() + " start " + convertTime($("#searchTimeInput1").val()) + " end " + convertTime($("#searchTimeInput2").val()));
+
+			
 			const postParameters = {id: videoId, word: $("#searchBar").val(), start: convertTime($("#searchTimeInput1").val()), end: convertTime($("#searchTimeInput2").val())};
+
 
 			$.post("/searchTranscript", postParameters, responseJSON => {
 				const responseObject = JSON.parse(responseJSON);

@@ -66,7 +66,7 @@ $(document).ready(function() {
 					colonTime : colonTime,
 					start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
 					fullQuestion : newMessage.detail,
-					user : newMessage.user};
+					user : "Anon "+newMessage.user};
 				console.log("currQuestion: " + currQuestion);
 				addData.push(currQuestion);
 				timeline.setItems(addData);	
@@ -145,7 +145,7 @@ $(document).ready(function() {
 			fullQuestion : detail,
 			instructorAnswer : instructorAnswer,
 			studentAnswer : studentAnswer,
-			user : user};
+			user : "Anon "+user};
 			addData.push(currQuestion);
 			console.log(addData);
 		}
@@ -440,7 +440,7 @@ $(document).ready(function() {
 //		} else {
 //			color="red";
 //		}
-		let padding = 15 + numUpVotes*5;
+		let padding = 8 + numUpVotes*3;
 		if (color === "red" || color === "green") {
 			return '<div style="background-color:'+color+'; color:white; ' + 
 			'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +
@@ -451,10 +451,5 @@ $(document).ready(function() {
 			'padding-bottom:'+padding+'px; border-radius: 20px;">'+numUpVotes + 'UP' + ' @ ' + colonTime +'</div>';
 		}
 	}
-	
-	
-	
-	
-	
-	
+
 });

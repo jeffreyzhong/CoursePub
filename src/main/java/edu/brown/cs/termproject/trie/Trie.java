@@ -138,6 +138,8 @@ public class Trie {
         if(currentNode.getTimeList().size()>0){
           return currentNode.getTimeList();
         }
+
+        return new TreeSet<>();
       }
     }
 
