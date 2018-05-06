@@ -44,7 +44,7 @@ public class TrieTest {
 
   @Test
   public void DbTest(){
-    Integer id = 1;
+    Integer id = 2;
     if (!TrieManager.hasTrie(id)) {
       Video tempVideo = videoService.ofId(id);
       Set<Sentence> sentences = tempVideo.getSentences();
@@ -53,9 +53,9 @@ public class TrieTest {
         Long c = s.getVideoTime().getTimeInMillis();
         tempMap.put(s.getWords(), (double)c/1000);
       }
-      TrieManager.insertVideoTranscript(1,tempMap);
+      TrieManager.insertVideoTranscript(id,tempMap);
     }
-    List<String> result = TrieManager.getWordTimeList("matrix",
+    List<String> result = TrieManager.getWordTimeList("the",
         id, 1.1, 2000.0);
     System.out.println(result);
   }

@@ -39,7 +39,9 @@ public final class TrieManager {
                                 Double start, Double end){
 
     Trie tempTrie = trieMap.get(videoId);
+    System.out.println(tempTrie);
     ArrayList<String> result = new ArrayList<>();
+    System.out.println(word);
     Set<Double> timeList = tempTrie.searchTimeList(word);
     for(Double d:timeList){
       if(d>=start & d<=end) {
