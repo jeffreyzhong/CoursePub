@@ -99,6 +99,7 @@ $(document).ready(function() {
 			case MESSAGE_TYPE.UPVOTE:
 				console.log("UPVOTE");
 				let update = items._data[newMessage.id];
+				console.log("number of votes before: " + update.numVotes);
 				update.numVotes = update.numVotes + newMessage.num;
 				update.content = setContent(update.resolved,update.numVotes,update.user,update.colonTime);
 				console.log("number of votes: " + update.numVotes);
