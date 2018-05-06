@@ -312,7 +312,7 @@ function loadQuestions(event){
 		
 		questionsOrd = questionsOrd.sort(compare);
 
-		event.target.playVideo();
+//		event.target.playVideo();
 	});	
 }
 
@@ -334,8 +334,10 @@ function setupRelatedVideo(){
 // Example: function stopCycle, bound to onStateChange
 function stateChangeFunc(event) {
 	if(event.data === 0 || event.data === 2){
+		console.log("here")
 		clearInterval(refQuestionInt);
 	}else if(event.data === 1){
+		consoloe.log("playing");
 		refQuestionInt = setInterval(refQuestion, 100);
 		if(duration === null){
 			duration = player.getDuration();
@@ -787,7 +789,7 @@ function isValidTime(time){
 		return false;
 	}
 	let sec = parseInt(timeArray[0])*3600 + parseInt(timeArray[1])*60 + parseInt(timeArray[2]);
-	if(sec > Math.floor(+duration)){
+	if(sec > Math.floor(parseInt(duration))){
 		return false;
 	}
 	return true;
