@@ -306,5 +306,17 @@ public class PostController {
     public Double getStart() {
       return start;
     }
+
+    public void setEnd(Double end) {
+      this.end = end;
+    }
+
+    public void setStart(Double start) {
+      this.start = start;
+    }
+
+    public void setWord(String word) {
+      this.word = word;
+    }
   }
 }
