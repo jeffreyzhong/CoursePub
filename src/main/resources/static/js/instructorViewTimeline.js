@@ -319,7 +319,7 @@ $("#threadResponse").keyup(function(event) {
 				step = 60;
 			}
 			let options = {
-				width: '100%',
+				width: '90%',
 				height: '450px',
 				timeAxis: {scale: 'second', step: step}
 			};
