@@ -127,6 +127,7 @@ let videoId = parseInt($('#videoId').html());
 let questionSel = false;
 let expanded = -1;
 let refQuestionInt;
+let description = "No notes on this course yet.";
 
 let player; //Define a player object, to enable later function calls, without having to create a new class instance again.
 
@@ -162,7 +163,7 @@ let YT_ready = (function() {
 $(document).ready(() => {
 	let windowlocation = window.location.href.split('/')[2];
 	let ws = "ws://"+windowlocation+"/websocket/"+videoId;
-	init();
+	
 	conn = new WebSocket(ws);
 	conn.addEventListener('message', function (event) {
 		const data = JSON.parse(event.data);
@@ -269,8 +270,8 @@ $(document).ready(() => {
 		}
 	};
 	
+	init();
 	
-	$("#noteBtn").click();
 });
 
 function init(){
@@ -283,6 +284,8 @@ function init(){
 		let linkId = temp.split("?")[0];
 		$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
 				document.getElementById('title').innerHTML = data.items[0].snippet.title;
+				description = data.items[0].snippet.description;
+				$("#noteBtn").click();
 		});	
 	});	
 }
@@ -350,59 +353,59 @@ function stateChangeFunc(event) {
 function setupSearchBar(){
 	document.getElementById('searchBtn').onclick = function() {
 	    // 13 is ENTER
-	    if ($("#searchBar").val() !== "" && document.getElementById("searchResults") === null && isValidTime($("#searchTimeInput1").val()) && isValidTime($("#searchTimeInput2").val())){
-			let item = document.getElementById("item");
-			let ul = document.createElement("ul");
-			ul.setAttribute("id", "searchResults");
-			ul.style.position = "absolute";
-			ul.style.overflow = "hidden";
-			ul.style.overflowY = "auto";
-			ul.style.zIndex = "999";
-			ul.style.listStyle = "none";
-			ul.style.margin = "0px";
-			ul.style.marginLeft = "112.58px";
-			ul.style.padding = "0px";
-			ul.style.backgroundColor = "#2D9AB7";
-			ul.style.width = "224px";
-			ul.style.height = "300px";
+		if(confirm("Are you sure you want to search the video for this key word?")){
+			if ($("#searchBar").val() !== "" && document.getElementById("searchResults") === null && isValidTime($("#searchTimeInput1").val()) && isValidTime($("#searchTimeInput2").val())){
+				let item = document.getElementById("item");
+				let ul = document.createElement("ul");
+				ul.setAttribute("id", "searchResults");
+				ul.style.position = "absolute";
+				ul.style.overflow = "hidden";
+				ul.style.overflowY = "auto";
+				ul.style.zIndex = "999";
+				ul.style.listStyle = "none";
+				ul.style.margin = "0px";
+				ul.style.marginLeft = "112.58px";
+				ul.style.padding = "0px";
+				ul.style.backgroundColor = "#2D9AB7";
+				ul.style.width = "224px";
+				ul.style.height = "300px";
 
-			console.log("word " +  $("#searchBar").val() + " start " + convertTime($("#searchTimeInput1").val()) + " end " + convertTime($("#searchTimeInput2").val()));
-			const postParameters = {id: videoId, word: $("#searchBar").val(), start: convertTime($("#searchTimeInput1").val()), end: convertTime($("#searchTimeInput2").val())};
+				const postParameters = {id: videoId, word: $("#searchBar").val(), start: convertTime($("#searchTimeInput1").val()), end: convertTime($("#searchTimeInput2").val())};
 
-			$.post("/searchTranscript", postParameters, responseJSON => {
-				const responseObject = JSON.parse(responseJSON);
-				if(responseObject.length === 0){
-					alert("Keyword does not appear in this video");
-				}else{
-					for(let i = 0; i < responseObject.length; i+=2){
-						let text = convertSeconds(responseObject[i]) + " \"" + responseObject[i+1] + "\"";
-						let li = document.createElement('li');
-						li.setAttribute('class', 'searchItem');
-						li.style.margin = "0px";
-						li.style.padding = "0px";
-						li.style.color = "white";
-						li.style.border = "2px solid #FFFFFF";
-						if(i === 0){
-							li.style.borderTop = "none";
+				$.post("/searchTranscript", postParameters, responseJSON => {
+					const responseObject = JSON.parse(responseJSON);
+					if(responseObject.length === 0){
+						alert("Keyword does not appear in this video");
+					}else{
+						for(let i = 0; i < responseObject.length; i+=2){
+							let text = convertSeconds(responseObject[i]) + " \"" + responseObject[i+1] + "\"";
+							let li = document.createElement('li');
+							li.setAttribute('class', 'searchItem');
+							li.style.margin = "0px";
+							li.style.padding = "0px";
+							li.style.color = "white";
+							li.style.border = "2px solid #FFFFFF";
+							if(i === 0){
+								li.style.borderTop = "none";
+							}
+							if(i+1 !== responseObject.length - 1){
+								li.style.borderBottom = "none";
+							}
+							li.style.fontSize = "15px";
+							li.style.display = "block";
+							ul.appendChild(li);
+							li.innerHTML = li.innerHTML + text;
+							li.onclick = function(){
+								player.seekTo(parseFloat(responseObject[i]));
+								item.removeChild(ul);
+							};
 						}
-						if(i+1 !== responseObject.length - 1){
-							li.style.borderBottom = "none";
-						}
-						li.style.fontSize = "15px";
-						li.style.display = "block";
-						ul.appendChild(li);
-						li.innerHTML = li.innerHTML + text;
-						li.onclick = function(){
-							console.log("time: " + parseFloat(responseObject[i]));
-							player.seekTo(parseFloat(responseObject[i]));
-							item.removeChild(ul);
-						};
+						item.appendChild(ul);	
 					}
-					item.appendChild(ul);	
-				}
-			});
-		}
-	};		
+				});
+			}
+		}		
+	};
 }
 
 //============================================================================
@@ -411,7 +414,7 @@ function setupSearchBar(){
 function noteClick(){
 	hideContent();
 	expanded = -1;
-	$("#question0").html("Hi Class, welcome to MATH 520 Linear Algebra. In this class, I will give a brief introduction to what linear algebra is and the basic concepts that would be taught in this course. Please take a second to watch this short video and get excited for a semester long journey exploring the power of linear algebra!");
+	$("#question0").html(description);
 }
 
 //view related video
@@ -770,13 +773,17 @@ function postClick(){
 		alert("Please put in some explanation for your question!");
 		return;
 	}
-	let jsonObject = {videoId: videoId, summary:summary, questionTimestamp:time, detail:detail};
 	
-	conn.send(JSON.stringify({type: 1, payload: jsonObject}));
+	if (confirm("Are you sure you want to post this question?")) {
+		let jsonObject = {videoId: videoId, summary:summary, questionTimestamp:time, detail:detail};
 	
-	$("#summaryInput").val("");
-	$("#timeInput").val("");
-	$("#detailInput").val("");
+		conn.send(JSON.stringify({type: 1, payload: jsonObject}));
+
+		$("#summaryInput").val("");
+		$("#timeInput").val("");
+		$("#detailInput").val("");
+	}
+	
 }
 
 // check if the user input time is valid.
@@ -815,14 +822,21 @@ function answerSubmit(){
 	let answerType;
 	if(document.getElementById('followUp').checked){
 		answerType = 0;
-	}else if(document.getElementById('followUp').checked){
+		document.getElementById('studentAnswer').checked = false;
+	}else if(document.getElementById('studentAnswer').checked){
 		answerType = 1;
+		document.getElementById('followUp').checked = true;
 	}
-	let jsonObject = {questionId: questionId, detail:detail, answerType: answerType};
 	
-	conn.send(JSON.stringify({type: 2, payload: jsonObject}));
+	if (confirm("Are you sure you want to post this message?")) {
+		let jsonObject = {questionId: questionId, detail:detail, answerType: answerType};
 	
-	$("#answerInput").val("");
+		conn.send(JSON.stringify({type: 2, payload: jsonObject}));
+
+		$("#answerInput").val("");
+	}
+	
+	
 }
 
 
