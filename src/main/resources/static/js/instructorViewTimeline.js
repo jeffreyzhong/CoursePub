@@ -397,7 +397,7 @@ $("#threadResponse").keyup(function(event) {
 						}
 						for (let i = 0; i < info.thread.length; i++) {
 
-							thread.innerHTML += "Anon " + info.thread[i].id + ": " + info.thread[i].detail+"<br>";
+							thread.innerHTML += "Anon " + info.thread[i].userId + ": " + info.thread[i].detail+"<br>";
 								//+"   "+info.thread[i].upvotes+"UP <br>";
 						}
 					} else {
