@@ -191,7 +191,7 @@ $(document).ready(() => {
 				let questionStub = new Question("", "", Math.floor(player.getCurrentTime()), "", "", false, 0, "", "");
 				let index = questionsOrd.binarySearch(questionStub, compare);
 				// console.log("index" + index);
-				questionDisplay(index);
+				$("#questionBtn").click();
 				break;
 			case MESSAGE_TYPE.UPVOTE:
 				let questionId = data.payload.id;
@@ -337,7 +337,7 @@ function stateChangeFunc(event) {
 		console.log("here")
 		clearInterval(refQuestionInt);
 	}else if(event.data === 1){
-		consoloe.log("playing");
+		console.log("playing");
 		refQuestionInt = setInterval(refQuestion, 100);
 		if(duration === null){
 			duration = player.getDuration();
@@ -350,7 +350,7 @@ function stateChangeFunc(event) {
 function setupSearchBar(){
 	document.getElementById('searchBtn').onclick = function() {
 	    // 13 is ENTER
-	    if ($("#searchBar").val() !== "" && document.getElementById("searchResults") === null) {
+	    if ($("#searchBar").val() !== "" && document.getElementById("searchResults") === null && isValidTime($("#searchTimeInput1").val()) && isValidTime($("#searchTimeInput2").val())){
 			let item = document.getElementById("item");
 			let ul = document.createElement("ul");
 			ul.setAttribute("id", "searchResults");
@@ -366,37 +366,40 @@ function setupSearchBar(){
 			ul.style.width = "224px";
 			ul.style.height = "300px";
 
-			
+			console.log("word " +  $("#searchBar").val() + " start " + convertTime($("#searchTimeInput1").val()) + " end " + convertTime($("#searchTimeInput2").val()));
 			const postParameters = {id: videoId, word: $("#searchBar").val(), start: convertTime($("#searchTimeInput1").val()), end: convertTime($("#searchTimeInput2").val())};
 
 			$.post("/searchTranscript", postParameters, responseJSON => {
 				const responseObject = JSON.parse(responseJSON);
-				
-				for(let i = 0; i < responseObject.length; i+=2){
-					let text = convertSeconds(responseObject[i]) + " \"" + responseObject[i+1] + "\"";
-					let li = document.createElement('li');
-					li.setAttribute('class', 'searchItem');
-					li.style.margin = "0px";
-					li.style.padding = "0px";
-					li.style.color = "white";
-					li.style.border = "2px solid #FFFFFF";
-					if(i === 0){
-						li.style.borderTop = "none";
+				if(responseObject.length === 0){
+					alert("Keyword does not appear in this video");
+				}else{
+					for(let i = 0; i < responseObject.length; i+=2){
+						let text = convertSeconds(responseObject[i]) + " \"" + responseObject[i+1] + "\"";
+						let li = document.createElement('li');
+						li.setAttribute('class', 'searchItem');
+						li.style.margin = "0px";
+						li.style.padding = "0px";
+						li.style.color = "white";
+						li.style.border = "2px solid #FFFFFF";
+						if(i === 0){
+							li.style.borderTop = "none";
+						}
+						if(i+1 !== responseObject.length - 1){
+							li.style.borderBottom = "none";
+						}
+						li.style.fontSize = "15px";
+						li.style.display = "block";
+						ul.appendChild(li);
+						li.innerHTML = li.innerHTML + text;
+						li.onclick = function(){
+							console.log("time: " + parseFloat(responseObject[i]));
+							player.seekTo(parseFloat(responseObject[i]));
+							item.removeChild(ul);
+						};
 					}
-					if(i+1 !== responseObject.length - 1){
-						li.style.borderBottom = "none";
-					}
-					li.style.fontSize = "15px";
-					li.style.display = "block";
-					ul.appendChild(li);
-					li.innerHTML = li.innerHTML + text;
-					li.onclick = function(){
-						console.log("time: " + parseFloat(responseObject[i]));
-						player.seekTo(parseFloat(responseObject[i]));
-					};
+					item.appendChild(ul);	
 				}
-			
-				item.appendChild(ul);	
 			});
 		}
 	};		

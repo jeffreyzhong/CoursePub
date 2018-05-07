@@ -119,7 +119,7 @@ public class PostController {
         Long c = s.getVideoTime().getTimeInMillis();
         tempMap.put(s.getWords(), (double)c/1000);
       }
-      TrieManager.insertVideoTranscript(1,tempMap);
+      TrieManager.insertVideoTranscript(id,tempMap);
     }
     List<String> result = TrieManager.getWordTimeList(request.getWord(),
         id, request.getStart(), request.getEnd());
