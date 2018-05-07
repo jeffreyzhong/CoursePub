@@ -87,15 +87,16 @@
             <div class="displaySection" id="displayInstructorAnswer"></div><br>
             Answer:<br>
 			<textarea class="instructorResponse" id="instructorResponse"></textarea><br>
-			<input type="submit" id="submitResponseButton"><br>
-            Follow-Up Thread:<br>
-            <div class="displaySection" id="displayThread"></div>
-<!--            <div class="displaySection" id="displayResponse"></div><br>-->          
+			<input type="submit" id="submitResponseButton"><br>       
 		</div>
 	</div>
 	<div id="videoSection">
 		<iframe id="videoFrame" width="560" height="315" frameborder="0"
-        src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        src="" allow="autoplay; encrypted-media" allowfullscreen></iframe><br>
+        Follow-Up Thread:<br>
+        <div class="displaySection" id="displayThread"></div><br>
+        Reply Here:<br>
+        <textarea class="instructorResponse" id="threadResponse"></textarea>
 	</div>
 </div>
 <!-- Main Container Ends -->

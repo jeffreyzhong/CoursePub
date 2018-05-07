@@ -10,6 +10,7 @@ $(document).ready(function() {
 	let addData = [];
 	let instructorSubmit = document.getElementById("submitResponseButton");
 	let videoThumbnail = document.getElementById("videoThumbnail");
+	let displayThread = document.getElementById("displayThread");
 	let videoName = document.getElementById("videoName");
 	let timeline;
 	let linkId;
@@ -30,6 +31,27 @@ $(document).ready(function() {
 			//alert(data.items[0].snippet.title);
 		});
 	});
+	
+$("#threadResponse").keyup(function(event) {
+	console.log("yoyoyo");
+	if (event.which === 13) {
+		let response = $("#threadResponse").val();
+		//let update = items._data[questionId];
+		let payload = {questionId : parseInt(questionId), detail : response};
+		let toSend = JSON.stringify({type : MESSAGE_TYPE.NEW_RESPONSE, payload : payload});
+		console.log(toSend);
+		if (confirm("Are you sure you want to send this follow-up?")){
+			conn.send(toSend);
+		} else {
+			console.log("canceled");
+		}
+		document.getElementById("threadResponse").value = "";
+
+		
+		
+	}
+	
+});
 		let questionId;
 		let mouseoverId;
 	
@@ -66,6 +88,10 @@ $(document).ready(function() {
 					colonTime : colonTime,
 					start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
 					fullQuestion : newMessage.detail,
+					instructorAnswer : newMessage.instructorAnswer,
+					studentAnswer : newMessage.studentAnswer,
+					numVotes : newMessage.upvotes,
+					resolved : newMessage.resolved,
 					user : "Anon "+newMessage.user};
 				console.log("currQuestion: " + currQuestion);
 				addData.push(currQuestion);
@@ -74,13 +100,16 @@ $(document).ready(function() {
 				items = new vis.DataSet(addData);
 				
 				break;
-			case MESSAGE_TYPE.NEW_ANSWER:
-				//alert("success");
-
-				toUpdate.content = setContent(2,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
-				//toUpdate.responses = detail;
-				console.log("ITEMS AFTER: " + items);
-				timeline.setItems(items);
+			case MESSAGE_TYPE.NEW_RESPONSE:
+				console.log("new message: " + newMessage);
+				toUpdate.thread.push(newMessage);
+				if (displayThread.innerHTML === "No follow ups currently in this question thread!") {
+					displayThread.innerHTML = "Anon " + newMessage.userId + ": "+ newMessage.detail +"<br>";
+					//	"    "+newMessage.upvotes+"UP <br>"
+				} else {
+					displayThread.innerHTML += "Anon " + newMessage.userId + ": "+ newMessage.detail +"<br>";
+						//"    "+newMessage.upvotes+"UP <br>";
+				}
 				break;
 			case MESSAGE_TYPE.INSTRUCTOR_ANSWER:
 				console.log("ITEMS BEFORE: " + items);
@@ -140,6 +169,7 @@ $(document).ready(function() {
 			content : setContent(resolved,numUpVotes,user,colonTime),
 			resolved : resolved,
 			numVotes : numUpVotes,
+			thread : [],
 			summary : summary,
 			colonTime : colonTime,
 			start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
@@ -185,19 +215,24 @@ $(document).ready(function() {
 //			$.post("/instructorResponse", postParameters, responseJSON => {
 //				let responseObject = JSON.parse(responseJSON);
 //			});
-			console.log(questionId);
-			let payload = {questionId : parseInt(questionId), detail : answer};
-			let toSend = JSON.stringify({type : MESSAGE_TYPE.INSTRUCTOR_ANSWER, payload : payload});
-			console.log(toSend);
-			conn.send(toSend);
-			instructorResponse.value = "";
-			let toUpdate = items._data[questionId];
-			toUpdate.content = setContent(2,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
-			toUpdate.instructorAnswer = {detail: answer};
-			console.log(toUpdate.resonse);
-			//toUpdate.responses = detail;
-			console.log("ITEMS AFTER: " + items);
-			timeline.setItems(items);
+			if (confirm("Are you sure you want to post this response?")) {
+				console.log(questionId);
+				let payload = {questionId : parseInt(questionId), detail : answer};
+				let toSend = JSON.stringify({type : MESSAGE_TYPE.INSTRUCTOR_ANSWER, payload : payload});
+				console.log(toSend);
+				conn.send(toSend);
+				instructorResponse.value = "";
+				let toUpdate = items._data[questionId];
+				toUpdate.content = setContent(2,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
+				toUpdate.instructorAnswer = {detail: answer};
+				console.log(toUpdate.resonse);
+				//toUpdate.responses = detail;
+				console.log("ITEMS AFTER: " + items);
+				timeline.setItems(items);
+			} else {
+				console.log("canceled");
+				instructorResponse.value = "";
+			}
 			
 
 		}
@@ -285,7 +320,7 @@ $(document).ready(function() {
 			}
 			let options = {
 				width: '100%',
-				height: '320px',
+				height: '450px',
 				timeAxis: {scale: 'second', step: step}
 			};
 			console.log(parseInt(videoEndTime[0])*60*60*1000+parseInt(videoEndTime[1])*60*1000+parseInt(videoEndTime[2])*1000);
@@ -332,29 +367,44 @@ $(document).ready(function() {
 				let studentAnswer = document.getElementById("displayStudentAnswer");
 				let thread = document.getElementById("displayThread");
 				let info = items._data[questionId];
+				thread.innerHTML = "";
 				if (info) {
 					summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 					question.innerHTML = info.fullQuestion;
 					console.log(info);
 					let postP = {id:questionId};
 					let tmpStr = "";
+					console.log("question Id: " + questionId);
 					$.post("/response",postP,responseJSON => {
 					let responseObject = JSON.parse(responseJSON);
+						console.log("res object: " + responseObject);
 					console.log("length: " + responseObject.length);
 					if (responseObject.length > 0) {
-						for (let i = 0; i < responseObject.length; i++) {
-							console.log("RESPONSE OBJECT: " + responseObject[i]);
-							let currThread = responseObject[i];
-							tmpStr += currThread['detail']+"<br>";
-							//toUpdate.responses.push({detail:response['detail']});
-							//detail.push(response['detail']);
+						if (responseObject.length > info.thread.length) {
+							for (let i = 0; i < responseObject.length; i++) {
+								console.log("RESPONSE OBJECT: " + responseObject[i]['detail']);
+								let currThread = responseObject[i];
+								info.thread.push(currThread);
+
+								//tmpStr += currThread['detail']+"<br>";
+								//toUpdate.responses.push({detail:response['detail']});
+								//detail.push(response['detail']);
 
 
+							}
+							timeline.setItems(items);
+							
+						}
+						for (let i = 0; i < info.thread.length; i++) {
+
+							thread.innerHTML += "Anon " + info.thread[i].id + ": " + info.thread[i].detail+"<br>";
+								//+"   "+info.thread[i].upvotes+"UP <br>";
 						}
 					} else {
+						console.log("no follow ups currently");
 						thread.innerHTML = "No follow ups currently in this question thread!";
 					}
-					thread.innerHTML = tmpStr;
+					//thread.innerHTML = tmpStr;
 				});
 					if (info.instructorAnswer) {
 						
@@ -441,7 +491,7 @@ $(document).ready(function() {
 //		} else {
 //			color="red";
 //		}
-		let padding = 8 + numUpVotes*3;
+		let padding = 4 + numUpVotes*3;
 		if (color === "red" || color === "green") {
 			return '<div style="background-color:'+color+'; color:white; ' + 
 			'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +

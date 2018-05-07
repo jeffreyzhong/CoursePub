@@ -131,6 +131,29 @@ header {
 	font-weight: 100;
 }
 
+#threadResponse {
+	 border: 1px solid white; 
+/*    s-webkit-border-radius: 0px; */
+/*    -moz-border-radius: 10px; */
+/*    -webkit-transition-duration: 0.4s;*/
+    transition-duration: 0.4s;
+    border-radius: 10px; 
+    outline: 0px; 
+    height:auto; 
+    width: 40vw; 
+    padding-left:10px; 
+    padding-right:10px;
+    background-color: transparent;
+    color: white;
+    text-shadow: 1.5px 1.5px 1.5px black;
+    resize: none;
+    font-size: 25px;
+    font-family: "Open Sans";
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+}
+
 #thumbnailDiv {
     float: left;
     padding-left: 20px;
@@ -211,12 +234,14 @@ header {
     font-size: 13px;
     min-height:50px; 
     display: inline-block;
-    width: 50vw;
+    width: 40vw;
 }
 
 #videoSection {
 	float: left;
-	padding-left: 100px;
+	padding-left: 50px;
+    width: 45vw;
+    color: white;
 }
 
 nav {

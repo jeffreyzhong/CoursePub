@@ -337,7 +337,7 @@ function stateChangeFunc(event) {
 		clearInterval(refQuestionInt);
 	}else if(event.data === 1){
 		refQuestionInt = setInterval(refQuestion, 100);
-		if(duration === null){
+		if(!duration){
 			duration = player.getDuration();
 		}
 	}
@@ -757,6 +757,7 @@ function postClick(){
 	let summary = $("#summaryInput").val();
 	let time = $("#timeInput").val();
 	let detail = $("#detailInput").val();
+	console.log(time);
 	if(summary === ""){
 		alert("Please input a summary!");
 		return;
@@ -782,16 +783,24 @@ function postClick(){
 function isValidTime(time){
 	let timeArray = time.split(":");
 	if(timeArray.length !== 3){
+		console.log("1");
 		return false;
 	}
 	if(isNaN(timeArray[0])||isNaN(timeArray[1])||isNaN(timeArray[2])){
+				console.log("2");
+
 		return false;
 	}
 	if(parseInt(timeArray[1]) >= 60 || parseInt(timeArray[2]) >= 60){
+				console.log("3");
+
 		return false;
 	}
 	let sec = parseInt(timeArray[0])*3600 + parseInt(timeArray[1])*60 + parseInt(timeArray[2]);
-	if(sec > Math.floor(+duration)){
+	console.log(duration);
+	if(sec > Math.floor(parseInt(duration))){
+				console.log("4");
+
 		return false;
 	}
 	return true;
