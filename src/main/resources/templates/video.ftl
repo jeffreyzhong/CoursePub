@@ -31,7 +31,7 @@
 	</div>
 		
 	<div id = "summaryDiv">
-		<label for="summary" class="inputBoxLabel">Summary:</label>
+		<label for="summary" class="inputBoxLabel" id="summaryLabel">Summary:</label>
 		<input class = "inputBox" id = "summaryInput" placeholder="Summary">
 	</div>
 	<div id = "timeDiv">
