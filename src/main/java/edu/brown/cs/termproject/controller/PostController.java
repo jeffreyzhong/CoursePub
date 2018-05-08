@@ -105,14 +105,6 @@ public class PostController {
   public String question(TranscriptRequest request) {
     Integer id = request.getId();
     if (!TrieManager.hasTrie(id)) {
-      Video tempVideo = videoService.ofId(id);
-      Set<Sentence> sentences = tempVideo.getSentences();
-      Map<String, Double> tempMap = new HashMap<>();
-      for(Sentence s:sentences){
-        Long c = s.getVideoTime().getTimeInMillis();
-        tempMap.put(s.getWords(), (double)c/1000);
-      }
-      TrieManager.insertVideoTranscript(id,tempMap);
       load(id);
     }
     List<String> result = TrieManager.getWordTimeList(request.getWord(),
