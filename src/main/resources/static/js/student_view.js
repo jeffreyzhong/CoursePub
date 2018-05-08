@@ -193,6 +193,7 @@ $(document).ready(() => {
 				let index = questionsOrd.binarySearch(questionStub, compare);
 				// console.log("index" + index);
 				$("#questionBtn").click();
+				deleteThumbNails();
 				break;
 			case MESSAGE_TYPE.UPVOTE:
 				let questionId = data.payload.id;
@@ -207,7 +208,7 @@ $(document).ready(() => {
 						let index = questionsOrd.binarySearch(questionStub, compare);
 					//	console.log("INDEX: " + index);
 						$("#questionBtn").click();
-						
+						deleteThumbNails();
 //						console.log("id:" + questionId + " type " + type + " num: " + num + "new: " + questions.get(questionId).upvotes);
 					}
 				}
@@ -230,6 +231,18 @@ $(document).ready(() => {
 	document.getElementById('relBtn').onclick = relClick;
 	document.getElementById('allQuestionsBtn').onclick = allClick;
 	document.getElementById('submitBtn').onclick = postClick;
+	
+	document.getElementById('followUp').onclick = function(ev){
+		if(ev.ctrlKey) {
+            document.getElementById('studentAnswer').checked = false;
+        }
+	}
+		
+	document.getElementById('studentAnswer').onclick = function(ev){
+		if(ev.ctrlKey) {
+            document.getElementById('followUp').checked = false;
+        }
+	}
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -581,6 +594,7 @@ function allClick(){
 			li.innerHTML = li.innerHTML + text;
 			li.onclick = function(){
 				player.seekTo(parseFloat(curr.time));
+				deleteThumbNails();
 				$("#questionBtn").click();
 			};
 	}
@@ -632,6 +646,7 @@ function relQuestionClick(){
 			li.innerHTML = li.innerHTML + text;
 			li.onclick = function(){
 				player.seekTo(parseFloat(question.time));
+				deleteThumbNails();
 				$("#questionBtn").click();
 			};
 		}
@@ -941,11 +956,13 @@ function answerSubmit(){
 	
 	let answerType;
 	if(document.getElementById('followUp').checked){
+		console.log("follow up");
 		answerType = 0;
-		document.getElementById('studentAnswer').checked = false;
+//		$('#studentAnswer').prop('checked',false);
 	}else if(document.getElementById('studentAnswer').checked){
+		console.log("student answer");
 		answerType = 1;
-		document.getElementById('followUp').checked = true;
+//		$('#follwUp').prop('checked',false)
 	}
 	
 	if (confirm("Are you sure you want to post this message?")) {
