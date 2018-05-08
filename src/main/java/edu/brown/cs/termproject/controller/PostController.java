@@ -131,16 +131,28 @@ public class PostController {
   @PostMapping(path = "/autocorrect")
   @ResponseBody
   public String autocorrect(AutoCorrectRequest request) {
+    ImmutableList.Builder<String> ret = ImmutableList.builder();
+
+
+    if(request.getWord().equals("")){
+      return GSON.toJson(ret.build());
+    }
+
     Integer id = request.getId();
+
+    System.out.println();
+    System.out.println(request.getWord());
     if (!TrieManager.hasTrie(id)) {
       load(id);
     }
     Set<String> result = TrieManager.getAutocorrect(request.getWord(), 5,
         id);
-    ImmutableList.Builder<String> ret = ImmutableList.builder();
+
     for (String st : result) {
       ret.add(st);
     }
+
+    System.out.println(ret.build().toString());
 
     return GSON.toJson(ret.build());
   }

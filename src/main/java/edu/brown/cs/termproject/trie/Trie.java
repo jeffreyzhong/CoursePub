@@ -144,6 +144,9 @@ public class Trie {
 
 
     input = input.toLowerCase();
+    input = input.replaceAll("[^a-zA-Z ]", "")
+        .replaceAll("\\s+", "")
+        .trim();
 
     int i = 0;
     TrieNode currentNode = root;
