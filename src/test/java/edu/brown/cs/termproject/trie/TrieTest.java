@@ -1,62 +1,102 @@
 package edu.brown.cs.termproject.trie;
 
-
-import com.google.common.collect.ImmutableList;
-import edu.brown.cs.termproject.model.Course;
-import edu.brown.cs.termproject.model.Sentence;
-import edu.brown.cs.termproject.model.Video;
-import edu.brown.cs.termproject.service.VideoService;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static junit.framework.TestCase.assertTrue;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Transactional
 public class TrieTest {
 
-  @Autowired
-  private VideoService videoService;
-
   @Test
-  public void SimpleTest(){
-    Map<String, Double> testMao = new HashMap<>();
-    testMao.put("This is my first sentence", 0.1);
-    testMao.put("The second thing I say is this", 3.4);
-    testMao.put("Please try testing me", 5.3);
-    testMao.put("Thanks for testing me", 8.4);
-
-    TrieManager.insertVideoTranscript(1,testMao);
-    List<String> result = TrieManager.getWordTimeList("testing",
-        1, 0.5, 10.0);
-    assertTrue(result.size()==4);
+  public void basicConstruction() {
+    List<String> myString = new ArrayList();
+    myString.add("Hello");
+    Trie myTrie = new Trie();
+    myTrie.insertList(myString, 99.0);
+    List<String> testTrieNode = new ArrayList<>();
+    List<String> result = myTrie.traverse(testTrieNode, myTrie.getRoot());
+    assertTrue(result.get(0).equals("hello"));
   }
 
   @Test
-  public void DbTest(){
-    Integer id = 1;
-    if (!TrieManager.hasTrie(id)) {
-      Video tempVideo = videoService.ofId(id);
-      Set<Sentence> sentences = tempVideo.getSentences();
-      Map<String, Double> tempMap = new HashMap<>();
-      for(Sentence s:sentences){
-        Long c = s.getVideoTime().getTimeInMillis();
-        tempMap.put(s.getWords(), (double)c/1000);
-      }
-      TrieManager.insertVideoTranscript(1,tempMap);
-    }
-    List<String> result = TrieManager.getWordTimeList("matrix",
-        id, 1.1, 2000.0);
+  public void twoWordConstruction() {
+    List myString = new ArrayList();
+    myString.add("Hello");
+    myString.add("Expensive");
+    Trie myTrie = new Trie();
+    myTrie.insertList(myString, 10.0);
+    List<String> testTrieNode = new ArrayList<>();
+    List<String> result = myTrie.traverse(testTrieNode, myTrie.getRoot());
+    assertTrue(result.get(0).equals("expensive"));
+    assertTrue(result.get(1).equals("hello"));
+    assertTrue(result.size() == 2);
+  }
+
+  @Test
+  public void twoSameWordsTest() {
+    List myString = new ArrayList();
+    myString.add("Hello");
+    myString.add("hello");
+    Trie myTrie = new Trie();
+    myTrie.insertList(myString, 6.0);
+    List<String> testTrieNode = new ArrayList<>();
+    List<String> result = myTrie.traverse(testTrieNode, myTrie.getRoot());
+    assertTrue(result.get(0).equals("hello"));
+    assertTrue(result.size() == 1);
+
+  }
+
+  @Test
+  public void maxLED() {
+    List myString = new ArrayList();
+    myString.add("Expensive");
+    myString.add("Expense");
+    myString.add("Hello");
+    myString.add("xpens");
+    Trie myTrie = new Trie();
+    myTrie.insertList(myString, 3.0);
+    List<String> testTrieNode = new ArrayList<>();
+    List<String> result = myTrie.traverseMaxLED(testTrieNode, myTrie.getRoot(), 3, "expens");
+    assertTrue(result.get(0).equals("expense"));
+    assertTrue(result.get(1).equals("expensive"));
+    assertTrue(result.get(2).equals("xpens"));
+    assertTrue(result.size() == 3);
+  }
+
+
+  @Test
+  public void findByPrefix() {
+    List<String> myString = new ArrayList();
+    myString.add("Hello");
+    myString.add("Expensive");
+    myString.add("Expense");
+    myString.add("xpens");
+    myString.add("halla");
+    myString.add("huhaa");
+    Trie myTrie = new Trie();
+    myTrie.insertList(myString, 2.0);
+    List<String> result = myTrie.findByPrefix("exp");
+    assertTrue(result.get(0).equals("expense"));
+    assertTrue(result.get(1).equals("expensive"));
+    assertTrue(result.size() == 2);
+  }
+
+  @Test
+  public void topRec() {
+    List<String> myString = new ArrayList();
+    myString.add("Hello");
+    myString.add("Expensive");
+    myString.add("Expense");
+    myString.add("xpens");
+    myString.add("halla");
+    myString.add("huhaa");
+    Trie myTrie = new Trie();
+    myTrie.insertList(myString, 2.0);
+    Set<String> result = myTrie.getTopRec(4,"expens");
     System.out.println(result);
   }
 }

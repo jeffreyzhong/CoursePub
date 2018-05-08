@@ -17,7 +17,6 @@ import edu.brown.cs.termproject.pageRank.PageRankNode;
 import edu.brown.cs.termproject.service.CourseService;
 import edu.brown.cs.termproject.service.QuestionService;
 import edu.brown.cs.termproject.service.RegistrationService;
-import edu.brown.cs.termproject.service.UserService;
 import edu.brown.cs.termproject.service.VideoService;
 import edu.brown.cs.termproject.trie.TrieManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,8 +42,8 @@ public class PostController {
   private CourseService courseService;
   private RegistrationService registrationService;
   private Trie trie;
-  private Map<String,Course> nameToCourse;
-  private Map<String,Set<Video>> courseToVideos;
+  private Map<String, Course> nameToCourse;
+  private Map<String, Set<Video>> courseToVideos;
 
   @Autowired
   public PostController(VideoService videoService,
@@ -54,8 +52,8 @@ public class PostController {
     this.questionService = questionService;
     this.registrationService = registrationService;
     trie = new Trie();
-    nameToCourse = new HashMap<String,Course>();
-    courseToVideos = new HashMap<String,Set<Video>>();
+    nameToCourse = new HashMap<String, Course>();
+    courseToVideos = new HashMap<String, Set<Video>>();
     this.courseService = courseServ;
     List<Course> courses = courseService.getAllCourses();
     for (Course c : courses) {
@@ -63,23 +61,22 @@ public class PostController {
       nameToCourse.put(c.getName(), c);
       courseToVideos.put(Integer.toString(c.getId()), c.getVideos());
     }
- 
+
     trie.getControl().setPrefix(true);
     trie.getControl().setLevenshtein(4);
     trie.getControl().setWhiteSpace(true);
-    
+
   }
-  
+
   @PostMapping(path = "/setup")
   @ResponseBody
   public String setup(ResponseRequest request) {
-	  Video video = videoService.ofId(request.getId());
+    Video video = videoService.ofId(request.getId());
 
-	  if (video == null) {
-	      throw new ResourceNotFoundException();
-	    }
+    if (video == null) {
+      throw new ResourceNotFoundException();
+    }
 
-    
     ImmutableList.Builder<String> ret = ImmutableList.builder();
     ret.add(video.getUrl());
 
@@ -106,11 +103,6 @@ public class PostController {
   @PostMapping(path = "/searchTranscript")
   @ResponseBody
   public String question(TranscriptRequest request) {
-
-    System.out.println(request.getEnd());
-    System.out.println(request.getStart());
-    System.out.println(request.getId());
-    System.out.println(request.getWord());
     Integer id = request.getId();
     if (!TrieManager.hasTrie(id)) {
       Video tempVideo = videoService.ofId(id);
@@ -121,11 +113,40 @@ public class PostController {
         tempMap.put(s.getWords(), (double)c/1000);
       }
       TrieManager.insertVideoTranscript(id,tempMap);
+      load(id);
     }
     List<String> result = TrieManager.getWordTimeList(request.getWord(),
         id, request.getStart(), request.getEnd());
     ImmutableList.Builder<String> ret = ImmutableList.builder();
-    for (String st:result) {
+    for (String st : result) {
+      ret.add(st);
+    }
+
+    return GSON.toJson(ret.build());
+  }
+
+  private void load(Integer id) {
+    Video tempVideo = videoService.ofId(id);
+    Set<Sentence> sentences = tempVideo.getSentences();
+    Map<String, Double> tempMap = new HashMap<>();
+    for (Sentence s : sentences) {
+      Long c = s.getVideoTime().getTimeInMillis();
+      tempMap.put(s.getWords(), (double) c / 1000);
+    }
+    TrieManager.insertVideoTranscript(id, tempMap);
+  }
+
+  @PostMapping(path = "/autocorrect")
+  @ResponseBody
+  public String autocorrect(AutoCorrectRequest request) {
+    Integer id = request.getId();
+    if (!TrieManager.hasTrie(id)) {
+      load(id);
+    }
+    Set<String> result = TrieManager.getAutocorrect(request.getWord(), 5,
+        id);
+    ImmutableList.Builder<String> ret = ImmutableList.builder();
+    for (String st : result) {
       ret.add(st);
     }
 
@@ -141,9 +162,9 @@ public class PostController {
         Class.forName("edu.brown.cs.termproject.model.Course");
 
     PageRank pr = new PageRank(user);
-    List<PageRankNode> result = pr.getTopResult(c,3);
+    List<PageRankNode> result = pr.getTopResult(c, 3);
 
-    List<Course> courses = (List<Course>)(Object)result;
+    List<Course> courses = (List<Course>) (Object) result;
 
     System.out.println(result);
     ImmutableList.Builder<String> ret = ImmutableList.builder();
@@ -173,7 +194,7 @@ public class PostController {
 
     return GSON.toJson(builder.build());
   }
-  
+
   @PostMapping(path = "/homePageSearchSuggestions")
   @ResponseBody
   public String homePageSearchSuggestions(SearchSuggest searchSuggest) {
@@ -181,17 +202,17 @@ public class PostController {
     userInput.toLowerCase();
     List<String> res = trie.courseCorrect(userInput);
     List<String> newRes = new ArrayList<String>();
-    for (String word : res) { 
+    for (String word : res) {
       newRes.add(Trie.getCaseInsensitive().get(word));
     }
     return GSON.toJson(newRes);
   }
-  
+
   @PostMapping(path = "/homePageSearchSubmit")
   @ResponseBody
   public String homePageSearchSubmit(SearchSuggest searchSubmit, User user) {
     String userInput = searchSubmit.getInput();
-    Map<String,Object> map = new HashMap<String,Object>();
+    Map<String, Object> map = new HashMap<String, Object>();
     Course course = nameToCourse.get(userInput);
     boolean isInstructor = registrationService.isInstructor(user, course);
     Iterator<Video> videos = course.getVideos().iterator();
@@ -208,14 +229,14 @@ public class PostController {
     map.put("isInstructor", isInstructor);
     return GSON.toJson(map);
   }
-  
+
   @PostMapping(path = "/courseCatalog")
   @ResponseBody
   public String courseCatalog() {
     List<Course> courses = courseService.getAllCourses();
-    List<Map<String,String>> ret = new ArrayList<Map<String,String>>();
+    List<Map<String, String>> ret = new ArrayList<Map<String, String>>();
     for (Course c : courses) {
-      Map<String,String> map = new HashMap<String,String>();
+      Map<String, String> map = new HashMap<String, String>();
       map.put("courseName", c.getName());
       map.put("courseId", Integer.toString(c.getId()));
       map.put("courseThumbnail", c.getVideos().iterator().next().getUrl());
@@ -223,25 +244,25 @@ public class PostController {
     }
     return GSON.toJson(ret);
   }
-  
+
   @PostMapping(path = "/getCourseVideos")
   @ResponseBody
   public String getCourseVideos(CourseVideo courseVideo, User user) {
     String courseId = courseVideo.getCourseId();
-    
+
     boolean isInstructor = registrationService.isInstructor(user, courseService.ofId(Integer.valueOf(courseId)));
-    
+
     System.out.println("IDDDDD: " + courseId);
     Iterator<Video> videoSet = courseToVideos.get(courseId).iterator();
-    List<Map<String,Object>> ret = new ArrayList<Map<String,Object>>();
+    List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
     while (videoSet.hasNext()) {
       Video vid = videoSet.next();
-      Map<String,Object> map = new HashMap<String,Object>();
+      Map<String, Object> map = new HashMap<String, Object>();
       map.put("videoUrl", vid.getUrl());
       map.put("videoId", Integer.toString(vid.getId()));
       ret.add(map);
     }
-    Map<String,Object> isInstruct = new HashMap<String,Object>();
+    Map<String, Object> isInstruct = new HashMap<String, Object>();
     isInstruct.put("isInstructor", isInstructor);
     ret.add(isInstruct);
     return GSON.toJson(ret);
@@ -271,26 +292,26 @@ public class PostController {
   private static class EmptyRequest {
 
   }
-  
+
   private static class CourseVideo {
     private String courseId;
-    
+
     public String getCourseId() {
       return courseId;
     }
-    
+
     public void setCourseId(String id) {
       this.courseId = id;
     }
   }
-  
+
   private static class SearchSuggest {
     private String input;
-    
+
     public String getInput() {
       return input;
     }
-    
+
     public void setInput(String iP) {
       this.input = iP;
     }
@@ -325,7 +346,7 @@ public class PostController {
     }
   }
 
-  private static class TranscriptRequest extends ResponseRequest{
+  private static class TranscriptRequest extends ResponseRequest {
     private Double start;
     private Double end;
     private String word;
@@ -352,6 +373,18 @@ public class PostController {
 
     public void setWord(String word) {
       this.word = word;
+    }
+  }
+
+  private static class AutoCorrectRequest extends ResponseRequest {
+    private String word;
+
+    public void setWord(String word) {
+      this.word = word;
+    }
+
+    public String getWord() {
+      return word;
     }
   }
 }
