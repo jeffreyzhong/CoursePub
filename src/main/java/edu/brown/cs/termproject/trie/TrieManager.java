@@ -1,14 +1,11 @@
 package edu.brown.cs.termproject.trie;
 
-import edu.brown.cs.termproject.model.Video;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 public final class TrieManager {
 
@@ -40,6 +37,7 @@ public final class TrieManager {
 
     Trie tempTrie = trieMap.get(videoId);
     ArrayList<String> result = new ArrayList<>();
+    System.out.println(word);
     Set<Double> timeList = tempTrie.searchTimeList(word);
     for(Double d:timeList){
       if(d>=start & d<=end) {
@@ -48,6 +46,14 @@ public final class TrieManager {
       }
     }
 
+    return result;
+  }
+
+  public static Set<String> getAutocorrect(String word, Integer number,
+                                            Integer videoId){
+
+    Trie tempTrie = trieMap.get(videoId);
+    Set<String> result = tempTrie.getTopRec(number, word);
 
     return result;
   }

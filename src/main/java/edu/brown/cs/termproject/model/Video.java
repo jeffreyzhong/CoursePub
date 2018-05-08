@@ -1,6 +1,7 @@
 package edu.brown.cs.termproject.model;
 
 import edu.brown.cs.termproject.collect.PickySet;
+import edu.brown.cs.termproject.nlp.TfIdfCorpusSource;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,13 +14,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "video")
-public class Video {
+public class Video implements TfIdfCorpusSource<Sentence, Question> {
 
   @Id
   @Column(name = "id")
@@ -119,6 +121,16 @@ public class Video {
 
   public void removeRemark(Remark remark) {
     remarks.remove(remark);
+  }
+
+  @Override
+  public Collection<Sentence> dataCorpus() {
+    return this.sentences;
+  }
+
+  @Override
+  public Collection<Question> queryCorpus() {
+    return this.questions;
   }
 
   @Override

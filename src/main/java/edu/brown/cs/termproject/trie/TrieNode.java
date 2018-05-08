@@ -19,6 +19,7 @@ public class TrieNode {
   private TrieNode[] children = new TrieNode[maxChildren];
   private int level;
   private char letter;
+  private TrieNode parent;
   private Set<Double> timeList = new TreeSet<>();
 
   /**
@@ -26,10 +27,16 @@ public class TrieNode {
    * @param l level of trinode.
    */
 
-  public TrieNode(char content, int l) {
+  public TrieNode(char content, int l, TrieNode p) {
     level = l;
     letter = content;
+    parent = p;
   }
+
+  public char getLetter() {
+    return letter;
+  }
+
 
   /**
    * Return the children of trienode.
@@ -60,6 +67,10 @@ public class TrieNode {
 
   }
 
+  public TrieNode getParent() {
+    return parent;
+  }
+
   /**
    * Get the level of the trie.
    * @return level of the trie.
@@ -67,6 +78,17 @@ public class TrieNode {
 
   public int getLevel() {
     return level;
+  }
+
+  public String getValue(){
+    TrieNode temp = this;
+    StringBuilder sb = new StringBuilder("");
+    while(temp.parent!=null){
+      sb.insert(0, temp.getLetter());
+      temp = temp.getParent();
+    }
+
+    return sb.toString();
   }
 
 
