@@ -350,8 +350,11 @@ function stateChangeFunc(event) {
 //============================================================================
 //Below are code for searching transcripts within video
 function setupSearchBar(){
-	$("searchBar").keyup(event =>{
+	$("#searchBar").keyup(event =>{
 		let item = document.getElementById("item");
+		if(document.getElementById('searchResults') !== null){
+			item.removeChild(document.getElementById('searchResults'));
+		}
 		let ul = document.createElement("ul");
 		ul.setAttribute("id", "searchResults");
 		ul.style.position = "absolute";
@@ -365,7 +368,7 @@ function setupSearchBar(){
 		ul.style.background = "rgba(0,0,0,0.25)";
 		ul.style.width = "224px";
 		ul.style.height = "300px";
-		const postParameters = {word : $("searchBar").val()};
+		const postParameters = {id:videoId, word : $("#searchBar").val()};
 		$.post("/autocorrect", postParameters, responseJSON => {
 			// TODO: Parse the JSON response into a JavaScript object.
 			const responseObject = JSON.parse(responseJSON);  
@@ -389,7 +392,7 @@ function setupSearchBar(){
 				ul.appendChild(li);
 				li.innerHTML = li.innerHTML + text;
 				li.onclick = function(){
-					$("searchBar").val(text);
+					$("#searchBar").val(text);
 					item.removeChild(ul);
 				};
 			}
