@@ -193,6 +193,7 @@ $(document).ready(() => {
 				let index = questionsOrd.binarySearch(questionStub, compare);
 				// console.log("index" + index);
 				$("#questionBtn").click();
+				deleteThumbNails();
 				break;
 			case MESSAGE_TYPE.UPVOTE:
 				let questionId = data.payload.id;
@@ -207,7 +208,7 @@ $(document).ready(() => {
 						let index = questionsOrd.binarySearch(questionStub, compare);
 					//	console.log("INDEX: " + index);
 						$("#questionBtn").click();
-						
+						deleteThumbNails();
 //						console.log("id:" + questionId + " type " + type + " num: " + num + "new: " + questions.get(questionId).upvotes);
 					}
 				}
@@ -230,6 +231,18 @@ $(document).ready(() => {
 	document.getElementById('relBtn').onclick = relClick;
 	document.getElementById('allQuestionsBtn').onclick = allClick;
 	document.getElementById('submitBtn').onclick = postClick;
+	
+	
+	document.getElementById('followUp').onclick = function(){
+		console.log(" fuck ");
+		document.getElementById('studentAnswer').checked = false;
+        
+	};
+		
+	document.getElementById('studentAnswer').onclick = function(){
+		console.log(" you ");
+        document.getElementById('followUp').checked = false;
+	};
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -350,8 +363,11 @@ function stateChangeFunc(event) {
 //============================================================================
 //Below are code for searching transcripts within video
 function setupSearchBar(){
-	$("searchBar").keyup(event =>{
+	$("#searchBar").keyup(event =>{
 		let item = document.getElementById("item");
+		if(document.getElementById('searchResults') !== null){
+			item.removeChild(document.getElementById('searchResults'));
+		}
 		let ul = document.createElement("ul");
 		ul.setAttribute("id", "searchResults");
 		ul.style.position = "absolute";
@@ -365,7 +381,7 @@ function setupSearchBar(){
 		ul.style.background = "rgba(0,0,0,0.25)";
 		ul.style.width = "224px";
 		ul.style.height = "300px";
-		const postParameters = {id:videoId, word : $("searchBar").val()};
+		const postParameters = {id:videoId, word : $("#searchBar").val()};
 		$.post("/autocorrect", postParameters, responseJSON => {
 			// TODO: Parse the JSON response into a JavaScript object.
 			const responseObject = JSON.parse(responseJSON);  
@@ -389,7 +405,7 @@ function setupSearchBar(){
 				ul.appendChild(li);
 				li.innerHTML = li.innerHTML + text;
 				li.onclick = function(){
-					$("searchBar").val(text);
+					$("#searchBar").val(text);
 					item.removeChild(ul);
 				};
 			}
@@ -447,6 +463,8 @@ function setupSearchBar(){
 					item.appendChild(ul);	
 				}
 			});
+		}else{
+			alert("please check your input!");
 		}
 				
 	};
@@ -570,7 +588,18 @@ function allClick(){
 	for(let i = 0; i < questionsOrd.length; i++){
 			let curr = questionsOrd[i];
 			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
-			renderList(text,ul);
+			let li = document.createElement('li');
+			li.setAttribute('class', 'item');
+			li.style.color = 'white';
+			li.style.borderBottom = "2px solid #FFFFFF";
+			li.style.fontSize = "15px";
+			ul.appendChild(li);
+			li.innerHTML = li.innerHTML + text;
+			li.onclick = function(){
+				player.seekTo(parseFloat(curr.time));
+				deleteThumbNails();
+				$("#questionBtn").click();
+			};
 	}
 }
 
@@ -620,6 +649,8 @@ function relQuestionClick(){
 			li.innerHTML = li.innerHTML + text;
 			li.onclick = function(){
 				player.seekTo(parseFloat(question.time));
+				deleteThumbNails();
+				$("#questionBtn").click();
 			};
 		}
 	});		
@@ -928,11 +959,13 @@ function answerSubmit(){
 	
 	let answerType;
 	if(document.getElementById('followUp').checked){
-		answerType = 0;
-		document.getElementById('studentAnswer').checked = false;
-	}else if(document.getElementById('studentAnswer').checked){
+		console.log("follow up");
 		answerType = 1;
-		document.getElementById('followUp').checked = true;
+//		$('#studentAnswer').prop('checked',false);
+	}else if(document.getElementById('studentAnswer').checked){
+		console.log("student answer");
+		answerType = 0;
+//		$('#follwUp').prop('checked',false)
 	}
 	
 	if (confirm("Are you sure you want to post this message?")) {
