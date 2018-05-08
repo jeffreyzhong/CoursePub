@@ -508,6 +508,8 @@ function relClick(){
 				currQuestion.innerHTML = data.items[0].snippet.title;
 				currQuestion.parentNode.insertBefore(relVideoPic, currQuestion);
 			});	
+		}else{
+			
 		}
 		
 	}

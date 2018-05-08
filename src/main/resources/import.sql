@@ -65,6 +65,8 @@ INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time)
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (16, 'What does JJ mean here?', 'Couldn\'\ t quite hear what he was saying', '1969-12-31 19:02:09', 2, 2, '2018-02-15 12:00:00');
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (17, 'Why is polymorphism important', 'It seems kind of repetitive and over-engineering...', '1969-12-31 19:03:57', 2, 2, '2018-02-15 12:00:00');
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (18, 'Which IDE is JJ using?', 'It looks so cool!', '1969-12-31 19:05:23', 3, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (18, 'Is there any homework on sine and cosine this week?', 'We have not fully covered this topic', '1969-12-31 00:02:15', 4, 1, '2018-02-15 12:00:00');
+
 
 
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (1, 3, 2);
