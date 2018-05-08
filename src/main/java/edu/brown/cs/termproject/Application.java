@@ -56,13 +56,13 @@ public class Application extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.antMatcher("/**").authorizeRequests()
-        .antMatchers("/", "/login/google", "/homePageSearchSuggestions","/whoami").permitAll()
+        .antMatchers("/home", "/login/google", "/homePageSearchSuggestions","/whoami").permitAll()
         .anyRequest().authenticated()
         .and()
         .exceptionHandling()
         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login/google"))
         .and()
-        .logout().logoutSuccessUrl("/").permitAll()
+        .logout().logoutSuccessUrl("/home").permitAll()
         .and()
         .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
         .and()
