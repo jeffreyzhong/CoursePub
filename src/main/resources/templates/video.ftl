@@ -4,17 +4,22 @@
 <meta charset="utf-8">
 <script>var __adobewebfontsappname__="dreamweaver"</script>
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
-
-
-<title>student_view</title>
+<title>CoursePub Student</title>
 <link href="/static/css/student_view.css" rel="stylesheet" type="text/css">
 </head>
 <div id = "container">
 
-<body id = "mapBody">
-<div id = "header">
-	<h4 class = "logo"> coursepub</h4>
-</div>
+<body id = "mapBody">  
+  <header> <a href="">
+    <h4 class="logo">CoursePub</h4>
+  </a>
+    <nav>
+      <ul>
+        <li><a href="/home">Home</a></li>
+        <li><a href="/courses">Courses</a></li>
+      </ul>
+    </nav>
+  </header>   
 <div class = "videoName"><label id = "title">Essense of Linear Algebra</label>
 </div>	
 <div id = "searchArea">
@@ -106,12 +111,12 @@
 		<label id = "answerLabel">Answer:</label>
 		<input type = "radio"
                  value = "byXYZ"
-			   	 id = "followUp"
+			   	 id = "studentAnswer"
                  checked = "checked" />
 		<label for = "sizeSmall">Answer</label>
 		<input type = "radio"
 		     value = "byName"
-		     id = "studentAnswer"/>
+		     id = "followUp"/>
 		<label for = "sizeSmall">Follow-up Question</label><br>
 		<textarea class = "inputBox" id = "answerInput" placeholder="Answer a question!"></textarea>
 	</div>

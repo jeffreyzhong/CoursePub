@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -102,12 +103,12 @@ public class User implements PageRankNode<PageRankNode> {
     }
 
     double weight = 1 / (double) set.size();
-    ImmutableMap.Builder<PageRankNode, Double> builder = ImmutableMap.builder();
+    Map<PageRankNode, Double> ret = new HashMap<>();
     for (PageRankNode node : set) {
-      builder.put(node, weight);
+      ret.put(node, weight);
     }
 
-    return builder.build();
+    return ret;
   }
 
   @Override

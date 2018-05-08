@@ -218,20 +218,24 @@ public class PostController {
     String userInput = searchSubmit.getInput();
     Map<String, Object> map = new HashMap<String, Object>();
     Course course = nameToCourse.get(userInput);
-    boolean isInstructor = registrationService.isInstructor(user, course);
-    Iterator<Video> videos = course.getVideos().iterator();
-    map.put("courseName", userInput);
-    List<List<String>> videoList = new ArrayList<List<String>>();
-    while (videos.hasNext()) {
-      List<String> tmp = new ArrayList<String>();
-      Video video = videos.next();
-      tmp.add(video.getUrl());
-      tmp.add(Integer.toString(video.getId()));
-      videoList.add(tmp);
+    if (course != null) {
+      boolean isInstructor = registrationService.isInstructor(user, course);
+      Iterator<Video> videos = course.getVideos().iterator();
+      map.put("courseName", userInput);
+      List<List<String>> videoList = new ArrayList<List<String>>();
+      while (videos.hasNext()) {
+        List<String> tmp = new ArrayList<String>();
+        Video video = videos.next();
+        tmp.add(video.getUrl());
+        tmp.add(Integer.toString(video.getId()));
+        videoList.add(tmp);
+      }
+      map.put("courseInfo", videoList);
+      map.put("isInstructor", isInstructor);
+      return GSON.toJson(map);
+    } else {
+      return GSON.toJson("");
     }
-    map.put("courseInfo", videoList);
-    map.put("isInstructor", isInstructor);
-    return GSON.toJson(map);
   }
 
   @PostMapping(path = "/courseCatalog")
@@ -306,9 +310,9 @@ public class PostController {
 
     Map<Question, Double> map = questionService.similar(question);
 
-    double maxOpacity = 0;
-    for (Double opacity : map.values()) {
-      maxOpacity = Math.max(opacity, maxOpacity);
+    double maxVal = 0;
+    for (Double val : map.values()) {
+      maxVal = Math.max(val, maxVal);
     }
 
     List<QuestionOpacity> ret = new ArrayList<>();
@@ -318,7 +322,7 @@ public class PostController {
         continue;
       }
 
-      ret.add(new QuestionOpacity(entry.getKey(), entry.getValue(), maxOpacity));
+      ret.add(new QuestionOpacity(entry.getKey(), entry.getValue(), maxVal));
     }
 
     return GSON.toJson(ret);
@@ -386,14 +390,16 @@ public class PostController {
 
   private static class QuestionOpacity {
 
+    private static final double MIN_SIMILARITY = 0.1;
+
     private Integer id;
     private String similarity;
 
-    private QuestionOpacity(Question question, Double opacity,
-                            Double maxOpacity) {
+    private QuestionOpacity(Question question, Double val,
+                            Double maxVal) {
       this.id = question.getId();
       this.similarity =
-          String.format("%.2f", maxOpacity == 0 ? 0 :opacity / maxOpacity);
+          String.format("%.2f", maxVal == 0 ? MIN_SIMILARITY : (1 - MIN_SIMILARITY) * val / maxVal + MIN_SIMILARITY);
     }
   }
 

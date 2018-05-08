@@ -45,45 +45,61 @@ INSERT INTO video (id, url, course_id) VALUES (3, "https://www.youtube.com/embed
 INSERT INTO video (id, url, course_id) VALUES (4, "https://www.youtube.com/embed/oLhohwfwf_U?rel=0&enablejsapi=1", 4);
 INSERT INTO video (id, url, course_id) VALUES (5, "https://www.youtube.com/embed/h0e2HAPTGF4?rel=0&enablejsapi=1", 5);
 
-
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (1, 'Who is JJ', 'Heard people talking about him all the time', '1969-12-31 19:00:12', 1, 1, '2018-02-15 11:11:11');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (2, 'What is GitHub', '', '1969-12-31 19:00:18', 1, 1, '2018-02-15 11:13:28');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (1, 'We love JJ', 'Please don\'t leave!', '1969-12-31 19:00:12', 1, 1, '2018-02-15 11:11:11');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (2, 'Why is linear algebra important?', 'Where is it used?', '1969-12-31 19:00:18', 1, 1, '2018-02-15 11:13:28');
 INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (3, 'Is there homework this week', 'help!!!', '1969-12-31 19:01:34', 2, 1, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (4, 'We will miss JJ', 'not', '1969-12-31 19:00:34', 2, 1, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (5, 'No Homework This Week!', 'Have fun!', '1969-12-31 19:01:00', 3, 1, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (6, 'Gary[heart eye emoji]', '', '1969-12-31 19:00:42', 1, 1, '2018-02-15 11:13:28');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (7, 'Jeff is bae', 'help!!!', '1969-12-31 19:02:09', 2, 1, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (8, 'Jerry is God', 'not', '1969-12-31 19:00:57', 2, 1, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (9, 'Song[fire emoji]', 'Have fun!', '1969-12-31 19:02:00', 3, 1, '2018-02-15 12:00:00');
 
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (10, 'Difference between interface and inheritance?', 'I\'\ m really confused as to what the differences are. They seem to be very similar', '1969-12-31 19:00:12', 1, 2, '2018-02-15 11:11:11');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (11, 'Why is checkstyle worth so many points?', 'It seems like it takes up more of our grade than it needs to', '1969-12-31 19:00:18', 1, 2, '2018-02-15 11:13:28');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (12, 'type checking in Java', 'Why can\'\ t I cast an int to a list?', '1969-12-31 19:01:34', 2, 2, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (13, 'grade cutoffs for 32 this year?', 'I\'\ m pretty worried about my overall grade in this course. Can someone tell me what the grade cutoffs will roughly be based on years past?', '1969-12-31 19:00:34', 2, 2, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (14, 'Lab won\'\ t compile', 'Getting a weird bug in the lab...', '1969-12-31 19:01:00', 3, 2, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (15, 'Website is currently down', '^^^', '1969-12-31 19:00:42', 1, 2, '2018-04-15 11:13:28');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (16, 'What does JJ mean here?', 'Couldn\'\ t quite hear what he was saying', '1969-12-31 19:02:09', 2, 2, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (17, 'Why is polymorphism important', 'It seems kind of repetitive and over-engineering...', '1969-12-31 19:03:57', 2, 2, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (18, 'Which IDE is JJ using?', 'It looks so cool!', '1969-12-31 19:05:23', 3, 2, '2018-02-15 12:00:00');
-INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (18, 'Is there any homework on sine and cosine this week?', 'We have not fully covered this topic', '1969-12-31 00:02:15', 4, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (4, 'What\'s the point of linear algebra?', 'what is it?', '1969-12-31 19:00:24', 2, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (5, 'Why is it so elementary?', 'Pourquoi?', '1969-12-31 19:00:22', 3, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (6, 'what is matrix multiplication?', 'You can do that?', '1969-12-31 19:00:30', 1, 1, '2018-02-15 11:13:28');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (7, 'what is the geometric representation of a matrix?', 'Never heard of it, what is it?', '1969-12-31 19:01:03', 2, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (8, 'How is the geometric understanding applied in these fields? ', 'Through what applications?', '1969-12-31 19:01:37', 2, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (9, 'People use linear algebra in day to day work?', 'Not how I imageined my post-undergrad time', '1969-12-31 19:01:45', 3, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (10, 'Is that taylor’s series for sine??', 'Do not want to see that', '1969-12-31 19:02:18', 3, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (11, 'But how does sine works in physics tho??', 'Asking for a friend', '1969-12-31 19:02:37', 3, 1, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (12, 'So linear algebra can be understood like trig??', 'Woahh', '1969-12-31 19:03:14', 3, 1, '2018-02-15 12:00:00');
 
+
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (13, 'How many lines of code do programmers write in a day?', 'Is it almost the same as writing an essay?', '1969-12-31 19:00:12', 1, 2, '2018-02-15 11:11:11');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (14, 'What is the best sorting algorithm?', 'There are so many sorting algorithms and I am wondering which one is best.', '1969-12-31 19:01:18', 1, 2, '2018-02-15 11:13:28');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (15, 'I do not understand the idea of parent and children here.','Is this just an analogy for something else?', '1969-12-31 19:02:34', 2, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (16, 'How do you create a function?','I\'\ m confused as to the syntax around writing a function in Java.', '1969-12-31 19:03:34', 2, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (17, 'What is the best programming language to write in?', 'Java, Python, C, Ruby, C++, C#...?', '1969-12-31 19:04:00', 3, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (18, 'What is the best IDE to write in?', 'Eclipse, IntelliJ, what else?', '1969-12-31 19:05:42', 1, 2, '2018-04-15 11:13:28');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (19, 'How much should I be commenting in my code?', 'If I am the only one that is going to read it, is it still that important?', '1969-12-31 19:06:09', 2, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (20, 'Are QA\'\ s the same as software engineers?', 'They seem to be doing similar things...', '1969-12-31 19:07:57', 2, 2, '2018-02-15 12:00:00');
+INSERT INTO question (id, title, body, video_time, user_id, video_id, post_time) VALUES (21, 'What is the best resource to start learning how to code?', 'I heard CoursePub is pretty good!!', '1969-12-31 19:08:23', 3, 2, '2018-02-15 12:00:00');
 
 
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (1, 3, 2);
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (2, 3, 3);
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (3, 3, 4);
-
-INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (1, 'You are smart jerry', 2, 2, '2018-04-12 05:58:19');
-INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (1, 'You are officially dumb jerry', 5, 2, '2018-04-13 04:12:57');
-INSERT INTO student_answer (id, body, user_id, question_id, post_time) VALUES (1, 'hahaha', 7, 1, '2018-05-01 07:17:32');
-
-INSERT INTO response (body, user_id, question_id, post_time) VALUES ('You are very intelligent jerry', 2, 2, '2018-04-12 05:58:19');
-INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Jeff', 2, 2, '2018-04-12 05:58:30');
-INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Gary Zhou', 2, 2, '2018-04-12 05:59:19');
-INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Song Yang', 2, 2, '2018-04-12 05:59:30');
+INSERT INTO question_upvote (id, post_id, user_id) VALUES (4, 6, 1);
 
 
+INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (1, 'No Homework This Week!', 3, 3, '2018-04-12 05:58:19');
+INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (1, 'Linear Algebra is used throughout many STEM disciplines', 5, 2, '2018-04-13 04:12:57');
+INSERT INTO student_answer (id, body, user_id, question_id, post_time) VALUES (1, 'Yes we do!!', 7, 1, '2018-05-01 07:17:32');
+
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('It’s actually used in many subjects', 2, 2, '2018-04-12 05:58:19');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('It is a prereq just take it man', 2, 2, '2018-04-12 05:58:30');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('It is one of the fundamental studies in mathematics', 2, 2, '2018-04-12 05:59:19');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Yes you can! And you will learn it in this class!', 2, 6, '2018-04-12 05:59:30');
+
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Maybe it is useful in computer vision', 3, 2, '2018-05-01 02:23:14');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('It is the pillar of many stem fields', 3, 4, '2018-05-01 02:29:26');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Somebody asked a similar question', 3, 4, '2018-05-01 02:29:26');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Stay tuned, this will be discussed in the next video', 3, 6, '2018-05-05 13:13:13');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Yeah', 3, 12, '2018-05-06 14:14:13');
+
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Similar questions have been asked, check them out!', 4, 5, '2018-05-01 02:29:26');
+
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('A matrix is actually a linear transformation like what you learned in high school functions class!', 4, 7, '2018-05-01 02:29:26');
 
 INSERT INTO response (body, user_id, question_id, post_time) VALUES ('But it\'\ s just worth soooo much more than I think it should.' , 2, 11, '2018-04-12 05:58:19');
-INSERT INTO instructor_answer (body, user_id, question_id, post_time) VALUES ('Because checkstyle makes sure that you are writing code that is easy to read!', 5, 11, '2018-04-13 04:12:57');
-INSERT INTO student_answer (body, user_id, question_id, post_time) VALUES ('Honestly I relate so much', 7, 11, '2018-05-01 07:17:32');
+
+
+INSERT INTO instructor_answer (body, user_id, question_id, post_time) VALUES ('Matrix multiplication is when you multiply two matrices together by taking one value in the first matrix and multiplying it by another value in the second matrix and creating a new value in the resulting matrix!', 5, 6, '2018-04-13 04:12:57');
+INSERT INTO instructor_answer (body, user_id, question_id, post_time) VALUES ('The geometric representation of a matrix is a collection of vectors in m dimensional space where m is the number of rows there are in the matrix', 5, 7, '2018-04-13 04:12:57');
+INSERT INTO instructor_answer (body, user_id, question_id, post_time) VALUES ('Linear Algebra is a super important concept and it is used throughout physics, graphics, machine learning, etc!', 5, 4, '2018-04-13 04:12:57');
+INSERT INTO instructor_answer (body, user_id, question_id, post_time) VALUES ('It depends on what job/industry you are referring to. If you work somewhere in the STEM word, chances are linear algebra will be a core concept of your line of work.', 5, 9, '2018-04-13 04:12:57');
