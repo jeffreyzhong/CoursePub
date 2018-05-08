@@ -286,11 +286,42 @@ public class PostController {
     virtualQuestion.setVideo(video);
 
     ImmutableList.Builder<QuestionDto> ret = ImmutableList.builder();
-    for (Question question : questionService.similar(virtualQuestion)) {
-      ret.add(new QuestionDto(question));
+    for (Map.Entry<Question, Double> entry : questionService.similar(virtualQuestion).entrySet()) {
+      if (entry.getValue() > 0.5) {
+        ret.add(new QuestionDto(entry.getKey()));
+      }
     }
 
     return GSON.toJson(ret.build());
+  }
+
+  @PostMapping(path = "/relatedInstructor")
+  @ResponseBody
+  public String relatedInstrucotr(RelatedInstructorRequest request) {
+    Question question = questionService.ofId(request.getId());
+
+    if (question == null) {
+      throw new ResourceNotFoundException();
+    }
+
+    Map<Question, Double> map = questionService.similar(question);
+
+    double maxOpacity = 0;
+    for (Double opacity : map.values()) {
+      maxOpacity = Math.max(opacity, maxOpacity);
+    }
+
+    List<QuestionOpacity> ret = new ArrayList<>();
+    for (Map.Entry<Question, Double> entry : map.entrySet()) {
+      if (entry.getKey().equals(question)) {
+        /* excludes question itself, otherwise frontend does weird stuff */
+        continue;
+      }
+
+      ret.add(new QuestionOpacity(entry.getKey(), entry.getValue(), maxOpacity));
+    }
+
+    return GSON.toJson(ret);
   }
 
   private static class EmptyRequest {
@@ -337,6 +368,9 @@ public class PostController {
   private static class QuestionRequest extends ResponseRequest {
   }
 
+  private static class RelatedInstructorRequest extends ResponseRequest {
+  }
+
   private static class RelatedStudentRequest extends ResponseRequest {
 
     private String input;
@@ -347,6 +381,19 @@ public class PostController {
 
     public void setInput(String input) {
       this.input = input;
+    }
+  }
+
+  private static class QuestionOpacity {
+
+    private Integer id;
+    private String similarity;
+
+    private QuestionOpacity(Question question, Double opacity,
+                            Double maxOpacity) {
+      this.id = question.getId();
+      this.similarity =
+          String.format("%.2f", maxOpacity == 0 ? 0 :opacity / maxOpacity);
     }
   }
 

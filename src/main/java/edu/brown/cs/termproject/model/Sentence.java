@@ -1,6 +1,7 @@
 package edu.brown.cs.termproject.model;
 
 import edu.brown.cs.termproject.nlp.TfIdf;
+import edu.brown.cs.termproject.nlp.TfIdfCorpusSource;
 import edu.brown.cs.termproject.nlp.TfIdfDocument;
 
 import javax.persistence.Column;
@@ -63,6 +64,19 @@ public class Sentence implements TfIdfDocument {
 
   public void setVideoTime(Calendar videoTime) {
     this.videoTime = videoTime;
+  }
+
+  public Video getVideo() {
+    return video;
+  }
+
+  public void setVideo(Video video) {
+    this.video = video;
+  }
+
+  @Override
+  public TfIdfCorpusSource source() {
+    return video;
   }
 
   @Override
