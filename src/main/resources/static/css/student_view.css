@@ -82,14 +82,12 @@ label{
 
 input{
 	font-family:old-standard;
-	background-color:black;
-	opacity: 0.25;
+	background:rgba(0,0,0,0.25);
 }
 
 textarea{
 	font-family:old-standard;
-	background-color:black;
-	opacity: 0.25;
+	background:rgba(0,0,0,0.25);
 }
 
 #title{
@@ -192,11 +190,10 @@ textarea{
 }
 
 #detailInput{
-	width: 818px;
+	width: 685px;
 	height: 140px;
 	font-size:18px;
 	border: 2px solid #000000;
-	font-family: Arial, Helvetica, sans-serif;
 	letter-spacing:0.5px;
 }
 
@@ -219,8 +216,8 @@ textarea{
 
 #submitBtn{
 	margin-left:890px;
-	margin-top: 185px;
-	color:#2D9AB7;
+	margin-top: 135px;
+	color:#000000;
 	background-color: #FFFFFF;
 	opacity: 0.5;
 	border:1px;
@@ -231,10 +228,24 @@ textarea{
 	font-size:18px;
 }
 
+#relQuestion{
+	margin-left:860px;
+	margin-top:10px;
+	color:#000000;
+	background-color: #FFFFFF;
+	opacity: 0.5;
+	border:1px;
+	border-radius:30px;
+	padding: 10px 5px;
+	display: inline-block;
+	font-weight: bold;
+	font-size:16px;
+}
+
 #searchBtn{
 	margin-left:5px;
-	color:#2D9AB7;
 	background-color: #FFFFFF;
+	color:#000000;
 	border:1px;
 	border-radius:30px;
 	padding: 2px 15px;
@@ -338,7 +349,7 @@ textarea{
 	text-align: right;
 	padding-right: 30px;
 	font-size: 16px;
-	margin-left: 80%;
+	margin-left: 77%;
 }
 
 .questionIdLabel{
@@ -370,21 +381,21 @@ textarea{
     border: 2px solid #000000;
 	color: #FFFFFF;
 	font-size: 20px;
-	font-family: Arial, Helvetica, sans-serif;
 	letter-spacing:0.5px;
 	text-align: justify;
+	opacity: 0.25;
 }
 
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: #FFFFFF;
+    color:#CEC3C3;
     opacity: 1; /* Firefox */
 }
 
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: #FFFFFF;
+    color:#CEC3C3;
 }
 
 ::-ms-input-placeholder { /* Microsoft Edge */
-    color: #FFFFFF;
+    color:#CEC3C3;
 }
