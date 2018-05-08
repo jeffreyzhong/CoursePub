@@ -52,7 +52,7 @@
 <body>
 <!-- Main Container -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<div class="container"> 
+<div class="container" id="container"> 
   <!-- Navigation -->
   <header> <a href="">
     <h4 class="logo">CoursePub</h4>

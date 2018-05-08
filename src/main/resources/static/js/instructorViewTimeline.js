@@ -13,6 +13,7 @@ $(document).ready(function() {
 	let timeline;
 	let linkId;
 	let questionToSimilarity = {};
+	let ctrlCount = 0;
 	$.post("/setup",{id:videoId},responseJSON => {
 		let responseObject = JSON.parse(responseJSON);
 		document.getElementById("videoFrame").setAttribute("src",responseObject[0]);
@@ -311,8 +312,9 @@ $("#threadResponse").keyup(function(event) {
 				}};
 			timeline = new vis.Timeline(container, items, options);
 			timeline.fit(options);
-			timeline.on('select', function (properties) {
-				questionId = properties.items[0];
+			timeline.on('click', function (properties) {
+				console.log(properties);
+				questionId = properties.item;
 				let summary = document.getElementById("displaySummary");
 				let question = document.getElementById("displayQuestion");
 				let instructorAnswer = document.getElementById("displayInstructorAnswer");
@@ -320,7 +322,7 @@ $("#threadResponse").keyup(function(event) {
 				let thread = document.getElementById("displayThread");
 				let info = items._data[questionId];
 				thread.innerHTML = "";
-				if (info) {
+				if (questionId) {
 					summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 					question.innerHTML = info.fullQuestion;
 					let postP = {id:questionId};
@@ -333,7 +335,7 @@ $("#threadResponse").keyup(function(event) {
 								let currThread = responseObject[i];
 								info.thread.push(currThread);
 							}
-							timeline.setItems(items);
+						//	timeline.setItems(items);
 							
 						}
 						for (let i = 0; i < info.thread.length; i++) {
@@ -357,45 +359,58 @@ $("#threadResponse").keyup(function(event) {
 					} else {
 						studentAnswer.innerHTML = "No student answer yet! :(";
 					}
-					if (!questionToSimilarity[questionId]) {
-						$.post("/relatedInstructor",{id:questionId},responseJSON => {
-							let responseObject = JSON.parse(responseObject);
-							for (let i = 0; i < responseObject.length; i++) {
-								let currQuest = responseObject[i];
-								let currQuestId = currQuest['id'];
-								let currQuestSimilarity = currQuest['similarity'];
-								let dataSetQuest = items._data[currQuestId];
-								dataSetQuest.content = setContent(dataSetQuest.resolved,dataSetQuest.numVotes,dataSetQuest.user,dataSetQuest.colonTime,currQuestSimilarity);
-
-								questionToSimilarity[questionId].push({id:currQuestId,similarity:currQuestSimilarity});
-
-							}
-							timeline.setItems(items);
-						});
-					} else {
-						for (let i = 0; i < questionToSimilarity[questionId].length; i++) {
-							let currQuest = questionToSimilarity[questionId][i];
+					
+					
+			if (!questionToSimilarity[questionId]) {
+				$.post("/relatedInstructor",{id:questionId},responseJSON => {
+						let responseObject = JSON.parse(responseJSON);
+						for (let i = 0; i < responseObject.length; i++) {
+							let currQuest = responseObject[i];
 							let currQuestId = currQuest['id'];
 							let currQuestSimilarity = currQuest['similarity'];
 							let dataSetQuest = items._data[currQuestId];
 							dataSetQuest.content = setContent(dataSetQuest.resolved,dataSetQuest.numVotes,dataSetQuest.user,dataSetQuest.colonTime,currQuestSimilarity);
+							if (!questionToSimilarity[questionId]) {
+								questionToSimilarity[questionId] = [{id:currQuestId,similarity:currQuestSimilarity}];
+							} else {
+								questionToSimilarity[questionId].push({id:currQuestId,similarity:currQuestSimilarity});
+							}
+
+
 						}
+						console.log("1");
 						timeline.setItems(items);
+						timeline.setSelection(properties.item);
+					});
+				} else {
+					for (let i = 0; i < questionToSimilarity[questionId].length; i++) {
+						let currQuest = questionToSimilarity[questionId][i];
+						let currQuestId = currQuest['id'];
+						let currQuestSimilarity = currQuest['similarity'];
+						let dataSetQuest = items._data[currQuestId];
+						dataSetQuest.content = setContent(dataSetQuest.resolved,dataSetQuest.numVotes,dataSetQuest.user,dataSetQuest.colonTime,currQuestSimilarity);
 					}
+					console.log("2");
+					timeline.setItems(items);
+					timeline.setSelection(properties.item);
+				}
 				} else {
 					summary.innerHTML = " ";
 					question.innerHTML = " ";
 					instructorAnswer.innerHTML = " ";
 					studentAnswer.innerHTML = " ";
 					thread.innerHTML = " ";
-					for (let i = 0; i < addData.length; i++) {
+							for (let i = 0; i < addData.length; i++) {
 						let currQuest = addData[i];
 						let currQuestId = currQuest['id'];
 						let dataSetQuest = items._data[currQuestId];
 						dataSetQuest.content = setContent(dataSetQuest.resolved,dataSetQuest.numVotes,dataSetQuest.user,dataSetQuest.colonTime,'1.0');
 					}
 					timeline.setItems(items);
+					//timeline.setItems(items);
 				}
+				
+				//timeline.setItems(items);
 			});
 			
 			timeline.on('mouseOver', function (properties) {
@@ -422,6 +437,7 @@ $("#threadResponse").keyup(function(event) {
 			});
 		};	
 	}
+	
 	
 	function setContent(answered,numUpVotes,user,colonTime,opacity) {
 		let color = "";
