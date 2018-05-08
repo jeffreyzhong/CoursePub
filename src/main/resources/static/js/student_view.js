@@ -380,7 +380,7 @@ function setupSearchBar(){
 				li.style.margin = "0px";
 				li.style.padding = "0px";
 				li.style.color = "white";
-				li.style.border = "2px solid #FFFFFF";
+				li.style.border = "2px solid #000000";
 				if(i === 0){
 					li.style.borderTop = "none";
 				}
@@ -431,7 +431,7 @@ function setupSearchBar(){
 						li.style.margin = "0px";
 						li.style.padding = "0px";
 						li.style.color = "white";
-						li.style.border = "2px solid #FFFFFF";
+						li.style.border = "2px solid #000000";
 						if(i === 0){
 							li.style.borderTop = "none";
 						}
@@ -489,22 +489,25 @@ function relClick(){
 		let vid = relVideo[i];
 		let relVideoPic = document.createElement("IMG");
 		let videoId = "relVideo" + i;
-		relVideoPic.setAttribute('id',videoId);
-		relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+vid.linkId +'/0.jpg');
-		relVideoPic.setAttribute('href', "http://localhost:4567/video/" + vid.id);
-		relVideoPic.style.width = "65px";
-		relVideoPic.style.height = "55px";
-		relVideoPic.onclick = function() { 
-			window.open("http://localhost:4567/video/" + vid.id, '_blank');
-		};
-		// console.log("linkId: " + vid.linkId + " title " + vid.title);
-		$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + vid.linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
-			let temp = "question" + i;
-			let currQuestion = document.getElementById(temp);
-			// relVideo.innerHTML = data.items[0].snippet.title;
-			currQuestion.innerHTML = data.items[0].snippet.title;
-			currQuestion.parentNode.insertBefore(relVideoPic, currQuestion);
-		});	
+		if(document.getElementById(videoId) === null){
+			relVideoPic.setAttribute('id',videoId);
+			relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+vid.linkId +'/0.jpg');
+			relVideoPic.setAttribute('href', "http://localhost:4567/video/" + vid.id);
+			relVideoPic.style.width = "65px";
+			relVideoPic.style.height = "55px";
+			relVideoPic.onclick = function() { 
+				window.open("http://localhost:4567/video/" + vid.id, '_blank');
+			};
+			// console.log("linkId: " + vid.linkId + " title " + vid.title);
+			$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + vid.linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
+				let temp = "question" + i;
+				let currQuestion = document.getElementById(temp);
+				// relVideo.innerHTML = data.items[0].snippet.title;
+				currQuestion.innerHTML = data.items[0].snippet.title;
+				currQuestion.parentNode.insertBefore(relVideoPic, currQuestion);
+			});	
+		}
+		
 	}
 	for(let j = 4; j >= relVideo.length; j--){
 		let questionId = "#question" + j;
