@@ -230,9 +230,6 @@ $(document).ready(() => {
 	document.getElementById('relBtn').onclick = relClick;
 	document.getElementById('allQuestionsBtn').onclick = allClick;
 	document.getElementById('submitBtn').onclick = postClick;
-	
-	document.getElementById('answerInput').style.background = 'none';
-	document.getElementById('detailInput').style.background = 'none';
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -240,14 +237,13 @@ $(document).ready(() => {
 		if (frameID) { //If the frame exists
 			player = new YT.Player(frameID, {
 				events: {
-					"onReady": loadQuestions,
 					"onStateChange": stateChangeFunc
 				}
 			});	
 		}	
 	});
 	
-	
+	loadQuestions();
 	setupSearchBar();
 	$("#summaryInput").focus(function() {
 		if(player.getDuration() >= 3600){
@@ -294,8 +290,7 @@ function init(){
 	});	
 }
 
-function loadQuestions(event){
-	event.target.pauseVideo();
+function loadQuestions(){
 	setupRelatedVideo();
 	const postParameters = {id: videoId};
 	$.post("/question", postParameters, responseJSON => {
@@ -357,58 +352,57 @@ function stateChangeFunc(event) {
 function setupSearchBar(){
 	document.getElementById('searchBtn').onclick = function() {
 	    // 13 is ENTER
-		if(confirm("Are you sure you want to search the video for this key word?")){
-			if ($("#searchBar").val() !== "" && document.getElementById("searchResults") === null && isValidTime($("#searchTimeInput1").val()) && isValidTime($("#searchTimeInput2").val())){
-				let item = document.getElementById("item");
-				let ul = document.createElement("ul");
-				ul.setAttribute("id", "searchResults");
-				ul.style.position = "absolute";
-				ul.style.overflow = "hidden";
-				ul.style.overflowY = "auto";
-				ul.style.zIndex = "999";
-				ul.style.listStyle = "none";
-				ul.style.margin = "0px";
-				ul.style.marginLeft = "112.58px";
-				ul.style.padding = "0px";
-				ul.style.backgroundColor = "#2D9AB7";
-				ul.style.width = "224px";
-				ul.style.height = "300px";
+		if ($("#searchBar").val() !== "" && document.getElementById("searchResults") === null && isValidTime($("#searchTimeInput1").val()) && isValidTime($("#searchTimeInput2").val())){
+			let item = document.getElementById("item");
+			let ul = document.createElement("ul");
+			ul.setAttribute("id", "searchResults");
+			ul.style.position = "absolute";
+			ul.style.overflow = "hidden";
+			ul.style.overflowY = "auto";
+			ul.style.zIndex = "999";
+			ul.style.listStyle = "none";
+			ul.style.margin = "0px";
+			ul.style.marginLeft = "112.58px";
+			ul.style.padding = "0px";
+			ul.style.backgroundColor = "#2D9AB7";
+			ul.style.width = "224px";
+			ul.style.height = "300px";
 
-				const postParameters = {id: videoId, word: $("#searchBar").val(), start: convertTime($("#searchTimeInput1").val()), end: convertTime($("#searchTimeInput2").val())};
+			const postParameters = {id: videoId, word: $("#searchBar").val(), start: convertTime($("#searchTimeInput1").val()), end: convertTime($("#searchTimeInput2").val())};
 
-				$.post("/searchTranscript", postParameters, responseJSON => {
-					const responseObject = JSON.parse(responseJSON);
-					if(responseObject.length === 0){
-						alert("Keyword does not appear in this video");
-					}else{
-						for(let i = 0; i < responseObject.length; i+=2){
-							let text = convertSeconds(responseObject[i]) + " \"" + responseObject[i+1] + "\"";
-							let li = document.createElement('li');
-							li.setAttribute('class', 'searchItem');
-							li.style.margin = "0px";
-							li.style.padding = "0px";
-							li.style.color = "white";
-							li.style.border = "2px solid #FFFFFF";
-							if(i === 0){
-								li.style.borderTop = "none";
-							}
-							if(i+1 !== responseObject.length - 1){
-								li.style.borderBottom = "none";
-							}
-							li.style.fontSize = "15px";
-							li.style.display = "block";
-							ul.appendChild(li);
-							li.innerHTML = li.innerHTML + text;
-							li.onclick = function(){
-								player.seekTo(parseFloat(responseObject[i]));
-								item.removeChild(ul);
-							};
+			$.post("/searchTranscript", postParameters, responseJSON => {
+				const responseObject = JSON.parse(responseJSON);
+				if(responseObject.length === 0){
+					alert("Keyword does not appear in this video");
+				}else{
+					for(let i = 0; i < responseObject.length; i+=2){
+						let text = convertSeconds(responseObject[i]) + " \"" + responseObject[i+1] + "\"";
+						let li = document.createElement('li');
+						li.setAttribute('class', 'searchItem');
+						li.style.margin = "0px";
+						li.style.padding = "0px";
+						li.style.color = "white";
+						li.style.border = "2px solid #FFFFFF";
+						if(i === 0){
+							li.style.borderTop = "none";
 						}
-						item.appendChild(ul);	
+						if(i+1 !== responseObject.length - 1){
+							li.style.borderBottom = "none";
+						}
+						li.style.fontSize = "15px";
+						li.style.display = "block";
+						ul.appendChild(li);
+						li.innerHTML = li.innerHTML + text;
+						li.onclick = function(){
+							player.seekTo(parseFloat(responseObject[i]));
+							item.removeChild(ul);
+						};
 					}
-				});
-			}
-		}		
+					item.appendChild(ul);	
+				}
+			});
+		}
+				
 	};
 }
 
@@ -438,41 +432,40 @@ function relClick(){
 	if(relVideo.length === 0){
 		hideContent();
 		$("#question0").html("No suggested video at this time.");
-	}else if(document.getElementById('relVideo0') === null){
-		for(let i = 0; i < relVideo.length; i++){
-			divs[i].style.display = "block";
-			divs[i].onclick = null;	
-			let vid = relVideo[i];
-			let relVideoPic = document.createElement("IMG");
-			let videoId = "relVideo" + i;
-			relVideoPic.setAttribute('id',videoId);
-			relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+vid.linkId +'/0.jpg');
-			relVideoPic.setAttribute('href', "http://localhost:4567/video/" + vid.id);
-			relVideoPic.style.width = "65px";
-			relVideoPic.style.height = "55px";
-			relVideoPic.onclick = function() { 
-				window.open("http://localhost:4567/video/" + vid.id, '_blank');
-			};
-			// console.log("linkId: " + vid.linkId + " title " + vid.title);
-			$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + vid.linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
-				let temp = "question" + i;
-				let currQuestion = document.getElementById(temp);
-				// relVideo.innerHTML = data.items[0].snippet.title;
-				currQuestion.innerHTML = data.items[0].snippet.title;
-				currQuestion.parentNode.insertBefore(relVideoPic, currQuestion);
-			});	
-		}
-		for(let j = 4; j >= relVideo.length; j--){
-			let questionId = "#question" + j;
-			let timeId = "#time" + j;
-			let userId = "#user" + j;
-			let idLabel = "#questionId" + j;
-			$(questionId).html("");
-			$(timeId).html("");
-			$(userId).html("");
-			$(idLabel).html("");
-		}
+	}
 	
+	for(let i = 0; i < relVideo.length; i++){
+		divs[i].style.display = "block";
+		divs[i].onclick = null;	
+		let vid = relVideo[i];
+		let relVideoPic = document.createElement("IMG");
+		let videoId = "relVideo" + i;
+		relVideoPic.setAttribute('id',videoId);
+		relVideoPic.setAttribute('src', 'https://img.youtube.com/vi/'+vid.linkId +'/0.jpg');
+		relVideoPic.setAttribute('href', "http://localhost:4567/video/" + vid.id);
+		relVideoPic.style.width = "65px";
+		relVideoPic.style.height = "55px";
+		relVideoPic.onclick = function() { 
+			window.open("http://localhost:4567/video/" + vid.id, '_blank');
+		};
+		// console.log("linkId: " + vid.linkId + " title " + vid.title);
+		$.get("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + vid.linkId + "&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0", function(data) {
+			let temp = "question" + i;
+			let currQuestion = document.getElementById(temp);
+			// relVideo.innerHTML = data.items[0].snippet.title;
+			currQuestion.innerHTML = data.items[0].snippet.title;
+			currQuestion.parentNode.insertBefore(relVideoPic, currQuestion);
+		});	
+	}
+	for(let j = 4; j >= relVideo.length; j--){
+		let questionId = "#question" + j;
+		let timeId = "#time" + j;
+		let userId = "#user" + j;
+		let idLabel = "#questionId" + j;
+		$(questionId).html("");
+		$(timeId).html("");
+		$(userId).html("");
+		$(idLabel).html("");
 	}
 }
 
