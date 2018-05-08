@@ -294,9 +294,9 @@ public class PostController {
 
     Map<Question, Double> map = questionService.similar(question);
 
-    double maxOpacity = 0;
-    for (Double opacity : map.values()) {
-      maxOpacity = Math.max(opacity, maxOpacity);
+    double maxVal = 0;
+    for (Double val : map.values()) {
+      maxVal = Math.max(val, maxVal);
     }
 
     List<QuestionOpacity> ret = new ArrayList<>();
@@ -306,7 +306,7 @@ public class PostController {
         continue;
       }
 
-      ret.add(new QuestionOpacity(entry.getKey(), entry.getValue(), maxOpacity));
+      ret.add(new QuestionOpacity(entry.getKey(), entry.getValue(), maxVal));
     }
 
     return GSON.toJson(ret);
@@ -374,14 +374,16 @@ public class PostController {
 
   private static class QuestionOpacity {
 
+    private static final double MIN_SIMILARITY = 0.1;
+
     private Integer id;
     private String similarity;
 
-    private QuestionOpacity(Question question, Double opacity,
-                            Double maxOpacity) {
+    private QuestionOpacity(Question question, Double val,
+                            Double maxVal) {
       this.id = question.getId();
       this.similarity =
-          String.format("%.2f", maxOpacity == 0 ? 0 :opacity / maxOpacity);
+          String.format("%.2f", maxVal == 0 ? MIN_SIMILARITY : (1 - MIN_SIMILARITY) * val / maxVal + MIN_SIMILARITY);
     }
   }
 
