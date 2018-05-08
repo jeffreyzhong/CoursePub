@@ -1,14 +1,15 @@
 @charset "UTF-8";
 /* Body */
 body {
-	font-family: source-sans-pro;
+	font-family: old-standard;
 	margin-top: 0px;
 	margin-right: 0px;
 	margin-bottom: 0px;
 	margin-left: 0px;
 	font-style: normal;
 	font-weight: 200;
-	background-color: #2D9AB7;
+/*	background-color: #2D9AB7;*/
+    background-image: url(chalkboard.jpg);
 	height: 400px;
 	background-attachment: fixed;
 	background-size: cover;
@@ -28,7 +29,6 @@ header {
 	width: 100%;
 	height: 5%;
 	background-color: transparent;
-	border-bottom: 1px solid #2C9AB7;
 }
 .logo {
 	color: #fff;
@@ -36,9 +36,9 @@ header {
 	text-align: undefined;
 	width: 10%;
 	float: left;
-	margin-top: 15px;
-	margin-left: 25px;
 	letter-spacing: 4px;
+    font-size: 20px;
+    margin-bottom: 0px;
 }
 
 #searchCourses {
@@ -131,6 +131,29 @@ header {
 	font-weight: 100;
 }
 
+#threadResponse {
+	 border: 1px solid white; 
+/*    s-webkit-border-radius: 0px; */
+/*    -moz-border-radius: 10px; */
+/*    -webkit-transition-duration: 0.4s;*/
+    transition-duration: 0.4s;
+    border-radius: 10px; 
+    outline: 0px; 
+    height:auto; 
+    width: 40vw; 
+    padding-left:10px; 
+    padding-right:10px;
+    background-color: transparent;
+    color: white;
+    text-shadow: 1.5px 1.5px 1.5px black;
+    resize: none;
+    font-size: 25px;
+    font-family: "Open Sans";
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+}
+
 #thumbnailDiv {
     float: left;
     padding-left: 20px;
@@ -167,7 +190,7 @@ header {
 
 #submitResponseButton:hover {
 	background-color: white;
-	color: #2D9AB7;
+	color: darkgreen;
 }
 
 #displaySummary {
@@ -175,6 +198,8 @@ header {
     width: 50vw;
     min-height:60px; 
     display: inline-block;
+    letter-spacing: 0.5px;
+    color: white;
 
 }
 
@@ -182,8 +207,10 @@ header {
     border-radius: 10px;
     border-color: white;
     background: rgba(255, 255, 255, 0.2); 
-    color: black;
+    color: white;
     word-wrap: break-word; 
+    letter-spacing: 0.5px;
+
 }
 
 #displayQuestion {
@@ -191,6 +218,9 @@ header {
     min-height:100px; 
     display: inline-block;
     width: 50vw;
+    color: white;
+    letter-spacing: 0.5px;
+
 }
 
 #displayInstructorAnswer {
@@ -198,6 +228,9 @@ header {
     min-height:50px; 
     display: inline-block;
     width: 50vw;
+    color: white;
+    letter-spacing: 0.5px;
+
 }
 
 #displayStudentAnswer {
@@ -205,18 +238,24 @@ header {
     min-height:50px; 
     display: inline-block;
     width: 50vw;
+    color: white;
+    letter-spacing: 0.5px;
 }
 
 #displayThread {
-    font-size: 13px;
+    font-size: 16px;
     min-height:50px; 
     display: inline-block;
-    width: 50vw;
+    width: 40vw;
+    color: white;
+    letter-spacing: 0.5px;
 }
 
 #videoSection {
 	float: left;
-	padding-left: 100px;
+	padding-left: 50px;
+    width: 45vw;
+    color: white;
 }
 
 nav {
@@ -245,6 +284,7 @@ ul li a {
 }
 ul li:hover a {
 	color: #2C9AB7;
+    font-size: 20px;
 }
 .hero_header {
 	color: #FFFFFF;

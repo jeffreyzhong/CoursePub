@@ -8,7 +8,10 @@ input[type="number"] {
 }
 
 body{
-	background-color: #2D9AB7;
+	background-image: url(chalkboard.jpg);
+	background-size: 100vw 100vh;
+	background-attachment: fixed;
+	
 }
 
 #container{
@@ -20,6 +23,10 @@ body{
 	display: inline-block;
 }
 
+h4{
+	margin-bottom: 20px;
+}
+
 .logo{
 	color:#FFFFFF;
 	font-size: 20px;
@@ -28,13 +35,11 @@ body{
 	text-align:undefined;
 	letter-spacing: 4px;
 	font-family: source-sans-pro;
-	margin-left: 25px;
+	margin-left: 55px;
 	width: 200px;
 }
 
 .searchTags{
-	font-family: source-sans-pro;
-	font-weight: bold;
 	font-size: 15px;
 	letter-spacing: 1px;
 	
@@ -48,10 +53,11 @@ body{
 	font-style:normal;
 	letter-spacing: 4px;
 	font-family: source-sans-pro;
-	margin-left: 25px;
+	margin-left: 55px;
 }
 #searchArea{
 	margin-top: 5px;
+	margin-left: 30px;
 }
 #item{
 	margin-left: 25px;
@@ -66,10 +72,29 @@ body{
 
 p{
 	margin-top: 10px;
+	font-family:old-standard;
+}
+
+label{
+	font-family: source-sans-pro;
+	font-weight: bold;
+}
+
+input{
+	font-family:old-standard;
+	background-color:black;
+	opacity: 0.25;
+}
+
+textarea{
+	font-family:old-standard;
+	background-color:black;
+	opacity: 0.25;
 }
 
 #title{
 	color:white;
+	font-family: source-sans-pro;
 }
 
 #left {
@@ -108,10 +133,10 @@ p{
 .videoWrapper {
 	position: relative;
 	padding-bottom: 56.25%; /* 16:9 */
-	width:85%;
+	width:80%;
 	height:0;
 	margin-top:15px;
-	margin-left:2.4%;
+	margin-left:7.5%;
 }
 .videoWrapper iframe {
 	position: absolute;
@@ -120,12 +145,11 @@ p{
 }
 
 .inputBox{
-	background-color: inherit;
 	color:#FFFFFF;
-	border-radius:30px;
+	border-radius:5px;
 	padding-left:10px;
 	padding-right:10px;
-	border: 2px solid #FFFFFF;
+	border: 2px solid #000000;
 }
 
 #searchBar{
@@ -155,7 +179,7 @@ p{
 }
 
 #summaryInput{
-	width: 833px;
+	width: 818px;
 	height:25.5px;
 	font-size: 18px;
 }
@@ -164,17 +188,16 @@ p{
 	width: 100px;
 	text-align: center;
 	font-size:18px;
-	border: 2px solid #FFFFFF;
+	border: 2px solid #000000;
 }
 
 #detailInput{
-	width: 833px;
-	height: 200px;
+	width: 818px;
+	height: 140px;
 	font-size:18px;
-	border: 2px solid #FFFFFF;
+	border: 2px solid #000000;
 	font-family: Arial, Helvetica, sans-serif;
 	letter-spacing:0.5px;
-	
 }
 
 .inputBoxLabel{
@@ -183,22 +206,26 @@ p{
 	font-weight: bolder;
 }
 
+#summaryLabel{
+	margin-left: 25px;
+}
 #timeLabel{
-	margin-left: 40px;
+	margin-left: 65px;
 }
 
 #detailLabel{
-	margin-left:33px;
+	margin-left:58px;
 }
 
 #submitBtn{
-	margin-left:875px;
-	margin-top: 300px;
+	margin-left:890px;
+	margin-top: 185px;
 	color:#2D9AB7;
 	background-color: #FFFFFF;
+	opacity: 0.5;
 	border:1px;
 	border-radius:30px;
-	padding: 15px 30px;
+	padding: 10px 20px;
 	display: inline-block;
 	font-weight: bold;
 	font-size:18px;
@@ -217,9 +244,9 @@ p{
 }
 
 #right {
-	width: 450px;
+	width: 440px;
 	height: 900px;
-	margin-left: 1021px;
+	margin-left: 1011px;
 	position:absolute;
 }
 
@@ -273,7 +300,7 @@ p{
 
 .questions{
 	color: #ffffff;
-    padding-right: 20px;
+    padding-right: 30px;
     margin-top: 5px;
     font-size: 18px;
     margin-bottom: 10px;
@@ -302,14 +329,14 @@ p{
 .userLabel{
 	color: #ddd;
 	text-align: right;
-	padding-right: 20px;
+	padding-right: 30px;
 	font-size: 16px;
 }
 
 .upvoteLabel{
 	color: #ddd;
 	text-align: right;
-	padding-right: 20px;
+	padding-right: 30px;
 	font-size: 16px;
 	margin-left: 80%;
 }
@@ -325,7 +352,7 @@ p{
 
 #answerDiv{
 	width: 500px;
-	margin-top:17px;
+	margin-top:12px;
 }
 
 #answerLabel{
@@ -338,9 +365,9 @@ p{
 	padding-top: 6px;
 	padding-bottom: 6px;
 	margin-top: 7px;
-	height:200px;
-	width: 426px;
-    border: 2px solid #FFFFFF;
+	height:165px;
+	width: 410px;
+    border: 2px solid #000000;
 	color: #FFFFFF;
 	font-size: 20px;
 	font-family: Arial, Helvetica, sans-serif;
@@ -350,14 +377,14 @@ p{
 
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: #A7A7A7;
+    color: #FFFFFF;
     opacity: 1; /* Firefox */
 }
 
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: #A7A7A7;
+    color: #FFFFFF;
 }
 
 ::-ms-input-placeholder { /* Microsoft Edge */
-    color: #A7A7A7;
+    color: #FFFFFF;
 }

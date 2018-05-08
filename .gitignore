@@ -74,3 +74,4 @@ local.properties
 data/projectDatabase/stub.db
 src/main/resources/application.yml
 
+/bin/

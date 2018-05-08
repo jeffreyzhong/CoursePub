@@ -71,10 +71,17 @@ INSERT INTO question_upvote (id, post_id, user_id) VALUES (1, 3, 2);
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (2, 3, 3);
 INSERT INTO question_upvote (id, post_id, user_id) VALUES (3, 3, 4);
 
-INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (1, 'You are dumb jerry', 2, 2, '2018-04-12 05:58:19');
+INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (1, 'You are smart jerry', 2, 2, '2018-04-12 05:58:19');
 INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (1, 'You are officially dumb jerry', 5, 2, '2018-04-13 04:12:57');
 INSERT INTO student_answer (id, body, user_id, question_id, post_time) VALUES (1, 'hahaha', 7, 1, '2018-05-01 07:17:32');
 
-INSERT INTO response (id, body, user_id, question_id, post_time) VALUES (2, 'But it\'\ s just worth soooo much more than I think it should.' , 2, 11, '2018-04-12 05:58:19');
-INSERT INTO instructor_answer (id, body, user_id, question_id, post_time) VALUES (2, 'Because checkstyle makes sure that you are writing code that is easy to read!', 5, 11, '2018-04-13 04:12:57');
-INSERT INTO student_answer (id, body, user_id, question_id, post_time) VALUES (2, 'Honestly I relate so much', 7, 11, '2018-05-01 07:17:32');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('You are very intelligent jerry', 2, 2, '2018-04-12 05:58:19');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Jeff', 2, 2, '2018-04-12 05:58:30');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Gary Zhou', 2, 2, '2018-04-12 05:59:19');
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('Song Yang', 2, 2, '2018-04-12 05:59:30');
+
+
+
+INSERT INTO response (body, user_id, question_id, post_time) VALUES ('But it\'\ s just worth soooo much more than I think it should.' , 2, 11, '2018-04-12 05:58:19');
+INSERT INTO instructor_answer (body, user_id, question_id, post_time) VALUES ('Because checkstyle makes sure that you are writing code that is easy to read!', 5, 11, '2018-04-13 04:12:57');
+INSERT INTO student_answer (body, user_id, question_id, post_time) VALUES ('Honestly I relate so much', 7, 11, '2018-05-01 07:17:32');
