@@ -218,20 +218,24 @@ public class PostController {
     String userInput = searchSubmit.getInput();
     Map<String, Object> map = new HashMap<String, Object>();
     Course course = nameToCourse.get(userInput);
-    boolean isInstructor = registrationService.isInstructor(user, course);
-    Iterator<Video> videos = course.getVideos().iterator();
-    map.put("courseName", userInput);
-    List<List<String>> videoList = new ArrayList<List<String>>();
-    while (videos.hasNext()) {
-      List<String> tmp = new ArrayList<String>();
-      Video video = videos.next();
-      tmp.add(video.getUrl());
-      tmp.add(Integer.toString(video.getId()));
-      videoList.add(tmp);
+    if (course != null) {
+      boolean isInstructor = registrationService.isInstructor(user, course);
+      Iterator<Video> videos = course.getVideos().iterator();
+      map.put("courseName", userInput);
+      List<List<String>> videoList = new ArrayList<List<String>>();
+      while (videos.hasNext()) {
+        List<String> tmp = new ArrayList<String>();
+        Video video = videos.next();
+        tmp.add(video.getUrl());
+        tmp.add(Integer.toString(video.getId()));
+        videoList.add(tmp);
+      }
+      map.put("courseInfo", videoList);
+      map.put("isInstructor", isInstructor);
+      return GSON.toJson(map);
+    } else {
+      return GSON.toJson("");
     }
-    map.put("courseInfo", videoList);
-    map.put("isInstructor", isInstructor);
-    return GSON.toJson(map);
   }
 
   @PostMapping(path = "/courseCatalog")
