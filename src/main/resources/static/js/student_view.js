@@ -263,6 +263,8 @@ $(document).ready(() => {
 		}
 	});	
 	
+	document.getElementById('relQuestion').onclick = relQuestionClick;
+	
 	document.getElementById('container').onclick = function(ev){
 		if(ev.target.id !== "searchBtn" && ev.target.className !== "searchItem"){
 			if(document.getElementById('searchResults') !== null){
@@ -559,11 +561,14 @@ function relQuestionClick(){
 	}
 	
 	const postParameters = {id: videoId, input:$("#detailInput").val()};
+	console.log(postParameters);
 	$.post("/relatedStudent", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
+		console.log(responseObject);
 		for (let i = 0; i < responseObject.length; ++i) {
 			let question = responseObject[i];
 			let text = convertSeconds(question.time) + " " + question.summary + " " + " User: " + question.user;
+			console.log(text);
 			let li = document.createElement('li');
 			li.setAttribute('class', 'item');
 			li.style.color = 'white';
