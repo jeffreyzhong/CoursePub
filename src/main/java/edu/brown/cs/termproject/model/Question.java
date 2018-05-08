@@ -1,6 +1,7 @@
 package edu.brown.cs.termproject.model;
 
 import edu.brown.cs.termproject.nlp.TfIdf;
+import edu.brown.cs.termproject.nlp.TfIdfCorpusSource;
 import edu.brown.cs.termproject.nlp.TfIdfDocument;
 
 import javax.persistence.CascadeType;
@@ -49,6 +50,11 @@ public class Question extends AbstractMasterPost<QuestionUpvote>
   @Override
   protected String getTableName() {
     return "question";
+  }
+
+  @Override
+  public TfIdfCorpusSource source() {
+    return this.getVideo();
   }
 
   @Override

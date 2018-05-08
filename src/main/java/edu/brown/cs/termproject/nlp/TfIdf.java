@@ -45,7 +45,7 @@ public class TfIdf<T extends TfIdfCorpusSource<U, V>,
     assert (source != null);
     assert (!data.containsKey(source));
 
-    TfIdfRecord record = new TfIdfRecord();
+    TfIdfRecord<U, V> record = new TfIdfRecord<>(source);
     record.build(source.dataCorpus(), source.queryCorpus());
 
     data.put(source, record);
