@@ -43,7 +43,8 @@
 		<label for="time" class="inputBoxLabel" id = "detailLabel">Detail:</label>
 		<textarea class = "inputBox" id = "detailInput" placeholder="Input question here"></textarea>
 	</div>
-	<button type="submit" name = "submit" value = "Post!" id = "submitBtn">Post!</button><br><br>
+	<button type="submit" name = "submit" value = "Post!" id = "submitBtn">Post!</button>
+	<button type="submit" name = "submit" value = "Post!" id = "relQuestion">Related Question</button>
 	<span id = "videoId" style = "display:none">${videoId}</span>
 </div>
 

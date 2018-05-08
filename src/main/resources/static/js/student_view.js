@@ -231,6 +231,8 @@ $(document).ready(() => {
 	document.getElementById('allQuestionsBtn').onclick = allClick;
 	document.getElementById('submitBtn').onclick = postClick;
 	
+	document.getElementById('answerInput').style.background = 'none';
+	document.getElementById('detailInput').style.background = 'none';
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -414,6 +416,10 @@ function setupSearchBar(){
 function noteClick(){
 	hideContent();
 	expanded = -1;
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].onclick = null;
+	}
 	$("#question0").html(description);
 }
 
@@ -522,6 +528,54 @@ function allClick(){
 			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
 			renderList(text,ul);
 	}
+}
+
+function relQuestionClick(){
+	questionSel = false;
+	expanded = -1;
+	deleteThumbNails();
+	document.getElementById('responseList').style.height = "0px";
+	document.getElementById('responseList').style.display = "none";
+	let divs = document.getElementsByClassName("questionDiv");
+	for(let i = 0; i < divs.length; i++){
+		divs[i].style.display = "none";
+	}
+	let ul = null;
+	if(document.getElementById('questionsList') === null){
+		ul = document.createElement('ul');
+		ul.setAttribute('id','questionsList');
+		ul.style.listStyleType = "none";
+		ul.style.lineHeight = "30px";
+		ul.style.marginTop = "-5px";
+		ul.style.paddingRight = "20px";
+		document.getElementById("sideContentDiv").appendChild(ul);
+		
+	}else{
+		ul = document.getElementById('questionsList');
+		while (ul.firstChild) {
+			ul.removeChild(ul.firstChild);
+		}
+		ul.style.display = "block";
+	}
+	
+	const postParameters = {id: videoId, input:$("#detailInput").val()};
+	$.post("/relatedStudent", postParameters, responseJSON => {
+		const responseObject = JSON.parse(responseJSON);
+		for (let i = 0; i < responseObject.length; ++i) {
+			let question = responseObject[i];
+			let text = convertSeconds(question.time) + " " + question.summary + " " + " User: " + question.user;
+			let li = document.createElement('li');
+			li.setAttribute('class', 'item');
+			li.style.color = 'white';
+			li.style.borderBottom = "2px solid #FFFFFF";
+			li.style.fontSize = "15px";
+			ul.appendChild(li);
+			li.innerHTML = li.innerHTML + text;
+			li.onclick = function(){
+				player.seekTo(parseFloat(question.time));
+			};
+		}
+	});		
 }
 
 function renderList(text, ul){

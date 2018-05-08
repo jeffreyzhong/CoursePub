@@ -192,12 +192,14 @@ textarea{
 }
 
 #detailInput{
-	width: 818px;
+	width: 685px;
 	height: 140px;
 	font-size:18px;
 	border: 2px solid #000000;
-	font-family: Arial, Helvetica, sans-serif;
 	letter-spacing:0.5px;
+	background:none;
+	background-color:black;
+	opacity: 0.25;
 }
 
 .inputBoxLabel{
@@ -219,7 +221,7 @@ textarea{
 
 #submitBtn{
 	margin-left:890px;
-	margin-top: 185px;
+	margin-top: 135px;
 	color:#2D9AB7;
 	background-color: #FFFFFF;
 	opacity: 0.5;
@@ -229,6 +231,20 @@ textarea{
 	display: inline-block;
 	font-weight: bold;
 	font-size:18px;
+}
+
+#relQuestion{
+	margin-left:860px;
+	margin-top:10px;
+	color:#2D9AB7;
+	background-color: #FFFFFF;
+	opacity: 0.5;
+	border:1px;
+	border-radius:30px;
+	padding: 10px 5px;
+	display: inline-block;
+	font-weight: bold;
+	font-size:16px;
 }
 
 #searchBtn{
@@ -338,7 +354,7 @@ textarea{
 	text-align: right;
 	padding-right: 30px;
 	font-size: 16px;
-	margin-left: 80%;
+	margin-left: 77%;
 }
 
 .questionIdLabel{
@@ -370,9 +386,11 @@ textarea{
     border: 2px solid #000000;
 	color: #FFFFFF;
 	font-size: 20px;
-	font-family: Arial, Helvetica, sans-serif;
 	letter-spacing:0.5px;
 	text-align: justify;
+	background:none;
+	background-color:black;
+	opacity: 0.25;
 }
 
 
