@@ -447,6 +447,8 @@ function setupSearchBar(){
 					item.appendChild(ul);	
 				}
 			});
+		}else{
+			alert("please check your input!");
 		}
 				
 	};
@@ -570,7 +572,17 @@ function allClick(){
 	for(let i = 0; i < questionsOrd.length; i++){
 			let curr = questionsOrd[i];
 			let text = convertSeconds(curr.time) + " " + curr.summary + " user: " + curr.user;
-			renderList(text,ul);
+			let li = document.createElement('li');
+			li.setAttribute('class', 'item');
+			li.style.color = 'white';
+			li.style.borderBottom = "2px solid #FFFFFF";
+			li.style.fontSize = "15px";
+			ul.appendChild(li);
+			li.innerHTML = li.innerHTML + text;
+			li.onclick = function(){
+				player.seekTo(parseFloat(curr.time));
+				$("#questionBtn").click();
+			};
 	}
 }
 
@@ -620,6 +632,7 @@ function relQuestionClick(){
 			li.innerHTML = li.innerHTML + text;
 			li.onclick = function(){
 				player.seekTo(parseFloat(question.time));
+				$("#questionBtn").click();
 			};
 		}
 	});		
