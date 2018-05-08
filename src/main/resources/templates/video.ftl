@@ -111,12 +111,12 @@
 		<label id = "answerLabel">Answer:</label>
 		<input type = "radio"
                  value = "byXYZ"
-			   	 id = "followUp"
+			   	 id = "studentAnswer"
                  checked = "checked" />
 		<label for = "sizeSmall">Answer</label>
 		<input type = "radio"
 		     value = "byName"
-		     id = "studentAnswer"/>
+		     id = "followUp"/>
 		<label for = "sizeSmall">Follow-up Question</label><br>
 		<textarea class = "inputBox" id = "answerInput" placeholder="Answer a question!"></textarea>
 	</div>
