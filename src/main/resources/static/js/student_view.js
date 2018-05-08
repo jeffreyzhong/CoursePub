@@ -958,20 +958,22 @@ function answerSubmit(){
 	}
 	
 	let answerType;
+	let type = 0;
 	if(document.getElementById('followUp').checked){
 		console.log("follow up");
 		answerType = 1;
+		type = 2;
 //		$('#studentAnswer').prop('checked',false);
 	}else if(document.getElementById('studentAnswer').checked){
 		console.log("student answer");
 		answerType = 0;
-//		$('#follwUp').prop('checked',false)
+		type = 5;
 	}
 	
 	if (confirm("Are you sure you want to post this message?")) {
 		let jsonObject = {questionId: questionId, detail:detail, answerType: answerType};
 	
-		conn.send(JSON.stringify({type: 2, payload: jsonObject}));
+		conn.send(JSON.stringify({type: type, payload: jsonObject}));
 
 		$("#answerInput").val("");
 	}
