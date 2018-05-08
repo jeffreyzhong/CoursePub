@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CoursePub</title>
+<title>CoursePub Home</title>
 <link href="/static/css/homePage.css" rel="stylesheet" type="text/css">
 <!--The following script tag downloads a font from the Adobe Edge Web Fonts server for use within the web page. We recommend that you do not modify it.-->
 <#include "requestHeader.ftl">
@@ -28,7 +28,7 @@
   </a>
     <nav>
       <ul>
-        <li><a href="/">Home</a></li>
+        <li><a href="/home">Home</a></li>
         <li><a href="/courses">Courses</a></li>
         <li> <a id="account" href="/login/google">Sign In/Sign Up</a></li>
       </ul>

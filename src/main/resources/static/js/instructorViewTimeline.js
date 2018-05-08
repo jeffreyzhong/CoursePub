@@ -72,6 +72,7 @@ $("#threadResponse").keyup(function(event) {
 					summary : newMessage.summary,
 					colonTime : colonTime,
 					start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
+					thread : [],
 					fullQuestion : newMessage.detail,
 					instructorAnswer : newMessage.instructorAnswer,
 					studentAnswer : newMessage.studentAnswer,
@@ -101,7 +102,9 @@ $("#threadResponse").keyup(function(event) {
 
 				break
 			case MESSAGE_TYPE.STUDENT_ANSWER:
-				toUpdate.studentAnswer = newMessage.detail;
+				toUpdate.studentAnswer = {detail:newMessage.detail};
+				toUpdate.content = setContent(1,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime,'1.0');
+				toUpdate.resolved = 1;
 				timeline.setItems(items);
 				break;
 			
@@ -113,6 +116,7 @@ $("#threadResponse").keyup(function(event) {
 				break;
 			case MESSAGE_TYPE.ERROR:
 				alert("There was a websocket error!: Check console.");
+				console.log("Message from Server: " + data);
 				break;
 		}
 	});	
@@ -188,6 +192,7 @@ $("#threadResponse").keyup(function(event) {
 				instructorResponse.value = "";
 				let toUpdate = items._data[questionId];
 				toUpdate.content = setContent(2,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime,'1.0');
+				toUpdate.resolved = 2;
 				toUpdate.instructorAnswer = {detail: answer};
 				//toUpdate.responses = detail;
 				timeline.setItems(items);
@@ -335,7 +340,7 @@ $("#threadResponse").keyup(function(event) {
 								let currThread = responseObject[i];
 								info.thread.push(currThread);
 							}
-						//	timeline.setItems(items);
+						timeline.setItems(items);
 							
 						}
 						for (let i = 0; i < info.thread.length; i++) {
@@ -360,7 +365,7 @@ $("#threadResponse").keyup(function(event) {
 						studentAnswer.innerHTML = "No student answer yet! :(";
 					}
 					
-					
+			info.content = setContent(info.resolved,info.numVotes,info.user,info.colonTime,'1.0');	
 			if (!questionToSimilarity[questionId]) {
 				$.post("/relatedInstructor",{id:questionId},responseJSON => {
 						let responseObject = JSON.parse(responseJSON);
@@ -406,6 +411,7 @@ $("#threadResponse").keyup(function(event) {
 						let dataSetQuest = items._data[currQuestId];
 						dataSetQuest.content = setContent(dataSetQuest.resolved,dataSetQuest.numVotes,dataSetQuest.user,dataSetQuest.colonTime,'1.0');
 					}
+					console.log("items: " + items);
 					timeline.setItems(items);
 					//timeline.setItems(items);
 				}
