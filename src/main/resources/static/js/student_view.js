@@ -350,6 +350,52 @@ function stateChangeFunc(event) {
 //============================================================================
 //Below are code for searching transcripts within video
 function setupSearchBar(){
+	$("searchBar").keyup(event =>{
+		let item = document.getElementById("item");
+		let ul = document.createElement("ul");
+		ul.setAttribute("id", "searchResults");
+		ul.style.position = "absolute";
+		ul.style.overflow = "hidden";
+		ul.style.overflowY = "auto";
+		ul.style.zIndex = "999";
+		ul.style.listStyle = "none";
+		ul.style.margin = "0px";
+		ul.style.marginLeft = "112.58px";
+		ul.style.padding = "0px";
+		ul.style.background = "rgba(0,0,0,0.25)";
+		ul.style.width = "224px";
+		ul.style.height = "300px";
+		const postParameters = {word : $("searchBar").val()};
+		$.post("/autocorrect", postParameters, responseJSON => {
+			// TODO: Parse the JSON response into a JavaScript object.
+			const responseObject = JSON.parse(responseJSON);  
+
+			for (let i =  0; i < responseObject.length; i++) {
+				let text = responseObject[i];
+				let li = document.createElement('li');
+				li.setAttribute('class', 'searchItem');
+				li.style.margin = "0px";
+				li.style.padding = "0px";
+				li.style.color = "white";
+				li.style.border = "2px solid #FFFFFF";
+				if(i === 0){
+					li.style.borderTop = "none";
+				}
+				if(i+1 !== responseObject.length - 1){
+					li.style.borderBottom = "none";
+				}
+				li.style.fontSize = "15px";
+				li.style.display = "block";
+				ul.appendChild(li);
+				li.innerHTML = li.innerHTML + text;
+				li.onclick = function(){
+					$("searchBar").val(text);
+					item.removeChild(ul);
+				};
+			}
+			item.appendChild(ul);	
+		});
+	});
 	document.getElementById('searchBtn').onclick = function() {
 	    // 13 is ENTER
 		if ($("#searchBar").val() !== "" && document.getElementById("searchResults") === null && isValidTime($("#searchTimeInput1").val()) && isValidTime($("#searchTimeInput2").val())){
@@ -364,7 +410,7 @@ function setupSearchBar(){
 			ul.style.margin = "0px";
 			ul.style.marginLeft = "112.58px";
 			ul.style.padding = "0px";
-			ul.style.backgroundColor = "#2D9AB7";
+			ul.style.background = "rgba(0,0,0,0.25)";	
 			ul.style.width = "224px";
 			ul.style.height = "300px";
 

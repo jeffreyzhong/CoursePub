@@ -88,7 +88,6 @@ input{
 textarea{
 	font-family:old-standard;
 	background:rgba(0,0,0,0.25);
-	border: 2px solid #000000;
 }
 
 #title{
@@ -384,21 +383,19 @@ textarea{
 	font-size: 20px;
 	letter-spacing:0.5px;
 	text-align: justify;
-	background:none;
-	background-color:black;
 	opacity: 0.25;
 }
 
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: #FFFFFF;
+    color:#CEC3C3;
     opacity: 1; /* Firefox */
 }
 
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: #FFFFFF;
+    color:#CEC3C3;
 }
 
 ::-ms-input-placeholder { /* Microsoft Edge */
-    color: #FFFFFF;
+    color:#CEC3C3;
 }
