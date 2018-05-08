@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -246,6 +247,27 @@ public class PostController {
     return GSON.toJson(ret);
   }
 
+  @PostMapping(path = "/relatedStudent")
+  @ResponseBody
+  public String relatedStudent(RelatedStudentRequest request) {
+    Video video = videoService.ofId(request.getId());
+
+    if (video == null) {
+      throw new ResourceNotFoundException();
+    }
+
+    Question virtualQuestion = new Question();
+    virtualQuestion.setTitle(request.getInput());
+    virtualQuestion.setVideo(video);
+
+    ImmutableList.Builder<QuestionDto> ret = ImmutableList.builder();
+    for (Question question : questionService.similar(virtualQuestion)) {
+      ret.add(new QuestionDto(question));
+    }
+
+    return GSON.toJson(ret.build());
+  }
+
   private static class EmptyRequest {
 
   }
@@ -288,6 +310,19 @@ public class PostController {
   }
 
   private static class QuestionRequest extends ResponseRequest {
+  }
+
+  private static class RelatedStudentRequest extends ResponseRequest {
+
+    private String input;
+
+    public String getInput() {
+      return input;
+    }
+
+    public void setInput(String input) {
+      this.input = input;
+    }
   }
 
   private static class TranscriptRequest extends ResponseRequest{

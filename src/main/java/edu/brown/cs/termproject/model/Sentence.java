@@ -1,5 +1,8 @@
 package edu.brown.cs.termproject.model;
 
+import edu.brown.cs.termproject.nlp.TfIdf;
+import edu.brown.cs.termproject.nlp.TfIdfDocument;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,11 +15,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.Objects;
 
 @Entity
 @Table(name = "sentence")
-public class Sentence {
+public class Sentence implements TfIdfDocument {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +63,11 @@ public class Sentence {
 
   public void setVideoTime(Calendar videoTime) {
     this.videoTime = videoTime;
+  }
+
+  @Override
+  public Iterator<String> words() {
+    return TfIdf.SANITIZER.apply(words).iterator();
   }
 
   @Override

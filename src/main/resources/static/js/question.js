@@ -1,3 +1,31 @@
+function printQuestion(question) {
+  let id = question['id'];
+  let time = question['time'];
+  let summary = question['summary'];
+  let user = question['user'];
+  let resolved = question['resolved'];
+  let upvotes = question['upvotes'];
+  let detail = question['detail'];
+  let instructorAnswer = question['instructorAnswer'];
+  let studentAnswer = question['studentAnswer'];
+
+  console.log('question (id ' + id + '): user ' + user + ' asked ' + summary
+      + ': \"' + detail + '\" at second ' + time + ', resolve status is '
+      + resolved + '. ' + upvotes + ' people have upvoted.');
+
+  if (instructorAnswer !== undefined) {
+    console.log('instructor ' + instructorAnswer['userId'] +
+        ' responded to question ' + instructorAnswer['questionId'] + ': '
+        + instructorAnswer['detail'] + '.')
+  }
+
+  if (studentAnswer !== undefined) {
+    console.log('student ' + studentAnswer['userId'] +
+        ' responded to question ' + studentAnswer['questionId'] + ': '
+        + studentAnswer['detail'] + '.')
+  }
+}
+
 $(document).ready(function() {
   const id = parseInt($('#videoId').html());
 
@@ -8,31 +36,7 @@ $(document).ready(function() {
 
     for (let i = 0; i < responseObject.length; ++i) {
       let question = responseObject[i];
-      let id = question['id'];
-      let time = question['time'];
-      let summary = question['summary'];
-      let user = question['user'];
-      let resolved = question['resolved'];
-      let upvotes = question['upvotes'];
-      let detail = question['detail'];
-      let instructorAnswer = question['instructorAnswer'];
-      let studentAnswer = question['studentAnswer'];
-
-      console.log('question (id ' + id + '): user ' + user + ' asked ' + summary
-          + ': \"' + detail + '\" at second ' + time + ', resolve status is '
-          + resolved + '. ' + upvotes + ' people have upvoted.');
-
-      if (instructorAnswer !== undefined) {
-        console.log('instructor ' + instructorAnswer['userId'] +
-            ' responded to question ' + instructorAnswer['questionId'] + ': '
-            + instructorAnswer['detail'] + '.')
-      }
-
-      if (studentAnswer !== undefined) {
-        console.log('student ' + studentAnswer['userId'] +
-            ' responded to question ' + studentAnswer['questionId'] + ': '
-            + studentAnswer['detail'] + '.')
-      }
+      printQuestion(question)
     }
   });
 
@@ -55,5 +59,17 @@ $(document).ready(function() {
           + detail + '\" at ' + postTime + ' on ' + postDate + ' to question '
           + questionId + '. ' + upvotes + ' people have upvoted.');
     }
-  })
+  });
+
+  $.post('/relatedStudent', {
+    'id': 1,
+    'input': 'who is jj'
+  }, function(responseJSON) {
+    let responseObject = JSON.parse(responseJSON);
+
+    for (let i = 0; i < responseObject.length; ++i) {
+      let question = responseObject[i];
+      printQuestion(question)
+    }
+  });
 });
