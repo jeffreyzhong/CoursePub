@@ -232,17 +232,17 @@ $(document).ready(() => {
 	document.getElementById('allQuestionsBtn').onclick = allClick;
 	document.getElementById('submitBtn').onclick = postClick;
 	
-	document.getElementById('followUp').onclick = function(ev){
-		if(ev.ctrlKey) {
-            document.getElementById('studentAnswer').checked = false;
-        }
-	}
+	
+	document.getElementById('followUp').onclick = function(){
+		console.log(" fuck ");
+		document.getElementById('studentAnswer').checked = false;
+        
+	};
 		
-	document.getElementById('studentAnswer').onclick = function(ev){
-		if(ev.ctrlKey) {
-            document.getElementById('followUp').checked = false;
-        }
-	}
+	document.getElementById('studentAnswer').onclick = function(){
+		console.log(" you ");
+        document.getElementById('followUp').checked = false;
+	};
 
 	// Add function to execute when the API is ready
 	YT_ready(function(){
@@ -960,11 +960,11 @@ function answerSubmit(){
 	let answerType;
 	if(document.getElementById('followUp').checked){
 		console.log("follow up");
-		answerType = 0;
+		answerType = 1;
 //		$('#studentAnswer').prop('checked',false);
 	}else if(document.getElementById('studentAnswer').checked){
 		console.log("student answer");
-		answerType = 1;
+		answerType = 0;
 //		$('#follwUp').prop('checked',false)
 	}
 	
