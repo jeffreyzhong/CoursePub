@@ -827,7 +827,7 @@ function postClick(){
 		return;
 	}
 	
-	if (confirm("Are you sure you want to post this question?")) {
+	if (confirm("Are you sure you don't want to see similar question?")) {
 		let jsonObject = {videoId: videoId, summary:summary, questionTimestamp:time, detail:detail};
 	
 		conn.send(JSON.stringify({type: 1, payload: jsonObject}));
