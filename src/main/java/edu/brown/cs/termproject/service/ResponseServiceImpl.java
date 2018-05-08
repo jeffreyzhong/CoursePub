@@ -37,6 +37,7 @@ public class ResponseServiceImpl implements ResponseService {
 
     responseDao.add(response);
 
+    user.addResponse(response);
     question.addResponse(response);
 
     return response;
