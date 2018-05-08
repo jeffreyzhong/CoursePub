@@ -28,7 +28,7 @@ function printQuestion(question) {
 
 $(document).ready(function() {
   const id = parseInt($('#videoId').html());
-
+  /*
   $.post('/question', {
     'id': id,
   }, function(responseJSON) {
@@ -72,4 +72,13 @@ $(document).ready(function() {
       printQuestion(question)
     }
   });
+
+  */
+
+  $.post('/relatedInstructor', {
+    'id': 1,
+  }, function(responseJSON) {
+    let responseObject = JSON.parse(responseJSON);
+    console.log(responseObject);
+  })
 });

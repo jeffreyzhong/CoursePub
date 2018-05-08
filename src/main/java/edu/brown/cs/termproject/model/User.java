@@ -15,13 +15,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "user")
-public class User implements PageRankNode<Course> {
+public class User implements PageRankNode<PageRankNode> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +39,13 @@ public class User implements PageRankNode<Course> {
       fetch = FetchType.EAGER
   )
   private Set<Registration> registrations = new PickySet<>();
+
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      mappedBy = "user",
+      fetch = FetchType.EAGER
+  )
+  private Set<Response> responses = new PickySet<>();
 
   public Integer getId() {
     return id;
@@ -71,17 +79,32 @@ public class User implements PageRankNode<Course> {
     registrations.remove(registration);
   }
 
+  public void addResponse(Response response) {
+    responses.add(response);
+  }
+
+  public void removeResponse(Response response) {
+    responses.remove(response);
+  }
+
   @Override
-  public Map<Course, Double> getDsts() {
-    if (registrations.isEmpty()) {
+  public Map<PageRankNode, Double> getDsts() {
+    if (registrations.isEmpty() && responses.isEmpty()) {
       return Collections.emptyMap();
     }
 
-    ImmutableMap.Builder<Course, Double> builder = ImmutableMap.builder();
-
-    double weight = 1 / (double) registrations.size();
+    Set<PageRankNode> set = new HashSet<>();
     for (Registration registration : registrations) {
-      builder.put(registration.getCourse(), weight);
+      set.add(registration.getCourse());
+    }
+    for (Response response : responses) {
+      set.add(response.getQuestion().getUser());
+    }
+
+    double weight = 1 / (double) set.size();
+    ImmutableMap.Builder<PageRankNode, Double> builder = ImmutableMap.builder();
+    for (PageRankNode node : set) {
+      builder.put(node, weight);
     }
 
     return builder.build();
