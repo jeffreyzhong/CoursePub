@@ -17,7 +17,7 @@ import java.util.Map;
 @Controller
 class LandingController {
 
-  @GetMapping(path = "/", produces = MediaType.TEXT_HTML_VALUE)
+  @GetMapping(path = "/home", produces = MediaType.TEXT_HTML_VALUE)
   public ModelAndView landing() {
     return new ModelAndView("homePage");
   }
