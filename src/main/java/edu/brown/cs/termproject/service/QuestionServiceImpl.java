@@ -85,22 +85,13 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   @Transactional(readOnly = true)
-  public Collection<Question> similar(Question question)
+  public Map<Question, Double> similar(Question question)
       throws IllegalArgumentException {
     if (question == null || question.getVideo() == null) {
       throw new IllegalArgumentException("Question or video cannot be null.");
     }
 
-    Map<Question, Double> map = tfIdf.getScore(question.getVideo(), question.getTitle());
-    List<Question> ret = new ArrayList<>();
-    for (Map.Entry<Question, Double> entry : map.entrySet()) {
-      if (entry.getValue() > SIMILAR_THRESHOLD) {
-        ret.add(entry.getKey());
-      }
-    }
-    ret.sort(Comparator.comparingDouble(map::get).reversed());
-
-    return ret;
+   return tfIdf.getScore(question.getVideo(), question.getTitle());
   }
 
   @Bean

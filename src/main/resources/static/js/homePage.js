@@ -76,7 +76,7 @@ $(document).ready(function() {
 		//				$suggestedVideos.append($("<img id=\"courseImage"+i+"\"src=\""+url+"\" style=\"width:200px; height:200px;\">"));
 		//				$suggestedVideos.append($("<li id=\"courseName\"style=\"list-style-type:none; font-size:50px; color:white; \"value=\""+courseName+"\">").text(courseName));
 		//				document.getElementById("courseImage"+i).addEventListener("click",loadPage);
-					$suggestedVideos.append($("<p id=\"para"+i+"\"style=\"font-size:50px; color:white;\"><img id=\"courseImage"+i+"\"src=\""+url+"\" style=\"width:300px; height:300px; align:left;\">"+courseName+"</p>"));
+					$suggestedVideos.append($("<p id=\"para"+i+"\"style=\"font-size:30px; color:white;\"><img id=\"courseImage"+i+"\"src=\""+url+"\" style=\"width:200px; height:200px; align:left;\">"+courseName+"</p>"));
 		//			$courseList.append($("<li id=\"courseName\"style=\"list-style-type:none; font-size:50px; color:white; \"value=\""+courseName+"\">").text(courseName));
 					document.getElementById("courseImage"+i).addEventListener("click",loadPage);
 						urlToId[url] = courseInfo[i]['1'];
