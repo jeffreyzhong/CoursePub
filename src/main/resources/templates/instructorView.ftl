@@ -67,8 +67,10 @@
 	<br>
     <div id="thumbnailDiv">
         <img id="videoThumbnail">
+        <div id="videoName"></div>
+        <br>
     </div>
-	<div id="videoName"></div>
+	
 <!--
 	<section id="interactiveSection"> 
 	<canvas id="interactiveCanvas"></canvas>
@@ -78,6 +80,7 @@
 	<div id="visualization">
 	</div>
 	<br>
+    <div id="wrapper">
 	<div id="clickedOnQuestion">
 		<div id="fullQuestion">
             Question Summary:<br>
@@ -90,7 +93,7 @@
             <div class="displaySection" id="displayInstructorAnswer"></div><br>
             Answer:<br>
 			<textarea class="instructorResponse" id="instructorResponse"></textarea><br>
-			<input type="submit" id="submitResponseButton"><br>       
+			<input type="submit" id="submitResponseButton" value="Post"><br> 
 		</div>
 	</div>
 	<div id="videoSection">
@@ -101,6 +104,7 @@
         Reply Here:<br>
         <textarea class="instructorResponse" id="threadResponse"></textarea>
 	</div>
+    </div>
 </div>
 <!-- Main Container Ends -->
 	

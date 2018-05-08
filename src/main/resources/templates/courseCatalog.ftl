@@ -33,7 +33,6 @@
         <img id="videoThumbnail">
     </div>
 	<div id="videoName"></div>
-
     <div id="courseList">
     </div>
     <div id="lastOne">

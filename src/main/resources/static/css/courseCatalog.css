@@ -8,10 +8,10 @@ body {
 	margin-left: 0px;
 	font-style: normal;
 	font-weight: 200;
-	background-color: #2D9AB7;
+	background-image: url(chalkboard.jpg);
 	height: 400px;
-	background-attachment: fixed;
-	background-size: cover;
+    background-attachment: fixed;
+	background-size: 100vw 100vh;
 	background-repeat: no-repeat;
 }
 /* Container */
@@ -28,7 +28,6 @@ header {
 	width: 100%;
 	height: 5%;
 	background-color: transparent;
-	border-bottom: 1px solid #2C9AB7;
 }
 .logo {
 	color: #fff;
@@ -79,6 +78,10 @@ header {
 
 }
 
+#lastOne {
+    margin-left: 100px;
+}
+
 #learningStartsHere {
 	color: white;
 	padding-left: 0;
@@ -108,6 +111,13 @@ header {
     padding-left: 25px;
 }
 
+p {
+   margin-left: 100px;
+}
+
+img {
+   margin-left: 100px; 
+}
 #instructorResponse {
 	 border: 1px solid white; 
 /*    s-webkit-border-radius: 0px; */

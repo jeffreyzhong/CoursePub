@@ -3,9 +3,7 @@ $(document).ready(function() {
 	let instructorResponse = document.getElementById("instructorResponse");
 	let videoId = parseInt($('#videoId').html());
 	let windowlocation = window.location.href.split('/')[2];
-	console.log(windowlocation);
 	let ws = "ws://"+windowlocation+"/websocket/"+videoId;
-	console.log(ws);
 	let conn = new WebSocket(ws);
 	let addData = [];
 	let instructorSubmit = document.getElementById("submitResponseButton");
@@ -14,11 +12,10 @@ $(document).ready(function() {
 	let videoName = document.getElementById("videoName");
 	let timeline;
 	let linkId;
+	let questionToSimilarity = {};
 	$.post("/setup",{id:videoId},responseJSON => {
 		let responseObject = JSON.parse(responseJSON);
-		console.log("LINK: " + responseObject);
 		document.getElementById("videoFrame").setAttribute("src",responseObject[0]);
-		console.log("IFRAME: " + document.getElementById("videoFrame").src);
 		let link = document.getElementById("videoFrame").src;
 		linkId = extractVideoIdFromYouTubeUrl(link);
 		let url = 'https://img.youtube.com/vi/'+linkId+'/0.jpg';
@@ -33,26 +30,18 @@ $(document).ready(function() {
 	});
 	
 $("#threadResponse").keyup(function(event) {
-	console.log("yoyoyo");
 	if (event.which === 13) {
 		let response = $("#threadResponse").val();
 		//let update = items._data[questionId];
 		let payload = {questionId : parseInt(questionId), detail : response};
 		let toSend = JSON.stringify({type : MESSAGE_TYPE.NEW_RESPONSE, payload : payload});
-		console.log(toSend);
 		if (confirm("Are you sure you want to send this follow-up?")){
 			conn.send(toSend);
-		} else {
-			console.log("canceled");
-		}
+		} 
 		document.getElementById("threadResponse").value = "";
-
-		
-		
-	}
-	
+	}	
 });
-		let questionId;
+		let questionId = null;
 		let mouseoverId;
 	
 	const MESSAGE_TYPE = {
@@ -66,24 +55,19 @@ $("#threadResponse").keyup(function(event) {
 	};
 	conn.addEventListener('message', function (event) {
 		let data = JSON.parse(event.data);
-		console.log('Message from server: ', data);
 		let newMessage = data.payload;
 		let questionId = newMessage.questionId;
 		let toUpdate = items._data[questionId];
-		console.log(data.type);
-		console.log(MESSAGE_TYPE.UPVOTE);
 		switch (data.type) {
 			default: 
-				console.log("Unknown data type");
 				break;
 			case MESSAGE_TYPE.NEW_QUESTION:
 				
 				let formattedTime = moment().startOf('day').seconds(newMessage.time).format('H,mm,ss');
 				let colonTime = moment().startOf('day').seconds(newMessage.time).format('H:mm:ss');
-				//console.log("formattedTime: " + formattedTime);
 				let timeArray = formattedTime.split(",");
 				let currQuestion = {id: newMessage.id,
-					content : setContent(newMessage.resolved,newMessage.upvotes,newMessage.user,colonTime),
+					content : setContent(newMessage.resolved,newMessage.upvotes,newMessage.user,colonTime,'1.0'),
 					summary : newMessage.summary,
 					colonTime : colonTime,
 					start : new Date(0,0,0,parseInt(timeArray[0]),parseInt(timeArray[1]),parseInt(timeArray[2]),0),
@@ -93,15 +77,12 @@ $("#threadResponse").keyup(function(event) {
 					numVotes : newMessage.upvotes,
 					resolved : newMessage.resolved,
 					user : "Anon "+newMessage.user};
-				console.log("currQuestion: " + currQuestion);
 				addData.push(currQuestion);
 				timeline.setItems(addData);	
-				console.log("added");
 				items = new vis.DataSet(addData);
 				
 				break;
 			case MESSAGE_TYPE.NEW_RESPONSE:
-				console.log("new message: " + newMessage);
 				toUpdate.thread.push(newMessage);
 				if (displayThread.innerHTML === "No follow ups currently in this question thread!") {
 					displayThread.innerHTML = "Anon " + newMessage.userId + ": "+ newMessage.detail +"<br>";
@@ -112,7 +93,6 @@ $("#threadResponse").keyup(function(event) {
 				}
 				break;
 			case MESSAGE_TYPE.INSTRUCTOR_ANSWER:
-				console.log("ITEMS BEFORE: " + items);
 				let detail = [];
 				let instructorAnswer = document.getElementById("displayInstructorAnswer");
 				let tmpStr = "";
@@ -120,18 +100,14 @@ $("#threadResponse").keyup(function(event) {
 
 				break
 			case MESSAGE_TYPE.STUDENT_ANSWER:
-				console.log("STUDENT ANSWER");
 				toUpdate.studentAnswer = newMessage.detail;
 				timeline.setItems(items);
 				break;
 			
 			case MESSAGE_TYPE.UPVOTE:
-				console.log("UPVOTE");
 				let update = items._data[newMessage.id];
-				console.log("number of votes before: " + update.numVotes);
 				update.numVotes = update.numVotes + newMessage.num;
-				update.content = setContent(update.resolved,update.numVotes,update.user,update.colonTime);
-				console.log("number of votes: " + update.numVotes);
+				update.content = setContent(update.resolved,update.numVotes,update.user,update.colonTime,'1.0');
 				timeline.setItems(items);
 				break;
 			case MESSAGE_TYPE.ERROR:
@@ -145,7 +121,6 @@ $("#threadResponse").keyup(function(event) {
 	
 	let postParameters = {id:videoId};
 	$.post("/question", postParameters, responseJSON => {
-		console.log("here");
 		let responseObject = JSON.parse(responseJSON);
 		allData = [];
 		for (i = 0; i < responseObject.length; i++) {
@@ -159,14 +134,11 @@ $("#threadResponse").keyup(function(event) {
 			let numUpVotes = question['upvotes'];
 			let instructorAnswer = question['instructorAnswer'];
 			let studentAnswer = question['studentAnswer'];
-			console.log(question);
 			let formattedTime = moment().startOf('day').seconds(time).format('H,mm,ss');
 			let colonTime = moment().startOf('day').seconds(time).format('H:mm:ss');
-			console.log("formattedTime: " + formattedTime);
 			let timeArray = formattedTime.split(",");
-			console.log("user id: " + user);
 			let currQuestion = {id: id,
-			content : setContent(resolved,numUpVotes,user,colonTime),
+			content : setContent(resolved,numUpVotes,user,colonTime,'1.0'),
 			resolved : resolved,
 			numVotes : numUpVotes,
 			thread : [],
@@ -178,9 +150,7 @@ $("#threadResponse").keyup(function(event) {
 			studentAnswer : studentAnswer,
 			user : "Anon "+user};
 			addData.push(currQuestion);
-			console.log(addData);
 		}
-		console.log("creating");
 		createDataSet();
 		createTimeline();
 		
@@ -191,7 +161,6 @@ $("#threadResponse").keyup(function(event) {
 	function resizeSummary() {
 		let el = this;
 		setTimeout(function() {
-			console.log("here");
 			document.getElementById("displaySummary").style.cssText = 'height:; padding:0';
 			document.getElementById("displaySummary").style.cssText = 'height:' + el.scrollHeight + 'px';
 		},0);
@@ -210,27 +179,21 @@ $("#threadResponse").keyup(function(event) {
 	function sendInstructorResponse() {
 		let answer = instructorResponse.value;
 		if (answer !== "") {
-			//let postParameters = {instructorResponse:answer};
-			//console.log(answer);
-//			$.post("/instructorResponse", postParameters, responseJSON => {
-//				let responseObject = JSON.parse(responseJSON);
-//			});
 			if (confirm("Are you sure you want to post this response?")) {
-				console.log(questionId);
+				if (questionId) {
 				let payload = {questionId : parseInt(questionId), detail : answer};
 				let toSend = JSON.stringify({type : MESSAGE_TYPE.INSTRUCTOR_ANSWER, payload : payload});
-				console.log(toSend);
 				conn.send(toSend);
 				instructorResponse.value = "";
 				let toUpdate = items._data[questionId];
-				toUpdate.content = setContent(2,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime);
+				toUpdate.content = setContent(2,toUpdate.numVotes,toUpdate.user,toUpdate.colonTime,'1.0');
 				toUpdate.instructorAnswer = {detail: answer};
-				console.log(toUpdate.resonse);
 				//toUpdate.responses = detail;
-				console.log("ITEMS AFTER: " + items);
 				timeline.setItems(items);
+				} else {
+					alert("Not sure which question you are tryng to answer. Please select a question in the timeline to answer.");
+				}
 			} else {
-				console.log("canceled");
 				instructorResponse.value = "";
 			}
 			
@@ -266,7 +229,6 @@ $("#threadResponse").keyup(function(event) {
 				default:
 			}
 		});
-		console.log(seconds);
 		let formattedTime = moment().startOf('day').seconds(seconds).format('H,mm,ss');
 		return formattedTime;
 	}
@@ -285,12 +247,10 @@ $("#threadResponse").keyup(function(event) {
 		let request = new XMLHttpRequest();
 		let link = document.getElementById("videoFrame").src;
 		let linkId = extractVideoIdFromYouTubeUrl(link);
-		console.log(linkId);
     	let url = 'https://www.googleapis.com/youtube/v3/videos?id='+linkId+'&part=contentDetails&key=AIzaSyC20skOqfx9zQmQ6eNhZi-bqTNis5teoX0';
     	request.onreadystatechange = function() {
       		if (this.readyState === 4 && this.status === 200) {
         		let response = JSON.parse(this.responseText);
-				console.log(response);
         		getElements(response);
 			}
     	};
@@ -298,14 +258,11 @@ $("#threadResponse").keyup(function(event) {
 		request.open("GET", url, true);
 		request.send();
 		getElements = function(response) {
-			console.log(response);
 			if (!response['items']['0']) {
-				console.log("reload");
 				window.location.reload();
 			}
 			let duration = response['items']['0']['contentDetails']['duration'];
 			let videoEndTime = parseDuration(duration).split(",");
-			console.log(videoEndTime);
 			let step;
 			if (parseInt(videoEndTime[1]) > 50) {
 				step = 300;
@@ -319,16 +276,14 @@ $("#threadResponse").keyup(function(event) {
 				step = 60;
 			}
 			let options = {
-				width: '90%',
-				height: '450px',
+				width: '100%',
+				height: '380px',
+				align: 'center',
 				timeAxis: {scale: 'second', step: step}
 			};
-			console.log(parseInt(videoEndTime[0])*60*60*1000+parseInt(videoEndTime[1])*60*1000+parseInt(videoEndTime[2])*1000);
 			options.zoomMax = parseInt(videoEndTime[0])*60*60*1000+parseInt(videoEndTime[1])*60*1000+parseInt(videoEndTime[2])*1000;
 			options.zoomMin = 1000;
 			options.min = new Date(0,0,0,0,0,0,0);
-			console.log(videoEndTime[0] + " " + videoEndTime[1] + " " + videoEndTime[2]);
-			console.log(new Date(0,0,0,parseInt(videoEndTime[0]),parseInt(videoEndTime[1]),parseInt(videoEndTime[2]),0));
 			options.max = new Date(0,0,0,parseInt(videoEndTime[0]),parseInt(videoEndTime[1]),parseInt(videoEndTime[2]),0);
 
 			options.format = {
@@ -354,12 +309,9 @@ $("#threadResponse").keyup(function(event) {
 					month:      '',
 					year:       ''
 				}};
-			console.log(items);
 			timeline = new vis.Timeline(container, items, options);
 			timeline.fit(options);
-			console.log("before select");
 			timeline.on('select', function (properties) {
-				console.log(properties);
 				questionId = properties.items[0];
 				let summary = document.getElementById("displaySummary");
 				let question = document.getElementById("displayQuestion");
@@ -371,26 +323,15 @@ $("#threadResponse").keyup(function(event) {
 				if (info) {
 					summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 					question.innerHTML = info.fullQuestion;
-					console.log(info);
 					let postP = {id:questionId};
 					let tmpStr = "";
-					console.log("question Id: " + questionId);
 					$.post("/response",postP,responseJSON => {
 					let responseObject = JSON.parse(responseJSON);
-						console.log("res object: " + responseObject);
-					console.log("length: " + responseObject.length);
 					if (responseObject.length > 0) {
 						if (responseObject.length > info.thread.length) {
 							for (let i = 0; i < responseObject.length; i++) {
-								console.log("RESPONSE OBJECT: " + responseObject[i]['detail']);
 								let currThread = responseObject[i];
 								info.thread.push(currThread);
-
-								//tmpStr += currThread['detail']+"<br>";
-								//toUpdate.responses.push({detail:response['detail']});
-								//detail.push(response['detail']);
-
-
 							}
 							timeline.setItems(items);
 							
@@ -398,24 +339,14 @@ $("#threadResponse").keyup(function(event) {
 						for (let i = 0; i < info.thread.length; i++) {
 
 							thread.innerHTML += "Anon " + info.thread[i].userId + ": " + info.thread[i].detail+"<br>";
-								//+"   "+info.thread[i].upvotes+"UP <br>";
 						}
 					} else {
-						console.log("no follow ups currently");
 						thread.innerHTML = "No follow ups currently in this question thread!";
 					}
-					//thread.innerHTML = tmpStr;
 				});
 					if (info.instructorAnswer) {
-						
-					//	if (info.responses.length > 0) {
 							let res = info.instructorAnswer.detail;
-							//let tmpStr = "";
-//							for (let i = 0; i < res.length; i++) {
-//								tmpStr += res[i].detail+"<br>";
-//							}
 							instructorAnswer.innerHTML = res;
-					//	} 
 
 					} else {
 							instructorAnswer.innerHTML = "No instructor answer yet! :(";
@@ -426,58 +357,73 @@ $("#threadResponse").keyup(function(event) {
 					} else {
 						studentAnswer.innerHTML = "No student answer yet! :(";
 					}
+					if (!questionToSimilarity[questionId]) {
+						$.post("/relatedInstructor",{id:questionId},responseJSON => {
+							let responseObject = JSON.parse(responseObject);
+							for (let i = 0; i < responseObject.length; i++) {
+								let currQuest = responseObject[i];
+								let currQuestId = currQuest['id'];
+								let currQuestSimilarity = currQuest['similarity'];
+								let dataSetQuest = items._data[currQuestId];
+								dataSetQuest.content = setContent(dataSetQuest.resolved,dataSetQuest.numVotes,dataSetQuest.user,dataSetQuest.colonTime,currQuestSimilarity);
+
+								questionToSimilarity[questionId].push({id:currQuestId,similarity:currQuestSimilarity});
+
+							}
+							timeline.setItems(items);
+						});
+					} else {
+						for (let i = 0; i < questionToSimilarity[questionId].length; i++) {
+							let currQuest = questionToSimilarity[questionId][i];
+							let currQuestId = currQuest['id'];
+							let currQuestSimilarity = currQuest['similarity'];
+							let dataSetQuest = items._data[currQuestId];
+							dataSetQuest.content = setContent(dataSetQuest.resolved,dataSetQuest.numVotes,dataSetQuest.user,dataSetQuest.colonTime,currQuestSimilarity);
+						}
+						timeline.setItems(items);
+					}
 				} else {
 					summary.innerHTML = " ";
 					question.innerHTML = " ";
 					instructorAnswer.innerHTML = " ";
 					studentAnswer.innerHTML = " ";
 					thread.innerHTML = " ";
+					for (let i = 0; i < addData.length; i++) {
+						let currQuest = addData[i];
+						let currQuestId = currQuest['id'];
+						let dataSetQuest = items._data[currQuestId];
+						dataSetQuest.content = setContent(dataSetQuest.resolved,dataSetQuest.numVotes,dataSetQuest.user,dataSetQuest.colonTime,'1.0');
 					}
-				
+					timeline.setItems(items);
+				}
 			});
 			
 			timeline.on('mouseOver', function (properties) {
 				mouseoverId = properties.item;
-				//console.log(properties);
 				let summary = document.getElementById("displaySummary");
 				let question = document.getElementById("displayQuestion");
 				let instructorAnswer = document.getElementById("displayInstructorAnswer");
 				if (mouseoverId != null && timeline.getSelection().length === 0) {
-				//	console.log(timeline.getSelection());
 					let info = items._data[mouseoverId];
 
 					let sum = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 					if (sum !== summary.innerHTML) {
 						summary.innerHTML = info.user + " had a question @ " + info.colonTime + " | " + info.summary;
 						question.innerHTML = info.fullQuestion;
-						console.log(info);
 						if (info.instructorAnswer) {
-							//if (info.responses.length > 0) {
 								let res = info.instructorAnswer.detail;
-								
 								let currStr = "";
-								//for (let i = 0; i < res.length; i++) {
-								//	currStr += res[i].detail+"<br>";
-							//	}
 								instructorAnswer.innerHTML = res;
-							//}
-
 						} else {
 								instructorAnswer.innerHTML = "No instructor answer yet! :(";
 							}
 					}
 				}
-//				else {
-//					summary.innerHTML = "";
-//					question.innerHTML = "";
-//					instructorAnswer.innerHTML = "";
-//				}
 			});
-
 		};	
 	}
 	
-	function setContent(answered, numUpVotes,user,colonTime) {
+	function setContent(answered,numUpVotes,user,colonTime,opacity) {
 		let color = "";
 		if (answered === 0) {
 			color = "red";
@@ -486,20 +432,15 @@ $("#threadResponse").keyup(function(event) {
 		} else if (answered === 2) {
 			color="green";
 		}
-//		if (answered) {
-//			color="green";
-//		} else {
-//			color="red";
-//		}
 		let padding = 4 + numUpVotes*3;
 		if (color === "red" || color === "green") {
 			return '<div style="background-color:'+color+'; color:white; ' + 
 			'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +
-			'padding-bottom:'+padding+'px; border-radius: 20px;">'+numUpVotes + 'UP' + ' @ ' + colonTime +'</div>';
+			'padding-bottom:'+padding+'px; border-radius: 20px; opacity:'+opacity+';">'+numUpVotes + 'UP' + ' @ ' + colonTime +'</div>';
 		} else {
 			return '<div style="background-color:'+color+'; color:black; ' + 
 			'padding-top:'+padding+'px; padding-left:'+padding+'px; padding-right:'+padding+'px;' +
-			'padding-bottom:'+padding+'px; border-radius: 20px;">'+numUpVotes + 'UP' + ' @ ' + colonTime +'</div>';
+			'padding-bottom:'+padding+'px; border-radius: 20px; opacity:'+opacity+';">'+numUpVotes + 'UP' + ' @ ' + colonTime +'</div>';
 		}
 	}
 
