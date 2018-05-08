@@ -560,7 +560,7 @@ function relQuestionClick(){
 		ul.style.display = "block";
 	}
 	
-	const postParameters = {id: videoId, input:$("#detailInput").val()};
+	const postParameters = {id: parseInt(videoId), input:$("#summaryInput").val()};
 	console.log(postParameters);
 	$.post("/relatedStudent", postParameters, responseJSON => {
 		const responseObject = JSON.parse(responseJSON);
