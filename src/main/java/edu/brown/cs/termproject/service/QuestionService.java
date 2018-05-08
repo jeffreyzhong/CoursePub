@@ -6,6 +6,7 @@ import edu.brown.cs.termproject.model.User;
 import edu.brown.cs.termproject.model.Video;
 
 import java.util.Calendar;
+import java.util.Collection;
 
 public interface QuestionService
     extends AbstractUpvoteService<Question, QuestionUpvote> {
@@ -13,4 +14,6 @@ public interface QuestionService
   Question add(User user, Calendar videoTime, String title, String body, Video video);
 
   Question ofId(Integer id);
+
+  Collection<Question> similar(Question question);
 }
