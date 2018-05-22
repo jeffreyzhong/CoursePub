@@ -1,29 +1,4 @@
-# cs0320 Term Project 2018
-
-**Team Members:**
-
-[Yujun Qin](https://github.com/yamstudio) (yqin), [Song Yang](https://github.com/Yangsong525) (sy69), [Jeffrey Zhong](https://github.com/jeffreyzhong) (jzhong3), [Gary Zhou](https://github.com/GaryZhou98) (xzhou3)
-
-**Team Strengths and Weaknesses:**
-
-- Team Strength:
-  
-  - Full Stack Development Experience:
-  Several team members have been involved in full stack (front end and back end) developments in past projects of similar scopes and complexities. 
-  
-  - Algorithm Design and Implementations:
-  Two of the team members are CS16 TAs with rich experience in algorithm design and implementations.
-  
-  - Database design and management:
-  More than one team members have experience designing and implementing databases.
-  
-- Team Weaknesses:
-
-  - Front End Design Experience:
-  The team lacks extensive front-end design experience, while the project in design is quite front-end heavy.
-  
-  - Group Project Experience:
-  Because of the nature of Brown CS courses, the team lacks extensive group project experience.
+**CoursePub**
 
 **Project Idea(s):**
 1. The Problem
@@ -58,13 +33,6 @@
   - Make existing education resources more accessible to learners with different levels of familiarity with the material presented. 
   - Enable interactive lectures that current MOOCs lack. 
   - Reduce Instructor workload by through presenting recorded past lectures. 
-
-**Mentor TA:** [Lucy Wei](mailto:heyang_wei@brown.edu) (hwei)
-
-## Meetings
-_On your first meeting with your mentor TA, you should plan dates for at least the following meetings:_
-
-**Specs, Mockup, and Design Meeting:** _(Schedule for on or before March 16)_
 
 **4-Way Checkpoint:** _(Schedule for on or before April 23)_
 
